@@ -6,7 +6,7 @@ module.exports = (type, url) => {
   try {
     const match = /(?:\/|^)resources\/(.*)$/.exec(url) // Expect local resources to be under resources
     if (!match) {
-      throw new Error('not a resource')
+      return
     }
     if (url.endsWith('css')) {
       return '/* style must not be empty */'
