@@ -26,9 +26,10 @@ module.exports = XMLHttpRequest => {
   XMLHttpRequest.prototype.open = function (method, url, synchronous) {
     if (method === 'GET') {
       this[$content] = read('XHR', url)
-      return
     }
-    return open.apply(this, arguments)
+    if (this[$content] === undefined) {
+      return open.apply(this, arguments)
+    }
   }
 
   XMLHttpRequest.prototype.setRequestHeader = function () {
