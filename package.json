@@ -1,0 +1,35 @@
+{
+  "name": "node-ui5",
+  "version": "1.0.0",
+  "description": "A NodeJS wrapper on OpenUI5 to leverage tools like MockServer or ODataClient",
+  "main": "index.js",
+  "scripts": {
+    "test": "node ./node_modules/standard/bin/cmd --fix",
+    "postinstall": "cd node_modules/@openui5/sap.ui.core && rimraf dist && ui5 build -a && cd ../../../"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ArnaudBuchholz/node-ui5.git"
+  },
+  "keywords": [
+    "openui5",
+    "odata",
+    "mock",
+    "server"
+  ],
+  "author": "Arnaud Buchholz",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ArnaudBuchholz/node-ui5/issues"
+  },
+  "homepage": "https://github.com/ArnaudBuchholz/node-ui5#readme",
+  "dependencies": {
+    "jsdom": "^12.2.0",
+    "@openui5/sap.ui.core": "^1"
+  },
+  "devDependencies": {
+    "standard": "^12.0.1",
+    "@ui5/cli": "^0.2.1",
+    "rimraf": "^2.6.2"
+  }
+}
