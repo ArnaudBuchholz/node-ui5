@@ -4,7 +4,7 @@ const read = require('./read')
 
 class ResourceLoader extends jsdom.ResourceLoader {
   fetch (url, options) {
-    const content = read('RES', url)
+    const content = read(url)
     if (content) {
       return Promise.resolve(content)
     }
