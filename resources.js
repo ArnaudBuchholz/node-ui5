@@ -2,7 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const openui5BaseDir = path.join(__dirname, 'node_modules/@openui5/sap.ui.core/dist/resources')
 const URL = 'http://node-ui5.server.net/'
-const reResource = new RegExp(`^(?:${URL})?resources\/(.*)$`)
+const reResource = new RegExp(`^(?:${URL})?resources/(.*)$`)
 
 module.exports = {
 
