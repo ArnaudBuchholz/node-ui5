@@ -1,18 +1,12 @@
-const http = require('http')
-const https = require('https')
+const gpf = require('gpf-js')
 const resources = require('./resources')
 const $events = Symbol('events')
 const $content = Symbol('content')
+const $request = Symbol('request')
+const $headers = Symbol('headers')
 
-// Simple XHR hook to handle local files (it can't be done with sinon / nise or it conflicts with OpenUI5's one)
+// Simple XHR hook to load resources and bypass CORS
 module.exports = XMLHttpRequest => {
-  const {
-    addEventListener,
-    open,
-    setRequestHeader,
-    send
-  } = XMLHttpRequest.prototype
-
   XMLHttpRequest.prototype.addEventListener = function (eventName, eventHandler) {
     if (!this[$events]) {
       this[$events] = {}
@@ -21,7 +15,6 @@ module.exports = XMLHttpRequest => {
       this[$events][eventName] = []
     }
     this[$events][eventName].push(eventHandler)
-    return addEventListener.apply(this, arguments)
   }
 
   XMLHttpRequest.prototype.open = function (method, url, synchronous) {
@@ -29,36 +22,57 @@ module.exports = XMLHttpRequest => {
       this[$content] = resources.read(url)
     }
     if (this[$content] === undefined) {
-      // Re-implement XHR to bypass CORS
-      const service = url.startsWith('https') ? https : http
-
-      return open.apply(this, arguments)
+      this[$request] = {
+        method,
+        url,
+        headers: {}
+      }
     }
   }
 
-  XMLHttpRequest.prototype.setRequestHeader = function () {
-    if (undefined === this[$content]) {
-      setRequestHeader.apply(this, arguments)
+  XMLHttpRequest.prototype.setRequestHeader = function (name, value) {
+    if (this[$content] === undefined) {
+      this[$request].headers[name] = value
     }
   }
 
-  XMLHttpRequest.prototype.send = function () {
+  function _setResult (xhr, responseText, status) {
+    Object.defineProperty(xhr, 'readyState', { get: () => 4 })
+    Object.defineProperty(xhr, 'responseText', { get: () => responseText || '' })
+    Object.defineProperty(xhr, 'status', { get: () => status })
+    if (xhr.onreadystatechange) {
+      xhr.onreadystatechange()
+    }
+    'readystatechange,load'
+      .split(',')
+      .forEach(eventName => xhr[$events][eventName]
+        ? xhr[$events][eventName].forEach(eventHandler => eventHandler(xhr))
+        : 0
+      )
+  }
+
+  XMLHttpRequest.prototype.send = function (data) {
     const content = this[$content]
     if (undefined !== content) {
-      Object.defineProperty(this, 'readyState', { get: () => 4 })
-      Object.defineProperty(this, 'responseText', { get: () => content || '' })
-      Object.defineProperty(this, 'status', { get: () => content !== null ? 200 : 404 })
-      if (this.onreadystatechange) {
-        this.onreadystatechange()
-      }
-      'readystatechange,load'
-        .split(',')
-        .forEach(eventName => this[$events][eventName]
-          ? this[$events][eventName].forEach(eventHandler => eventHandler(this))
-          : 0
-        )
-      return
+      this[$headers] = {}
+      _setResult(this, content || '', content !== null ? 200 : 404)
+    } else {
+      this[$request].data = data
+      gpf.http.request(this[$request]).then(response => {
+        this[$headers] = response.headers
+        _setResult(this, response.responseText, response.status)
+      })
     }
-    send.apply(this, arguments)
+  }
+
+  XMLHttpRequest.prototype.getAllResponseHeaders = function () {
+    return Object.keys(this[$headers]).reduce((list, name) => {
+      list.push(name + ': ' + this[$headers][name])
+      return list
+    }, []).join('\r\n')
+  }
+
+  XMLHttpRequest.prototype.getResponseHeader = function (name) {
+    return this[$headers][name] || null
   }
 }
