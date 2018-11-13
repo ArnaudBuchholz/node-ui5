@@ -24,8 +24,9 @@
   },
   "homepage": "https://github.com/ArnaudBuchholz/node-ui5#readme",
   "dependencies": {
-    "jsdom": "^12.2.0",
-    "@openui5/sap.ui.core": "^1"
+    "@openui5/sap.ui.core": "^1",
+    "gpf-js": "^0.2.7",
+    "jsdom": "^12.2.0"
   },
   "devDependencies": {
     "standard": "^12.0.1",
