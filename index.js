@@ -1,10 +1,10 @@
 const jsdom = require('jsdom')
 const { JSDOM } = jsdom
-const read = require('./read')
+const resources = require('./resources')
 
 class ResourceLoader extends jsdom.ResourceLoader {
   fetch (url, options) {
-    const content = read(url)
+    const content = resources.read(url)
     if (content) {
       return Promise.resolve(content)
     }
@@ -37,8 +37,8 @@ const browser = new JSDOM(`
       })
     </script>
 `, {
-  url: 'http://node-ui5.server.net/',
-  referrer: 'http://node-ui5.server.net/',
+  url: resources.baseUrl,
+  referrer: resources.baseUrl,
   contentType: 'text/html',
   includeNodeLocations: true,
   storageQuota: 10000000,
