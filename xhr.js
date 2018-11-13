@@ -1,5 +1,6 @@
-const read = require('./read')
-
+const http = require('http')
+const https = require('https')
+const resources = require('./resources')
 const $events = Symbol('events')
 const $content = Symbol('content')
 
@@ -25,9 +26,12 @@ module.exports = XMLHttpRequest => {
 
   XMLHttpRequest.prototype.open = function (method, url, synchronous) {
     if (method === 'GET') {
-      this[$content] = read(url)
+      this[$content] = resources.read(url)
     }
     if (this[$content] === undefined) {
+      // Re-implement XHR to bypass CORS
+      const service = url.startsWith('https') ? https : http
+
       return open.apply(this, arguments)
     }
   }
