@@ -1,5 +1,5 @@
 # node-ui5
-A NodeJS wrapper on [OpenUI5](https://openui5.org/) to leverage tools like [MockServer](https://openui5.hana.ondemand.com/#/api/sap.ui.core.util.MockServer) or [ODataModel](https://openui5.hana.ondemand.com/#/api/sap.ui.model.odata.v2.ODataModel)
+A [NodeJS](https://nodejs.org/) wrapper for [OpenUI5](https://openui5.org/) to leverage tools like [MockServer](https://openui5.hana.ondemand.com/#/api/sap.ui.core.util.MockServer) or [ODataModel](https://openui5.hana.ondemand.com/#/api/sap.ui.model.odata.v2.ODataModel)
 
 # Setup
 
@@ -9,7 +9,7 @@ A NodeJS wrapper on [OpenUI5](https://openui5.org/) to leverage tools like [Mock
 
 ```javascript
 require('node-ui5').then(sap => {
-  // use sap, for instance
+  // use sap, for instance:
   sap.ui.require([
     'sap/ui/model/odata/v2/ODataModel'
   ], async function (ODataModel) {
@@ -30,10 +30,10 @@ require('node-ui5').then(sap => {
 })
 ```
 
-You may use the factory to specify options:
+You may use the factory to provide options:
 ```javascript
 require('node-ui5/factory')({
-  bootstrapLocation: '',
+  bootstrapLocation: 'https://openui5.hana.ondemand.com/resources/sap-ui-core.js',
   verbose: true
 }).then(sap => {
     // use sap
@@ -41,8 +41,8 @@ require('node-ui5/factory')({
 ```
 
 Where:
-* **bootstrapLocation** provides URL of the `sap-ui-core.js` bootstrap
-* **verbose** set to `true` to see details on HTTP requests and output library traces
+* **bootstrapLocation**: provides URL of the `sap-ui-core.js` bootstrap
+* **verbose**: set to `true` to see details on HTTP requests and output library traces
 
 # How does it work ?
 
