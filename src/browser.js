@@ -58,6 +58,15 @@ module.exports = settings => {
         sap[$browser] = browser
         factoryResolve(sap)
       }
+      // Controlling traces
+      window.console = {}
+      'dir,error,info,log,warn'.split(',').forEach(name => {
+        window.console[name] = (...args) => {
+          if (settings.verbose) {
+            console[name](...args)
+          }
+        }
+      })
       // Compatibility layer (see https://developer.mozilla.org/en-US/docs/Web/API/PerformanceTiming/fetchStart)
       window.performance.timing = {
         navigationStart: new Date().getTime(),
