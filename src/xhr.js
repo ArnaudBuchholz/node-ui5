@@ -1,6 +1,7 @@
 'use strict'
 
 const gpf = require('gpf-js')
+const syncRequest = require('sync-request')
 const resources = require('./resources')
 const $events = Symbol('events')
 const $content = Symbol('content')
@@ -20,16 +21,15 @@ module.exports = (settings, XMLHttpRequest) => {
     this[$events][eventName].push(eventHandler)
   }
 
-  XMLHttpRequest.prototype.open = function (method, url, synchronous) {
-    if (method === 'GET') {
-      this[$content] = resources.read(settings, url)
+  XMLHttpRequest.prototype.open = function (method, url, asynchronous) {
+    this[$request] = {
+      method,
+      url,
+      headers: {},
+      asynchronous
     }
-    if (this[$content] === undefined) {
-      this[$request] = {
-        method,
-        url,
-        headers: {}
-      }
+    if (method === 'GET') {
+      this[$content] = resources.read(Object.assign({}, settings, { verbose: false }), url)
     }
   }
 
@@ -40,6 +40,21 @@ module.exports = (settings, XMLHttpRequest) => {
   }
 
   function _setResult (xhr, responseText, status) {
+    if (settings.verbose) {
+      const request = xhr[$request]
+      let report
+      if (status.toString().startsWith(2)) {
+        report = `${status} ${responseText.length}`.green
+      } else {
+        report = status.toString().red
+      }
+      if (xhr[$content]) {
+        report += ' sync resource'.magenta
+      } else if (!request.asynchronous) {
+        report += ' synchronous'.magenta
+      }
+      console.log('XHR'.magenta, `${request.method} ${request.url}`.cyan, report)
+    }
     Object.defineProperty(xhr, 'readyState', { get: () => 4 })
     Object.defineProperty(xhr, 'responseText', { get: () => responseText || '' })
     Object.defineProperty(xhr, 'status', { get: () => status })
@@ -60,11 +75,18 @@ module.exports = (settings, XMLHttpRequest) => {
       this[$headers] = {}
       _setResult(this, content || '', content !== null ? 200 : 404)
     } else {
-      this[$request].data = data
-      gpf.http.request(this[$request]).then(response => {
+      const request = this[$request]
+      if (request.asynchronous) {
+        request.data = data
+        gpf.http.request(request).then(response => {
+          this[$headers] = response.headers
+          _setResult(this, response.responseText, response.status)
+        })
+      } else {
+        const response = syncRequest(request.method, request.url, request.headers)
         this[$headers] = response.headers
-        _setResult(this, response.responseText, response.status)
-      })
+        _setResult(this, response.body.toString(), response.statusCode)
+      }
     }
   }
 
