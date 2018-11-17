@@ -1,6 +1,5 @@
 'use strict'
 
-const path = require('path')
 const browserFactory = require('./src/browser')
 
 module.exports = (userSettings = {}) => {
