@@ -22,11 +22,11 @@ class ResourceLoader extends jsdom.ResourceLoader {
 
 module.exports = settings => {
   let factoryResolve
-  // let factoryReject
+  let factoryReject
 
   const promise = new Promise((resolve, reject) => {
     factoryResolve = resolve
-    // factoryReject = reject
+    factoryReject = reject
   })
 
   // Creating a simulated browser
@@ -41,9 +41,13 @@ module.exports = settings => {
     </script>
     <script>
       'use strict'
-      sap.ui.getCore().attachInit(function() {
-        window.ready(sap)
-      })
+      if (typeof sap !== 'undefined') {
+        sap.ui.getCore().attachInit(function() {
+          window.__factory__.resolve(sap)
+        })
+      } else {
+        window.__factory__.reject(new Error('Invalid bootstrap'))
+      }
     </script>
   `, {
     url: settings.baseURL,
@@ -54,9 +58,15 @@ module.exports = settings => {
     runScripts: 'dangerously',
     resources: new ResourceLoader(settings),
     beforeParse: window => {
-      window.ready = sap => {
-        sap[$browser] = browser
-        factoryResolve(sap)
+      // Inject factory hooks
+      window.__factory__ = {
+        resolve: sap => {
+          sap[$browser] = browser
+          factoryResolve(sap)
+        },
+        reject: reason => {
+          factoryReject(reason)
+        }
       }
       // Controlling traces
       window.console = {}
