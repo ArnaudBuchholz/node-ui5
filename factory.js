@@ -6,11 +6,15 @@ module.exports = (userSettings = {}) => {
   const {
     baseURL = 'http://node-ui5.server.net/',
     bootstrapLocation = 'resources/sap-ui-core.js',
+    exposeAsGlobals = false,
+    resourceroots = {},
     verbose = false
   } = userSettings
   return browserFactory({
     baseURL,
     bootstrapLocation,
+    exposeAsGlobals,
+    resourceroots,
     verbose
   })
 }
