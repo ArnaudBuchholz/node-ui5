@@ -4,7 +4,9 @@ require('colors')
 const fs = require('fs')
 const path = require('path')
 const gpf = require('gpf-js')
-const openui5BaseDir = path.join(__dirname, '../node_modules/@openui5/sap.ui.core/dist/resources')
+const moduleHelper = require('./moduleHelper')
+const ui5corePath = moduleHelper.find('@openui5/sap.ui.core')
+const ui5CoreDistResourcePath = path.join(ui5corePath, 'dist/resources')
 
 function _trace (settings, url, status) {
   if (settings.verbose) {
@@ -36,7 +38,7 @@ module.exports = {
         _trace(settings, url, 'css'.green)
         return '/* style must not be empty */'
       }
-      const resourcePath = path.join(openui5BaseDir, match[1])
+      const resourcePath = path.join(ui5CoreDistResourcePath, match[1])
       fs.accessSync(resourcePath, fs.constants.R_OK)
       const content = fs.readFileSync(resourcePath).toString()
       _trace(settings, url, content.length.toString().green)
