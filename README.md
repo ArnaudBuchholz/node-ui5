@@ -42,6 +42,8 @@ require('node-ui5/factory')({
 
 Where:
 * **bootstrapLocation**: provides URL of the `sap-ui-core.js` bootstrap
+* **exposeAsGlobals**: set to `true` to make `window` and `sap` be globally available in NodeJS
+* **resourceroots**: an optional dictionary for mapping resources to local folders
 * **verbose**: set to `true` to see details on HTTP requests and output library traces
 
 # How does it work ?
