@@ -61,7 +61,10 @@ module.exports = settings => {
       // Inject factory hooks
       window.__factory__ = {
         resolve: sap => {
-          sap[$browser] = browser
+          if (settings.exposeAsGlobals) {
+            global.sap = sap
+            global.window = window
+          }
           factoryResolve(sap)
         },
         reject: reason => {
