@@ -3,7 +3,7 @@
 require('colors')
 const moduleHelper = require('./moduleHelper')
 const path = require('path')
-const childProcess = require('childProcess')
+const childProcess = require('child_process')
 
 const ui5corePath = moduleHelper.find('@openui5/sap.ui.core')
 const ui5buildPath = moduleHelper.find('@ui5/cli')
