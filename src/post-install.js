@@ -1,7 +1,7 @@
 'use strict'
 
 require('colors')
-const moduleHelper = require('./src/moduleHelper')
+const moduleHelper = require('./moduleHelper')
 const path = require('path')
 const childProcess = require('childProcess')
 
