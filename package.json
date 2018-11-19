@@ -1,6 +1,6 @@
 {
   "name": "node-ui5",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "description": "A NodeJS wrapper on OpenUI5 to leverage tools like MockServer or ODataModel",
   "main": "index.js",
   "scripts": {
