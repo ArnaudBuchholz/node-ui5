@@ -3,7 +3,7 @@
 require('colors')
 const moduleHelper = require('./src/moduleHelper')
 const path = require('path')
-const child_process = require('child_process')
+const childProcess = require('childProcess')
 
 const ui5corePath = moduleHelper.find('@openui5/sap.ui.core')
 const ui5buildPath = moduleHelper.find('@ui5/cli')
@@ -16,7 +16,7 @@ if (moduleHelper.exists(distPath)) {
 
 console.log('Building @openui5/sap.ui.core/dist...'.magenta)
 
-const ui5build = child_process.spawn('node', [
+const ui5build = childProcess.spawn('node', [
   path.join(ui5buildPath, 'bin/ui5'),
   'build',
   '--a'
