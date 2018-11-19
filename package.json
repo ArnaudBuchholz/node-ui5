@@ -4,8 +4,8 @@
   "description": "A NodeJS wrapper on OpenUI5 to leverage tools like MockServer or ODataModel",
   "main": "index.js",
   "scripts": {
-    "test": "node ./node_modules/standard/bin/cmd --fix",
-    "postinstall": "cd node_modules/@openui5/sap.ui.core && rimraf dist && ui5 build -a && cd ../../../"
+    "test": "standard --fix",
+    "postinstall": "node src/post-install.js"
   },
   "repository": {
     "type": "git",
@@ -24,16 +24,15 @@
   },
   "homepage": "https://github.com/ArnaudBuchholz/node-ui5#readme",
   "dependencies": {
-    "@openui5/sap.ui.core": "^1",
+    "@openui5/sap.ui.core": "^1.60.1",
+    "@ui5/cli": "^0.2.4",
     "colors": "^1.3.2",
     "gpf-js": "^0.2.7",
     "jsdom": "^12.2.0",
-    "sync-request": "^6.0.0",
-    "mime": ">=1.4.1"
+    "mime": ">=1.4.1",
+    "sync-request": "^6.0.0"
   },
   "devDependencies": {
-    "@ui5/cli": "^0.2.4",
-    "rimraf": "^2.6.2",
     "standard": "^12.0.1"
   }
 }
