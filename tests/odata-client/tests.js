@@ -1,6 +1,6 @@
 'use strict'
 
-module.exports = sap => {
+module.exports = ({ sap }) => {
   sap.ui.require([
     'sap/ui/model/odata/v2/ODataModel'
   ], async function (ODataModel) {
