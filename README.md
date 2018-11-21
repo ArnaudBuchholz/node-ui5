@@ -8,7 +8,7 @@ A [NodeJS](https://nodejs.org/) wrapper for [OpenUI5](https://openui5.org/) to l
 # Usage
 
 ```javascript
-require('node-ui5').then(sap => {
+require('node-ui5').then(({sap}) => {
   // use sap, for instance:
   sap.ui.require([
     'sap/ui/model/odata/v2/ODataModel'
@@ -35,15 +35,15 @@ You may use the factory to provide options:
 require('node-ui5/factory')({
   bootstrapLocation: 'https://openui5.hana.ondemand.com/resources/sap-ui-core.js',
   verbose: true
-}).then(sap => {
+}).then(({sap}) => {
     // use sap
 })
 ```
 
 Where:
 * **bootstrapLocation**: provides URL of the `sap-ui-core.js` bootstrap
-* **exposeAsGlobals**: set to `true` to make `window` and `sap` be globally available in NodeJS
-* **resourceroots**: an optional dictionary for mapping resources to local folders
+* **exposeAsGlobals**: set to `true` to make `browser`, `window` and `sap` be globally available in NodeJS
+* **resourceroots**: an optional dictionary for mapping resources to local folders or remote ressources
 * **verbose**: set to `true` to see details on HTTP requests and output library traces
 
 # How does it work ?
