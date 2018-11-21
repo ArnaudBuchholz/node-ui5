@@ -4,7 +4,7 @@
 
 require('../factory')({
   bootstrapLocation: 'resources/sap-ui-core-unk.js'
-}).then(sap => {
+}).then(({ sap }) => {
   console.error('unexpected success')
   process.exit(-1)
 }, reason => {
