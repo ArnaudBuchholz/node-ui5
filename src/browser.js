@@ -3,7 +3,6 @@
 const jsdom = require('jsdom')
 const { JSDOM } = jsdom
 const resources = require('./resources')
-const $browser = Symbol('browser')
 
 class ResourceLoader extends jsdom.ResourceLoader {
   fetch (url, options) {
@@ -29,6 +28,11 @@ module.exports = settings => {
     factoryReject = reject
   })
 
+  const resourceroots = JSON.stringify(Object.keys(settings.resourceroots).reduce((roots, root) => {
+    roots[root] = resources.declare(settings.resourceroots[root])
+    return roots
+  }, {}))
+
   // Creating a simulated browser
   const browser = new JSDOM(`
     <script id="sap-ui-bootstrap"
@@ -37,7 +41,8 @@ module.exports = settings => {
       data-sap-ui-theme=""
       data-sap-ui-compatVersion="edge"
       data-sap-ui-frameOptions='allow'
-      data-sap-ui-preload="">
+      data-sap-ui-preload=""
+      data-sap-ui-resourceroots='${resourceroots}'>
     </script>
     <script>
       'use strict'
@@ -62,10 +67,11 @@ module.exports = settings => {
       window.__factory__ = {
         resolve: sap => {
           if (settings.exposeAsGlobals) {
-            global.sap = sap
+            global.browser = browser
             global.window = window
+            global.sap = sap
           }
-          factoryResolve(sap)
+          factoryResolve({ browser, window, sap })
         },
         reject: reason => {
           factoryReject(reason)
