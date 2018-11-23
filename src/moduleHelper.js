@@ -15,8 +15,12 @@ function exists (folderPath) {
 }
 
 function log (relative) {
-    const relativePath = path.join(__dirname, relative)
-    console.log(`${relativePath}:`.gray.underline, fs.readdirSync(relativePath).join(",").gray)
+  const relativePath = path.join(__dirname, relative)
+  try {
+    console.log(`${relativePath}:`.gray.underline, fs.readdirSync(relativePath).join(',').gray)
+  } catch (e) {
+    console.log(`${relativePath}:`.gray.underline, e.toString().red)
+  }
 }
 
 module.exports = {
@@ -29,7 +33,7 @@ module.exports = {
       return ownResourcePath
     }
     const sharedResourcePath = path.join(__dirname, sharedResourceRelative, name)
-    if (exists(ownResourcePath)) {
+    if (exists(sharedResourcePath)) {
       return sharedResourcePath
     }
     console.error(`Unable to locate module '${name}'`.red)
