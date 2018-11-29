@@ -1,1 +1,0 @@
-require('../..').then(require('./tests'))
