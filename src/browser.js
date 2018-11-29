@@ -1,6 +1,7 @@
 'use strict'
 
 const jsdom = require('jsdom')
+const path = require('path')
 const { JSDOM } = jsdom
 const resources = require('./resources')
 
@@ -31,7 +32,9 @@ module.exports = settings => {
   const resourceroots = JSON.stringify(Object.keys(settings.resourceroots).reduce((roots, root) => {
     roots[root] = resources.declare(settings.resourceroots[root])
     return roots
-  }, {}))
+  }, {
+    'node-ui5': resources.declare(path.join(__dirname, '../lib'))
+  }))
 
   // Creating a simulated browser
   const browser = new JSDOM(`
