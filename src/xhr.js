@@ -26,7 +26,7 @@ module.exports = (settings, XMLHttpRequest) => {
       method,
       url,
       headers: {},
-      asynchronous
+      asynchronous: asynchronous !== false
     }
     if (method === 'GET') {
       this[$content] = resources.read(Object.assign({}, settings, { verbose: false }), url)
