@@ -75,6 +75,17 @@ require('node-ui5/factory')({
 
 Thanks to [jsdom](https://github.com/jsdom/jsdom) and some tweaked [XHR](https://developer.mozilla.org/fr/docs/Web/API/XMLHttpRequest) objects, the library is loaded in a [NodeJS](https://nodejs.org/) environment.
 
-**NOTE**
+**NOTES**
 
 [CORS](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing) implementation of [jsdom](https://github.com/jsdom/jsdom) is prevented by the custom XHR overrides.
+
+If you plan to install the module globally (`npm install -g node-ui5`), you must define the
+[environment variable](https://en.wikipedia.org/wiki/Environment_variable)
+[`NODE_PATH`](https://nodejs.org/api/cli.html#cli_node_path_path) with:
+* `set NODE_PATH=%APPDATA%\npm\node_modules` on Windows environment
+* `export NODE_PATH=/usr/local/lib/node_modules` on a Unix-like environment
+
+If you plan to connect to an [https](https://en.wikipedia.org/wiki/HTTPS) server with specific certificates,
+make sure to declare the [certificate authority](https://en.wikipedia.org/wiki/Certificate_authority) with the
+[environment variable](https://en.wikipedia.org/wiki/Environment_variable)
+[`NODE_EXTRA_CA_CERTS`](https://nodejs.org/api/cli.html#cli_node_extra_ca_certs_file).
