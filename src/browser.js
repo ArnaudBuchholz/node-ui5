@@ -9,7 +9,7 @@ class ResourceLoader extends jsdom.ResourceLoader {
   fetch (url, options) {
     const content = resources.read(this._settings, url)
     if (content) {
-      return Promise.resolve(content)
+      return Promise.resolve(Buffer(content))
     }
     return null
   }
