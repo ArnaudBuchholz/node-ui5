@@ -69,6 +69,46 @@ require('node-ui5/factory')({
 * **resourceroots**: an optional dictionary for mapping resources to local folders or remote resources
 * **verbose**: set to `true` to see details on HTTP requests and output ui5 traces
 
+## node-ui5 helpers
+
+The library also offers convenient helpers to simplify development:
+* `'node-ui5/authenticate/basic-with-csrf'` offers a
+[basic authentication](https://en.wikipedia.org/wiki/Basic_access_authentication) method with
+[x-csrf-token](https://en.wikipedia.org/wiki/Cross-site_request_forgery) generation. The method expects an object
+composed of url, user and password string values and returns a promise resolved to an object containing parameters
+expected by the
+[ODataModel constructor](https://openui5.hana.ondemand.com/#/api/sap.ui.model.odata.v2.ODataModel/constructor)
+* `'node-ui5/promisify'` converts some callback API onto promise API by generating Async methods:
+    - CRUD operations of [ODataModel](https://openui5.hana.ondemand.com/#/api/sap.ui.model.odata.v2.ODataModel)
+
+```javascript
+const CONNECTION = {
+  url: 'https://my.odata.system/SERVICE',
+  user: 'arnaud',
+  password: '12345'
+}
+require('node-ui5').then(({sap}) => {
+  sap.ui.require([
+    'sap/ui/model/odata/v2/ODataModel',
+    'node-ui5/authenticate/basic-with-csrf',
+    'node-ui5/promisify',
+], async function (ODataModel, authenticate, promisify) {
+      const model = new ODataModel(await authenticate(CONNECTION))
+      await model.metadataLoaded()
+      console.log('Listing entities...')
+      var data = await model.readAsync('/EntitySet')
+      data.results.forEach(entity => {
+        let name = entity.Name
+        if (name.length > 40) {
+            name = `${name.substring(0, 37)}...`
+        }
+        console.log(name.padEnd(40, ' '), entity.Guid)
+      })
+      console.log(`Found ${data.results.length} entities`)
+    })
+})
+```
+
 # How does it work ?
 
 [OpenUI5](https://openui5.org/) is a browser library.
