@@ -92,7 +92,7 @@ require('node-ui5').then(({sap}) => {
     'sap/ui/model/odata/v2/ODataModel',
     'node-ui5/authenticate/basic-with-csrf',
     'node-ui5/promisify',
-], async function (ODataModel, authenticate, promisify) {
+], async function (ODataModel, authenticate) {
       const model = new ODataModel(await authenticate(CONNECTION))
       await model.metadataLoaded()
       console.log('Listing entities...')
