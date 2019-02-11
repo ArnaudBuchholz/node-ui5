@@ -61,14 +61,16 @@ module.exports = (settings, XMLHttpRequest) => {
     if (xhr.onreadystatechange) {
       xhr.onreadystatechange()
     }
-    if (xhr[$events]) {
-      'readystatechange,load'
-        .split(',')
-        .forEach(eventName => xhr[$events][eventName]
-          ? xhr[$events][eventName].forEach(eventHandler => eventHandler(xhr))
-          : 0
-        )
-    }
+    'readystatechange,load'
+      .split(',')
+      .forEach(eventName => {
+        if (xhr[$events] && xhr[$events][eventName]) {
+          xhr[$events][eventName].forEach(eventHandler => eventHandler(xhr))
+        }
+        if (xhr['on' + eventName]) {
+          xhr['on' + eventName]()
+        }
+      })
   }
 
   XMLHttpRequest.prototype.send = function (data) {
