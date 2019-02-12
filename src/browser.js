@@ -7,11 +7,14 @@ const resources = require('./resources')
 
 class ResourceLoader extends jsdom.ResourceLoader {
   fetch (url, options) {
-    const content = resources.read(this._settings, url)
-    if (content) {
-      return Promise.resolve(Buffer.from(content))
+    let asyncContent = resources.read(this._settings, url)
+    if (!asyncContent) {
+      return null
     }
-    return null
+    if (!asyncContent.then) {
+      asyncContent = Promise.resolve(asyncContent)
+    }
+    return asyncContent.then(content => Buffer.from(content))
   }
 
   constructor (settings) {
