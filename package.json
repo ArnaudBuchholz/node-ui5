@@ -4,7 +4,7 @@
   "description": "A NodeJS wrapper on OpenUI5 to leverage tools like MockServer or ODataModel",
   "main": "index.js",
   "scripts": {
-    "test": "standard --fix",
+    "test": "standard --fix & node tests/all",
     "postinstall": "node src/post-install.js"
   },
   "repository": {
