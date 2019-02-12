@@ -7,6 +7,7 @@ const $events = Symbol('events')
 const $content = Symbol('content')
 const $request = Symbol('request')
 const $headers = Symbol('headers')
+const events = 'readystatechange,load'.split(',')
 
 // Simple XHR hook to load resources and bypass CORS
 
@@ -61,19 +62,19 @@ module.exports = (settings, XMLHttpRequest) => {
     if (xhr.onreadystatechange) {
       xhr.onreadystatechange()
     }
-    'readystatechange,load'
-      .split(',')
-      .forEach(eventName => {
-        if (xhr[$events] && xhr[$events][eventName]) {
-          xhr[$events][eventName].forEach(eventHandler => eventHandler(xhr))
-        }
-        if (xhr['on' + eventName]) {
-          xhr['on' + eventName]()
-        }
-      })
+    if (xhr[$events]) {
+      events.forEach(eventName => xhr[$events][eventName]
+        ? xhr[$events][eventName].forEach(eventHandler => eventHandler(xhr))
+        : 0
+      )
+    }
   }
 
   XMLHttpRequest.prototype.send = function (data) {
+    events.forEach(eventName => this[`on${eventName}`]
+      ? this.addEventListener(eventName, this[`on${eventName}`])
+      : 0
+    )
     const content = this[$content]
     if (undefined !== content) {
       this[$headers] = {}
