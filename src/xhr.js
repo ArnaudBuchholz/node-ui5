@@ -1,7 +1,7 @@
 'use strict'
 
 const gpf = require('gpf-js')
-const syncRequest = require('sync-request')
+const deasync = require('deasync')
 const resources = require('./resources')
 const $events = Symbol('events')
 const $content = Symbol('content')
@@ -81,16 +81,15 @@ module.exports = (settings, XMLHttpRequest) => {
       _setResult(this, content || '', content !== null ? 200 : 404)
     } else {
       const request = this[$request]
-      if (request.asynchronous) {
-        request.data = data
-        gpf.http.request(request).then(response => {
-          this[$headers] = response.headers
-          _setResult(this, response.responseText, response.status)
-        })
-      } else {
-        const response = syncRequest(request.method, request.url, request.headers)
+      request.data = data
+      let requestInProgress = true
+      gpf.http.request(request).then(response => {
         this[$headers] = response.headers
-        _setResult(this, response.body.toString(), response.statusCode)
+        _setResult(this, response.responseText, response.status)
+        requestInProgress = false
+      })
+      if (!request.asynchronous) {
+          deasync.loopWhile(() => requestInProgress)
       }
     }
   }

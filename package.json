@@ -1,6 +1,6 @@
 {
   "name": "node-ui5",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A NodeJS wrapper on OpenUI5 to leverage tools like MockServer or ODataModel",
   "main": "index.js",
   "scripts": {
@@ -27,10 +27,10 @@
     "@openui5/sap.ui.core": "^1.60.1",
     "@ui5/cli": "^0.2.6",
     "colors": "^1.3.2",
+    "deasync": "^0.1.14",
     "gpf-js": "^0.2.7",
     "jsdom": "^13.0.0",
-    "mime": "2.4.0",
-    "sync-request": "^6.0.0"
+    "mime": "2.4.0"
   },
   "devDependencies": {
     "standard": "^12.0.1"
