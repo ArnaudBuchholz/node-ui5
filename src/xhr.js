@@ -89,7 +89,7 @@ module.exports = (settings, XMLHttpRequest) => {
         requestInProgress = false
       })
       if (!request.asynchronous) {
-          deasync.loopWhile(() => requestInProgress)
+        deasync.loopWhile(() => requestInProgress)
       }
     }
   }
