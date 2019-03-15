@@ -1,6 +1,6 @@
 'use strict'
 
-const jsdom = require('jsdom')
+const url = require('url')
 const path = require('path')
 const resources = require('./resources')
 
@@ -37,10 +37,7 @@ module.exports = settings => {
       '': settings.bootstrapLocation
     }
   }
-  window.location = {
-    search: '',
-    toString: () => settings.bootstrapLocation
-  }
+  window.location = new URL(settings.bootstrapLocation, settings.baseURL)
   document.scripts = []
 
   Promise.resolve()
