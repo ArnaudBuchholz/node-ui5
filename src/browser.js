@@ -1,8 +1,8 @@
 'use strict'
 
-const url = require('url')
 const path = require('path')
 const resources = require('./resources')
+const Browser = require('./browser/Browser')
 
 module.exports = settings => {
   let factoryResolve
@@ -20,32 +20,19 @@ module.exports = settings => {
     'node-ui5': resources.declare(path.join(__dirname, '../lib'))
   }))
 
-  class Node {
-    get baseURI () {
-      return settings.baseURL
-    }
-
-    querySelector () {
-      return null
-    }
-  }
-
-  global.window = global
-  window.document = new Node()
-  window['sap-ui-config'] = {
+  const browser = new Browser()
+  browser.window.location = new URL(settings.baseURL)
+  browser.window['sap-ui-config'] = {
     resourceRoots: {
-      '': settings.bootstrapLocation
+      '': settings.bootstrapLocation,
+      ...resourceroots
     }
   }
-  window.location = new URL(settings.bootstrapLocation, settings.baseURL)
-  document.scripts = []
 
   Promise.resolve()
     .then(() => resources.read(settings, 'resources/sap-ui-core-dbg.js' /*settings.bootstrapLocation*/))
     .then(bootstrap => {
-      debugger;
-      eval(bootstrap)
-      // console.log(bootstrap)
+      browser.eval(bootstrap)
     })
   //
   // // Creating a simulated browser
