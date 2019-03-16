@@ -10,8 +10,15 @@ class Browser {
   }
 
   eval (code) {
-    debugger
-
+    // Create a secure context
+    const params = ["global", "window"]
+    const values = [undefined, this._window]
+    const securedContext = Function.apply(null, params.concat(`with (window) { ${code} }`))
+    try {
+      securedContext.apply(this._window, values)
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   get window () {
