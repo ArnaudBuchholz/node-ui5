@@ -1,10 +1,19 @@
 'use strict'
 
+const url = require('url')
 const Document = require('./Document')
 const EventTarget = require('./EventTarget')
 const Node = require('./Node')
 
 class Window {
+
+  get Node () {
+    return Node
+  }
+
+  get URL () {
+    return URL
+  }
 
   constructor () {
     this._document = new Document()
