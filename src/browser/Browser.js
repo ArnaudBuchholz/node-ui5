@@ -3,15 +3,17 @@
 const url = require('url')
 const Window = require('./Window')
 
-class Browser {
+const $window = Symbol('window')
 
-  constructor () {
-    this._window = new Window()
+class Browser {
+  constructor (settings) {
+    this[$window] = new Window(settings)
+    this[$window].location = new URL(settings.baseURL)
   }
 
   eval (code) {
     // Create a secure context
-    const params = ["global", "window"]
+    const params = ['global', 'window']
     const values = [undefined, this._window]
     const securedContext = Function.apply(null, params.concat(`with (window) { ${code} }`))
     try {
@@ -22,9 +24,8 @@ class Browser {
   }
 
   get window () {
-    return this._window
+    return this[$window]
   }
-
 }
 
 module.exports = Browser
