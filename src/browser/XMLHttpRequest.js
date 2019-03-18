@@ -3,7 +3,7 @@
 const gpf = require('gpf-js')
 const deasync = require('deasync')
 const EventTarget = require('./EventTarget')
-const resources = require('./resources')
+const resources = require('../resources')
 
 const { $settings } = require('./const')
 const $content = Symbol('content')
