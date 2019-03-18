@@ -2,6 +2,7 @@
 
 module.exports = {
 
-  $settings: Symbol('settings')
+  $settings: Symbol('settings'),
+  $window: Symbol('window')
 
 }
