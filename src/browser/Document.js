@@ -1,19 +1,31 @@
 'use strict'
 
-const { $settings } = require('./const')
+const { $settings, $window } = require('./const')
 const Node = require('./Node')
 
 class Document extends Node {
-  constructor (settings) {
-    super(settings)
+  constructor (window, settings) {
+    super(window, settings, Node.DOCUMENT_NODE)
+  }
+
+  createDocumentFragment () {
+    return new Node(this[$window], this[$settings], Node.DOCUMENT_FRAGMENT_NODE)
   }
 
   createElement () {
-    return new Node(this[$settings])
+    return new Node(this[$window], this[$settings], Node.ELEMENT_NODE)
   }
 
   get documentElement () {
-    return new Node(this[$settings])
+    return this
+  }
+
+  get location () {
+    return this[$window].location
+  }
+
+  get readyState () {
+    return "complete"
   }
 
   get scripts () {
