@@ -1,6 +1,5 @@
 'use strict'
 
-const url = require('url')
 const Document = require('./Document')
 const EventTarget = require('./EventTarget')
 const Node = require('./Node')
@@ -9,8 +8,9 @@ const XMLHttpRequest = require('./XMLHttpRequest')
 const { $settings } = require('./const')
 const $document = Symbol('document')
 const $location = Symbol('location')
+const $performance = Symbol('performance')
 
-class Window {
+class Window extends EventTarget {
   get Node () {
     return Node
   }
@@ -27,8 +27,17 @@ class Window {
   }
 
   constructor (settings) {
+    super()
     this[$settings] = settings
-    this[$document] = new Document(settings)
+    this[$document] = new Document(this, settings)
+  }
+
+  get clearInterval () {
+    return clearInterval
+  }
+
+  get clearTimeout () {
+    return clearTimeout
   }
 
   get document () {
@@ -54,15 +63,30 @@ class Window {
     return null
   }
 
+  get performance () {
+    if (!this[$performance]) {
+      this[$performance] = {
+        timing: {}
+      }
+    }
+    return this[$performance]
+  }
+
   get self () {
     return this
+  }
+
+  get setInterval () {
+    return setInterval
+  }
+
+  get setTimeout () {
+    return setTimeout
   }
 
   get top () {
     return this
   }
 }
-
-EventTarget.mixin(Window)
 
 module.exports = Window
