@@ -1,9 +1,8 @@
 'use strict'
 
-const url = require('url')
 const Window = require('./Window')
 
-const $window = Symbol('window')
+const { $window } = require('./const')
 
 class Browser {
   constructor (settings) {
