@@ -4,9 +4,13 @@ const url = require('url')
 const Document = require('./Document')
 const EventTarget = require('./EventTarget')
 const Node = require('./Node')
+const XMLHttpRequest = require('./XMLHttpRequest')
+
+const { $settings } = require('./const')
+const $document = Symbol('document')
+const $location = Symbol('location')
 
 class Window {
-
   get Node () {
     return Node
   }
@@ -15,21 +19,28 @@ class Window {
     return URL
   }
 
-  constructor () {
-    this._document = new Document()
+  get XMLHttpRequest () {
+    const settings = this[$setings]
+    return function () {
+      return new XMLHttpRequest(settings)
+    }
+  }
+
+  constructor (settings) {
+    this[$settings] = settings
+    this[$document] = new Document(settings)
   }
 
   get document () {
-    return this._document
+    return this[$document]
   }
 
   set location (value) {
-    Node.baseURI = value.toString()
-    this._location = value
+    this[$location] = value
   }
 
   get location () {
-    return this._location
+    return this[$location]
   }
 
   get navigator () {
@@ -50,7 +61,6 @@ class Window {
   get top () {
     return this
   }
-
 }
 
 EventTarget.mixin(Window)
