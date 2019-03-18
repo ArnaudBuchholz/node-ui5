@@ -13,12 +13,12 @@ module.exports = settings => {
     factoryReject = reject
   })
 
-  const resourceroots = JSON.stringify(Object.keys(settings.resourceroots).reduce((roots, root) => {
+  const resourceroots = Object.keys(settings.resourceroots).reduce((roots, root) => {
     roots[root] = resources.declare(settings.resourceroots[root])
     return roots
   }, {
     'node-ui5': resources.declare(path.join(__dirname, '../lib'))
-  }))
+  })
 
   const browser = new Browser(settings)
   browser.window['sap-ui-config'] = {
@@ -29,7 +29,7 @@ module.exports = settings => {
   }
 
   Promise.resolve()
-    .then(() => resources.read(settings, 'resources/sap-ui-core-dbg.js' /* settings.bootstrapLocation */))
+    .then(() => resources.read(settings, settings.bootstrapLocation))
     .then(bootstrap => {
       browser.eval(bootstrap)
     })
