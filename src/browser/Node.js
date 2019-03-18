@@ -1,16 +1,15 @@
 'use strict'
 
+const { $settings } = require('./const')
 const EventTarget = require('./EventTarget')
 
-let _baseURI
-
 class Node {
-
-  addEventListener () {
+  constructor (settings) {
+    this[$settings] = settings
   }
 
   get baseURI () {
-    return _baseURI
+    return $settings.baseURL
   }
 
   get className () {
@@ -24,17 +23,7 @@ class Node {
   querySelector () {
     return null
   }
-
 }
-
-Object.defineProperty(Node, 'baseURI', {
-  get () {
-    return _baseURI
-  },
-  set (value) {
-    _baseURI = value
-  }
-})
 
 EventTarget.mixin(Node)
 
