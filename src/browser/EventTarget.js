@@ -3,10 +3,11 @@
 const $events = Symbol('events')
 
 class EventTarget {
+  constructor () {
+    this[$events] = {}
+  }
+
   addEventListener (type, eventHandler) {
-    if (!this[$events]) {
-      this[$events] = {}
-    }
     if (!this[$events][type]) {
       this[$events][type] = []
     }
@@ -18,20 +19,10 @@ class EventTarget {
     if (this[`on${type}`]) {
       this[`on${type}`]()
     }
-    if (this[$events] && xhr[$events][type]) {
-      xhr[$events][type].forEach(eventHandler => eventHandler(this))
+    if (this[$events][type]) {
+      this[$events][type].forEach(eventHandler => eventHandler(this))
     }
   }
-}
-
-EventTarget.mixin = MixinClass => {
-  Object.getOwnPropertyNames(EventTarget.prototype)
-    .filter(member => member !== 'constructor')
-    .forEach(member => {
-      Object.defineProperty(MixinClass.prototype, member, {
-        value: EventTarget.prototype[member]
-      })
-    })
 }
 
 module.exports = EventTarget
