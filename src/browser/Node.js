@@ -9,7 +9,7 @@ class Node {
   }
 
   get baseURI () {
-    return $settings.baseURL
+    return this[$settings].baseURL
   }
 
   get className () {
