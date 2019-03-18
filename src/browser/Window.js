@@ -20,7 +20,7 @@ class Window {
   }
 
   get XMLHttpRequest () {
-    const settings = this[$setings]
+    const settings = this[$settings]
     return function () {
       return new XMLHttpRequest(settings)
     }
