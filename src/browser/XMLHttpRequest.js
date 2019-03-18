@@ -10,8 +10,9 @@ const $content = Symbol('content')
 const $request = Symbol('request')
 const $headers = Symbol('headers')
 
-class XMLHttpRequest {
+class XMLHttpRequest extends EventTarget {
   constructor (settings) {
+    super()
     this[$settings] = settings
   }
 
@@ -33,14 +34,14 @@ class XMLHttpRequest {
 
   _setResult (responseText, status) {
     if (this[$settings].verbose) {
-      const request = xhr[$request]
+      const request = this[$request]
       let report
       if (status.toString().startsWith(2)) {
         report = `${status} ${responseText.length}`.green
       } else {
         report = status.toString().red
       }
-      if (xhr[$content]) {
+      if (this[$content]) {
         report += ' sync resource'.magenta
       } else if (!request.asynchronous) {
         report += ' synchronous'.magenta
@@ -85,7 +86,5 @@ class XMLHttpRequest {
     return this[$headers][name] || null
   }
 }
-
-EventTarget.mixin(XMLHttpRequest)
 
 module.exports = XMLHttpRequest
