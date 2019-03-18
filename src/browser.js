@@ -20,8 +20,7 @@ module.exports = settings => {
     'node-ui5': resources.declare(path.join(__dirname, '../lib'))
   }))
 
-  const browser = new Browser()
-  browser.window.location = new URL(settings.baseURL)
+  const browser = new Browser(settings)
   browser.window['sap-ui-config'] = {
     resourceRoots: {
       '': settings.bootstrapLocation,
@@ -30,7 +29,7 @@ module.exports = settings => {
   }
 
   Promise.resolve()
-    .then(() => resources.read(settings, 'resources/sap-ui-core-dbg.js' /*settings.bootstrapLocation*/))
+    .then(() => resources.read(settings, 'resources/sap-ui-core-dbg.js' /* settings.bootstrapLocation */))
     .then(bootstrap => {
       browser.eval(bootstrap)
     })
