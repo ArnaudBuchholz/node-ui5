@@ -9,8 +9,12 @@ class Document extends Element {
   constructor (window, settings) {
     super(window, undefined, Node.DOCUMENT_NODE)
     // Build empty document
-    const htmlRoot = this.createElement('html')
-    this.appendChild(htmlRoot)
+    const html = this.createElement('html')
+    this.appendChild(html)
+    const head = this.createElement('head')
+    html.appendChild(head)
+    const body = this.createElement('body')
+    html.appendChild(body)
   }
 
   createComment () {
