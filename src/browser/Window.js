@@ -2,11 +2,13 @@
 
 const Document = require('./Document')
 const EventTarget = require('./EventTarget')
+const LocalStorage = require('./LocalStorage')
 const Node = require('./Node')
 const XMLHttpRequest = require('./XMLHttpRequest')
 
 const { $settings } = require('./const')
 const $document = Symbol('document')
+const $localStorage = Symbol('localStorage')
 const $location = Symbol('location')
 const $performance = Symbol('performance')
 
@@ -29,7 +31,7 @@ class Window extends EventTarget {
   constructor (settings) {
     super()
     this[$settings] = settings
-    this[$document] = new Document(this, settings)
+    this[$document] = new Document(this)
   }
 
   get clearInterval () {
@@ -42,6 +44,13 @@ class Window extends EventTarget {
 
   get document () {
     return this[$document]
+  }
+
+  get localStorage () {
+    if (!this[$localStorage]) {
+      this[$localStorage] = new LocalStorage()
+    }
+    return this[$localStorage]
   }
 
   set location (value) {
@@ -57,6 +66,14 @@ class Window extends EventTarget {
       userAgent: 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.2 (KHTML, like Gecko) Chrome/22.0.1216.0 Safari/537.2',
       platform: 'Node.js'
     }
+  }
+
+  get pageXOffset () {
+    return 0
+  }
+
+  get pageYOffset () {
+    return 0
   }
 
   get parent () {
