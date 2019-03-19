@@ -63,6 +63,10 @@ class Node extends EventTarget {
     return null
   }
 
+  _getAll () {
+    return this[$childNodes].reduce((result, child) => [...result, ...child._getAll()], [this])
+  }
+
   insertBefore (node, refNode) {
     node[$parent] = this
     const pos = this[$childNodes].indexOf(refNode)
