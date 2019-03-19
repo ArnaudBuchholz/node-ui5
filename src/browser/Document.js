@@ -1,19 +1,32 @@
 'use strict'
 
-const { $settings, $window } = require('./const')
+const Element = require('./Element')
 const Node = require('./Node')
 
-class Document extends Node {
+const { $window } = require('./const')
+
+class Document extends Element {
   constructor (window, settings) {
-    super(window, settings, Node.DOCUMENT_NODE)
+    super(window, undefined, Node.DOCUMENT_NODE)
+    // Build empty document
+    const htmlRoot = this.createElement('html')
+    this.appendChild(htmlRoot)
+  }
+
+  createComment () {
+    return new Node(this[$window], Node.COMMENT_NODE)
   }
 
   createDocumentFragment () {
-    return new Node(this[$window], this[$settings], Node.DOCUMENT_FRAGMENT_NODE)
+    return new Node(this[$window], Node.DOCUMENT_FRAGMENT_NODE)
   }
 
-  createElement () {
-    return new Node(this[$window], this[$settings], Node.ELEMENT_NODE)
+  createElement (name) {
+    return new Element(this[$window], name)
+  }
+
+  get defaultView () {
+    return this[$window]
   }
 
   get documentElement () {
@@ -24,8 +37,12 @@ class Document extends Node {
     return this[$window].location
   }
 
+  get nodeName () {
+    return '#document'
+  }
+
   get readyState () {
-    return "complete"
+    return 'complete'
   }
 
   get scripts () {
