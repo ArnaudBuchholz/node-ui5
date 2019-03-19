@@ -52,8 +52,11 @@ class Element extends Node {
     }
   }
 
-  getElementsByTagName () {
-    return []
+  getElementsByTagName (name) {
+    const lowerCaseName = name.toLowerCase()
+    return this._getAll()
+      .filter(node => node[$nodeType] === Node.ELEMENT_NODE &&
+                        (node[$name] || '').toLowerCase() === lowerCaseName)
   }
 
   querySelector () {
