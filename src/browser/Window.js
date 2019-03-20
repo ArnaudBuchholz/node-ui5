@@ -1,13 +1,12 @@
 'use strict'
 
-const Document = require('./Document')
 const EventTarget = require('./EventTarget')
-const LocalStorage = require('./LocalStorage')
 const Node = require('./Node')
 const XMLHttpRequest = require('./XMLHttpRequest')
 
 const { $settings } = require('./const')
 const $document = Symbol('document')
+const $history = Symbol('history')
 const $localStorage = Symbol('localStorage')
 const $location = Symbol('location')
 const $performance = Symbol('performance')
@@ -31,7 +30,6 @@ class Window extends EventTarget {
   constructor (settings) {
     super()
     this[$settings] = settings
-    this[$document] = new Document(this)
   }
 
   get clearInterval () {
@@ -40,17 +38,6 @@ class Window extends EventTarget {
 
   get clearTimeout () {
     return clearTimeout
-  }
-
-  get document () {
-    return this[$document]
-  }
-
-  get localStorage () {
-    if (!this[$localStorage]) {
-      this[$localStorage] = new LocalStorage()
-    }
-    return this[$localStorage]
   }
 
   set location (value) {
@@ -105,5 +92,31 @@ class Window extends EventTarget {
     return this
   }
 }
+
+// Members allocated when requested
+[{
+  name: 'document',
+  symbol: $document,
+  Class: require('./Document')
+}, {
+  name: 'history',
+  symbol: $history,
+  Class: require('./History')
+}, {
+  name: 'localStorage',
+  symbol: $localStorage,
+  Class: require('./LocalStorage')
+
+}].forEach(member => {
+  Object.defineProperty(Window.prototype, member.name, {
+    get: function () {
+      if (!this[member.symbol]) {
+        this[member.symbol] = new member.Class(this)
+      }
+      return this[member.symbol]
+    },
+    set: () => false
+  })
+})
 
 module.exports = Window
