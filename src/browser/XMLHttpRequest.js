@@ -24,7 +24,7 @@ class XMLHttpRequest extends EventTarget {
       asynchronous: asynchronous !== false
     }
     if (method === 'GET') {
-      this[$content] = resources.read(Object.assign({}, this[$settings], { verbose: false }), url)
+      this[$content] = resources.read({ ...this[$settings], verbose: false }, url)
     }
   }
 
