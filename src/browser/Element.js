@@ -1,13 +1,16 @@
 'use strict'
 
+const ClassList = require('./ClassList')
 const Node = require('./Node')
 
 const {
+  $dataset,
   $name,
   $nodeType,
   $window
 } = require('./const')
 const $attributes = Symbol('attributes')
+const $classList = Symbol('classList')
 const $style = Symbol('style')
 
 class Element extends Node {
@@ -20,12 +23,19 @@ class Element extends Node {
     this[$style] = {}
   }
 
+  get classList () {
+    if (!this[$classList]) {
+      this[$classList] = new ClassList(this[$window], this)
+    }
+    return this[$classList]
+  }
+
   get className () {
-    return this[$attributes]['class'] || ''
+    return this.getAttribute('class') || ''
   }
 
   set className (value) {
-    this[$attributes]['class'] = value
+    this.setAttribute('class', value)
   }
 
   _cloneNode () {
@@ -33,6 +43,19 @@ class Element extends Node {
     clone[$attributes] = { ...this[$attributes] }
     clone[$style] = this[$style]
     return clone
+  }
+
+  get dataset () {
+    if (!this[$dataset]) {
+      this[$dataset] = new Proxy({}, {
+        get: (obj, name) => this.getAttribute('data-' + name),
+        set: (obj, name, value) => {
+          this.setAttribute('data-' + name, value)
+          return true
+        }
+      })
+    }
+    return this[$dataset]
   }
 
   getAttribute (name) {
@@ -96,7 +119,7 @@ class Element extends Node {
   }
 
   setAttribute (name, value) {
-    this[$attributes][name] = value
+    this[$attributes][name] = value.toString()
   }
 
   get style () {
@@ -105,6 +128,22 @@ class Element extends Node {
 
   get tagName () {
     return this[$name]
+  }
+
+  get textContent () {
+    return this._getChildren()
+      .filter(node => node[$nodeType] === Node.TEXT_NODE)
+      .map(node => node.nodeValue)
+      .join('')
+  }
+
+  set textContent (value) {
+    this._clearChildren()
+    if (value) {
+      const text = new Node(this[$window], Node.TEXT_NODE)
+      text.nodeValue = value
+      this.appendChild(text)
+    }
   }
 
   _toHTMLClose () {
@@ -116,5 +155,19 @@ class Element extends Node {
     return `</${this[$name]}${Object.keys(attributes).map(name => ` ${name}="${attributes[name]}"`).join('')}>`
   }
 }
+
+// Map some attributes directly as properties
+[
+  'href'
+].forEach(name => {
+  Object.defineProperty(Element.prototype, name, {
+    get: function () {
+      return this.getAttribute(name)
+    },
+    set: function (value) {
+      this.setAttribute(name, value)
+    }
+  })
+})
 
 module.exports = Element
