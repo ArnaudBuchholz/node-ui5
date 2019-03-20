@@ -23,7 +23,7 @@ module.exports = settings => {
   const browser = new Browser(settings)
   browser.window['sap-ui-config'] = {
     resourceRoots: {
-      '': settings.bootstrapLocation,
+      '': settings.baseURL + 'resources/', // TODO needs to be adapted depending on settings
       ...resourceroots
     }
   }
@@ -31,7 +31,7 @@ module.exports = settings => {
   Promise.resolve()
     .then(() => resources.read(settings, settings.bootstrapLocation))
     .then(bootstrap => {
-      browser.eval(bootstrap)
+      browser.window.eval(bootstrap)
     })
   //
   // // Creating a simulated browser
