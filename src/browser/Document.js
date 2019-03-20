@@ -37,6 +37,10 @@ class Document extends Element {
     return this
   }
 
+  getElementById () {
+    return null
+  }
+
   get location () {
     return this[$window].location
   }
@@ -53,5 +57,16 @@ class Document extends Element {
     return []
   }
 }
+
+// Shortcuts to elements
+[
+  'body',
+  'head'
+].forEach(name => Object.defineProperty(Document.prototype, name, {
+  get: function () {
+    return this.getElementsByTagName(name)[0]
+  },
+  set: () => false
+}))
 
 module.exports = Document
