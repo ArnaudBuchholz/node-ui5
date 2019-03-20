@@ -54,9 +54,37 @@ class Element extends Node {
 
   getElementsByTagName (name) {
     const lowerCaseName = name.toLowerCase()
-    return this._getAll()
+    return this._getChildren()
       .filter(node => node[$nodeType] === Node.ELEMENT_NODE &&
                         (node[$name] || '').toLowerCase() === lowerCaseName)
+  }
+
+  get innerHTML () {
+    return this._toHTML()
+  }
+
+  set innerHTML (value) {
+    // Very BASIC HTML parser using regexp
+    const reHTMLparse = /<(\w+)|\s*(\w+)=(?:"|')([^"']+)(?:"|')|(\/>|<\/\w+>)|>/y
+    const HTML_OPEN = 1
+    const HTML_ATTRIBUTE_NAME = 2
+    const HTML_ATTRIBUTE_VALUE = 3
+    const HTML_CLOSE = 4
+
+    this._clearChildren()
+    reHTMLparse.lastIndex = 0
+    let match = reHTMLparse.exec(value)
+    let element = this
+    while (match) {
+      if (match[HTML_OPEN]) {
+        element = this.appendChild(new Element(this[$window], match[HTML_OPEN]))
+      } else if (match[HTML_ATTRIBUTE_NAME]) {
+        element.setAttribute(match[HTML_ATTRIBUTE_NAME], match[HTML_ATTRIBUTE_VALUE])
+      } else if (match[HTML_CLOSE]) {
+        element = element.parentNode
+      }
+      match = reHTMLparse.exec(value)
+    }
   }
 
   querySelector () {
@@ -77,6 +105,15 @@ class Element extends Node {
 
   get tagName () {
     return this[$name]
+  }
+
+  _toHTMLClose () {
+    return `</${this[$name]}>`
+  }
+
+  _toHTMLOpen () {
+    const attributes = this[$attributes]
+    return `</${this[$name]}${Object.keys(attributes).map(name => ` ${name}="${attributes[name]}"`).join('')}>`
   }
 }
 
