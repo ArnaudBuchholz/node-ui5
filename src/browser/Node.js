@@ -9,6 +9,7 @@ const {
   $window
 } = require('./const')
 const $childNodes = Symbol('childNodes')
+const $nodeValue = Symbol('nodeValue')
 const $parent = Symbol('parent')
 
 class Node extends EventTarget {
@@ -95,6 +96,23 @@ class Node extends EventTarget {
 
   get nodeType () {
     return this[$nodeType]
+  }
+
+  _hasValue () {
+    return [Node.TEXT_NODE, Node.PROCESSING_INSTRUCTION_NODE, Node.COMMENT_NODE].includes(this[$nodeType])
+  }
+
+  get nodeValue () {
+    if (this._hasValue()) {
+      return this[$nodeValue] || ''
+    }
+    return null
+  }
+
+  set nodeValue (value) {
+    if (this._hasValue()) {
+      this[$nodeValue] = value
+    }
   }
 
   get ownerDocument () {
