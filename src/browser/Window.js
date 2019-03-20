@@ -40,6 +40,17 @@ class Window extends EventTarget {
     return clearTimeout
   }
 
+  eval (code) {
+    // Create a secure context
+    const params = ['window', 'global', 'require']
+    const securedContext = Function.apply(null, params.concat(`with (window) {\n${code}\n}`))
+    try {
+      securedContext.call(this, this)
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
   set location (value) {
     this[$location] = value
   }
