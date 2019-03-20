@@ -16,7 +16,7 @@ class Node extends EventTarget {
     super()
     this[$window] = window
     this[$nodeType] = nodeType
-    this[$childNodes] = []
+    this._clearChildren()
   }
 
   appendChild (node) {
@@ -31,6 +31,10 @@ class Node extends EventTarget {
 
   get childNodes () {
     return this[$childNodes]
+  }
+
+  _clearChildren () {
+    this[$childNodes] = []
   }
 
   _cloneNode () {
@@ -63,8 +67,8 @@ class Node extends EventTarget {
     return null
   }
 
-  _getAll () {
-    return this[$childNodes].reduce((result, child) => [...result, ...child._getAll()], [this])
+  _getChildren () {
+    return this[$childNodes].reduce((result, child) => [...result, ...child._getChildren()], [this])
   }
 
   insertBefore (node, refNode) {
@@ -106,6 +110,20 @@ class Node extends EventTarget {
     if (pos !== -1) {
       this[$childNodes].splice(pos, 1)
     }
+  }
+
+  _toHTML () {
+    return [
+      this._toHTMLOpen(),
+      ...this[$childNodes].map(node => node._toHTML()),
+      this._toHTMLClose()
+    ].join('')
+  }
+
+  _toHTMLClose () {
+  }
+
+  _toHTMLOpen () {
   }
 }
 
