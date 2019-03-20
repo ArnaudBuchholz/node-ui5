@@ -22,7 +22,7 @@ class Document extends Element {
   }
 
   createDocumentFragment () {
-    return new Node(this[$window], Node.DOCUMENT_FRAGMENT_NODE)
+    return new Element(this[$window], undefined, Node.DOCUMENT_FRAGMENT_NODE)
   }
 
   createElement (name) {
