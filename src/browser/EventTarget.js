@@ -14,6 +14,10 @@ class EventTarget {
     this[$events][type].push(eventHandler)
   }
 
+  removeEventListener (type, eventHandler) {
+    this[$events][type] = (this[$events][type] || []).filter(candidate => candidate !== eventHandler)
+  }
+
   dispatchEvent (event) {
     const type = event.type
     if (this[`on${type}`]) {
