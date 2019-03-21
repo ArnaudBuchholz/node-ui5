@@ -7,6 +7,7 @@ module.exports = (userSettings = {}) => {
     baseURL = 'http://node-ui5.server.net/',
     bootstrapLocation = 'resources/sap-ui-core.js',
     exposeAsGlobals = false,
+    fastButIncompleteSimulation = false,
     resourceroots = {},
     verbose = false
   } = userSettings
@@ -14,6 +15,7 @@ module.exports = (userSettings = {}) => {
     baseURL,
     bootstrapLocation,
     exposeAsGlobals,
+    fastButIncompleteSimulation,
     resourceroots,
     verbose
   })
