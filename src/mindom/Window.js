@@ -30,6 +30,7 @@ class Window extends EventTarget {
   constructor (settings) {
     super()
     this[$settings] = settings
+    this.location = new URL(settings.baseURL)
   }
 
   get clearInterval () {
