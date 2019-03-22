@@ -3,7 +3,7 @@
 const browserFactory = require('./src/browser')
 
 module.exports = (userSettings = {}) => {
-  const {
+  let {
     baseURL = 'http://node-ui5.server.net/',
     bootstrapLocation = 'resources/sap-ui-core.js',
     exposeAsGlobals = false,
@@ -11,6 +11,14 @@ module.exports = (userSettings = {}) => {
     resourceroots = {},
     verbose = false
   } = userSettings
+  process.argv.forEach(param => {
+    if (param === '--verbose') {
+      verbose = true
+    }
+    if (param === '--fast') {
+      fastButIncompleteSimulation = true
+    }
+  })
   return browserFactory({
     baseURL,
     bootstrapLocation,
