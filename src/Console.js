@@ -16,18 +16,20 @@ class Console {
   }
 
   _output (method, ...params) {
-    console.log.apply(console, params
-      .map(param => {
-        if (typeof param === 'string') {
-          return param
-        }
-        if (typeof param === 'object') {
-          return JSON.stringify(param)
-        }
-        return param.toString()
-      })
-      .map(text => text.gray)
-    )
+    if (this._settings.verbose) {
+        console.log.apply(console, params
+          .map(param => {
+            if (typeof param === 'string') {
+              return param
+            }
+            if (typeof param === 'object') {
+              return JSON.stringify(param)
+            }
+            return param.toString()
+          })
+          .map(text => text.gray)
+        )
+    }
   }
 }
 
