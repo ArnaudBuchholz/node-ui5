@@ -2,13 +2,12 @@
 
 const jsdom = require('jsdom')
 const JSDOM = jsdom.JSDOM
+const Console = require('../Console')
 const ResourceLoader = require('./ResourceLoader')
 
 module.exports = settings => {
   const virtualConsole = new jsdom.VirtualConsole()
-  if (settings.verbose) {
-    virtualConsole.sendTo(console)
-  }
+  virtualConsole.sendTo(new Console(settings))
   return new JSDOM('', {
     url: settings.baseURL,
     referrer: settings.baseURL,
