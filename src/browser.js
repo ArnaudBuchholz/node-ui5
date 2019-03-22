@@ -1,5 +1,6 @@
 'use strict'
 
+require('colors')
 const path = require('path')
 const resources = require('./resources')
 
@@ -18,11 +19,17 @@ module.exports = async function (settings) {
     'node-ui5': resources.declare(path.join(__dirname, '../lib'))
   })
 
+  let selector
   let window
   if (settings.fastButIncompleteSimulation) {
-    window = require('./mindom/factory')(settings)
+    selector = 'mindom'
   } else {
-    window = require('./jsdom/factory')(settings)
+    selector = 'jsdom'
+  }
+  const start = new Date()
+  window = require(`./${selector}/factory`)(settings)
+  if (settings.verbose) {
+    console.log(`Loaded '${selector}' implementation: ${new Date() - start}ms`.gray)
   }
 
   // Inject factory hooks
