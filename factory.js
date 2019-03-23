@@ -9,7 +9,8 @@ module.exports = (userSettings = {}) => {
     exposeAsGlobals = false,
     fastButIncompleteSimulation = false,
     resourceroots = {},
-    verbose = false
+    verbose = false,
+    debug = false
   } = userSettings
   process.argv.forEach(param => {
     if (param === '--verbose') {
@@ -18,6 +19,10 @@ module.exports = (userSettings = {}) => {
     if (param === '--fast') {
       fastButIncompleteSimulation = true
     }
+    if (param === '--debug') {
+      verbose = true
+      debug = true
+    }
   })
   return browserFactory({
     baseURL,
@@ -25,6 +30,7 @@ module.exports = (userSettings = {}) => {
     exposeAsGlobals,
     fastButIncompleteSimulation,
     resourceroots,
-    verbose
+    verbose,
+    debug
   })
 }
