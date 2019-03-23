@@ -28,7 +28,7 @@ module.exports = async function (settings) {
   }
   const start = new Date()
   window = require(`./${selector}/factory`)(settings)
-  if (settings.verbose) {
+  if (settings.debug) {
     console.log(`Loaded '${selector}' implementation: ${new Date() - start}ms`.gray)
   }
 
@@ -53,6 +53,9 @@ module.exports = async function (settings) {
   ui5Boot.setAttribute('data-sap-ui-compatVersion', 'edge')
   ui5Boot.setAttribute('data-sap-ui-frameOptions', 'allow')
   ui5Boot.setAttribute('data-sap-ui-resourceroots', JSON.stringify(resourceroots))
+  if (settings.debug) {
+    ui5Boot.setAttribute('data-sap-ui-logLevel', '6')
+  }
   window.document.documentElement.appendChild(ui5Boot)
 
   // Create the custom bootstrap node
