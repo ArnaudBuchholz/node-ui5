@@ -4,6 +4,7 @@ require('colors')
 const fs = require('fs')
 const path = require('path')
 const gpf = require('gpf-js')
+const debug = require('./debug')
 const moduleHelper = require('./moduleHelper')
 const ui5corePath = moduleHelper.find('@openui5/sap.ui.core')
 const ui5CoreDistResourcePath = path.join(ui5corePath, 'dist/resources')
@@ -15,12 +16,19 @@ function trace (settings, url, status) {
   }
 }
 
+function inject (settings, url, content) {
+  if (settings.debug) {
+    return debug.inject(settings, url, content)
+  }
+  return content
+}
+
 function sendFile (settings, url, filePath) {
   try {
     fs.accessSync(filePath, fs.constants.R_OK)
     const content = fs.readFileSync(filePath).toString()
     trace(settings, url, content.length.toString().green)
-    return content
+    return inject(settings, url, content)
   } catch (e) {
     trace(settings, url, e.toString().red)
   }
@@ -41,7 +49,7 @@ module.exports = {
       return gpf.http.get(url).then(response => {
         if (response.status.toString().startsWith('2')) {
           trace(settings, url, `${response.status} ${response.responseText.length}`.green)
-          return response.responseText
+          return inject(settings, url, response.responseText)
         } else {
           trace(settings, url, `${response.status}`.red)
           return ''
