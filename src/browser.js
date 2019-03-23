@@ -1,6 +1,7 @@
 'use strict'
 
 require('colors')
+const debug = require('./debug')
 const path = require('path')
 const resources = require('./resources')
 
@@ -44,6 +45,10 @@ module.exports = async function (settings) {
     reject: reason => {
       promiseReject(reason)
     }
+  }
+
+  if (settings.debug) {
+    debug.configure(settings, window)
   }
 
   // Create the UI5 bootstrap node
