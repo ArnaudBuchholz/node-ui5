@@ -60,6 +60,7 @@ module.exports = async function (settings) {
   ui5Boot.setAttribute('data-sap-ui-resourceroots', JSON.stringify(resourceroots))
   if (settings.debug) {
     ui5Boot.setAttribute('data-sap-ui-logLevel', '6')
+    ui5Boot.setAttribute('data-xx-debugModuleLoading', 'true')
   }
   window.document.documentElement.appendChild(ui5Boot)
 
