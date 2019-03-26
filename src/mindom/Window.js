@@ -1,5 +1,6 @@
 'use strict'
 
+const DOMParser = require('./DOMParser')
 const EventTarget = require('./EventTarget')
 const Node = require('./Node')
 const XMLHttpRequest = require('./XMLHttpRequest')
@@ -13,6 +14,10 @@ const $location = Symbol('location')
 const $performance = Symbol('performance')
 
 class Window extends EventTarget {
+  get DOMParser () {
+    return DOMParser
+  }
+
   get Node () {
     return Node
   }
