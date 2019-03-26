@@ -3,11 +3,16 @@
 const Element = require('./Element')
 const Node = require('./Node')
 
-const { $window } = require('./const')
+const resources = require('../resources')
+
+const { $nodeType, $settings, $window } = require('./const')
+const $scripts = Symbol('scripts')
+const $scriptLoading = Symbol('scriptLoading')
 
 class Document extends Element {
   constructor (window, settings) {
     super(window, undefined, Node.DOCUMENT_NODE)
+    this[$scripts] = []
     // Build empty document
     const html = this.createElement('html')
     this.appendChild(html)
@@ -37,8 +42,8 @@ class Document extends Element {
     return this
   }
 
-  getElementById () {
-    return null
+  getElementById (id) {
+    return this._getChildren().filter(node => node[$nodeType] === Node.ELEMENT_NODE && node.id === id)[0] || null
   }
 
   get location () {
@@ -47,6 +52,40 @@ class Document extends Element {
 
   get nodeName () {
     return '#document'
+  }
+
+  _onNewChild (node) {
+    if (node.nodeType === Node.ELEMENT_NODE && node.tagName.toLowerCase() === 'script') {
+      this[$scripts].push(node)
+      this._processScripts()
+    }
+  }
+
+  _processScripts () {
+    const script = this[$scripts][0]
+    if (script[$scriptLoading]) {
+      return
+    }
+    script[$scriptLoading] = true
+    Promise.resolve()
+      .then(() => {
+        const src = script.getAttribute('src')
+        if (src) {
+          return Promise.resolve()
+            .then(() => resources.read(this[$window][$settings], src))
+            .then(content => {
+              script.textContent = content
+            })
+        }
+      })
+      .then(() => {
+        const content = script.textContent
+        this[$window].eval(content)
+        this[$scripts].shift()
+        if (this[$scripts].length) {
+          this._processScripts()
+        }
+      })
   }
 
   get readyState () {
