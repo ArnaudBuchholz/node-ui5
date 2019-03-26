@@ -110,7 +110,14 @@ class Element extends Node {
     }
   }
 
-  querySelector () {
+  querySelector (selector) {
+    if (selector === 'SCRIPT[src][id=sap-ui-bootstrap]') {
+      return this._getChildren()
+        .filter(node => node[$nodeType] === Node.ELEMENT_NODE
+                        && node.getAttribute('src')
+                        && node.id === 'sap-ui-bootstrap')[0] || null
+
+    }
     return null
   }
 
