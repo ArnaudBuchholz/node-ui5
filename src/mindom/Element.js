@@ -23,6 +23,16 @@ class Element extends Node {
     this[$style] = {}
   }
 
+  get attributes () {
+    const attributes = this[$attributes]
+    return Object.keys(attributes).map(name => {
+      return {
+        name,
+        value: attributes[name]
+      }
+    })
+  }
+
   get classList () {
     if (!this[$classList]) {
       this[$classList] = new ClassList(this[$window], this)
