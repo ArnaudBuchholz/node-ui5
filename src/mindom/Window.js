@@ -5,6 +5,7 @@ const Node = require('./Node')
 const XMLHttpRequest = require('./XMLHttpRequest')
 
 const { $settings } = require('./const')
+const $console = Symbol('console')
 const $document = Symbol('document')
 const $history = Symbol('history')
 const $localStorage = Symbol('localStorage')
@@ -107,6 +108,10 @@ class Window extends EventTarget {
 
 // Members allocated when requested
 [{
+  name: 'console',
+  symbol: $console,
+  Class: require('./Console')
+}, {
   name: 'document',
   symbol: $document,
   Class: require('./Document')
