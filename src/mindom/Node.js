@@ -23,6 +23,7 @@ class Node extends EventTarget {
   appendChild (node) {
     node[$parent] = this
     this[$childNodes].push(node)
+    this._onNewChild(node)
     return node
   }
 
@@ -112,6 +113,12 @@ class Node extends EventTarget {
   set nodeValue (value) {
     if (this._hasValue()) {
       this[$nodeValue] = value
+    }
+  }
+
+  _onNewChild (node) {
+    if (this[$parent]) {
+      this[$parent]._onNewChild(node)
     }
   }
 
