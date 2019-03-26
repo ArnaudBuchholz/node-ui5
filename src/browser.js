@@ -40,6 +40,9 @@ module.exports = async function (settings) {
         global.window = window
         global.sap = sap
       }
+      if (settings.debug) {
+        console.log(`UI5 loading time: ${new Date() - start}ms`.gray)
+      }
       promiseResolve({ window, sap })
     },
     reject: reason => {
