@@ -18,8 +18,9 @@ module.exports = {
   inject (settings, url, content) {
     if (url.endsWith('sap-ui-core.js') || url.endsWith('sap-ui-core-dbg.js')) {
       // to document requireJS processing
-      return content.replace(/var log\s*=\s*{/, 'var log=window.__log,_log={')
+      content = content.replace(/var log\s*=\s*{/, 'var log=window.__log,_log={')
     }
+    content = content.replace(/debugModuleLoading/g, "debugmoduleloading")
     return content
   }
 }
