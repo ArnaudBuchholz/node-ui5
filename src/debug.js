@@ -20,7 +20,7 @@ module.exports = {
       // to document requireJS processing
       content = content.replace(/var log\s*=\s*{/, 'var log=window.__log,_log={')
     }
-    content = content.replace(/debugModuleLoading/g, "debugmoduleloading")
+    content = content.replace(/debugModuleLoading/g, 'debugmoduleloading')
     return content
   }
 }
