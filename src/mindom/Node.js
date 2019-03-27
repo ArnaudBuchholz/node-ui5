@@ -138,6 +138,9 @@ class Node extends EventTarget {
   }
 
   _toHTML () {
+    if (this._hasValue()) {
+      return this[$nodeValue]
+    }
     return [
       this._toHTMLOpen(),
       ...this[$childNodes].map(node => node._toHTML()),
