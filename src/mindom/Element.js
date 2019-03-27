@@ -93,7 +93,9 @@ class Element extends Node {
   }
 
   get innerHTML () {
-    return this._toHTML()
+    return this._getChildren()
+        .map(node => node._toHTML())
+        .join('')
   }
 
   set innerHTML (value) {
@@ -169,7 +171,7 @@ class Element extends Node {
 
   _toHTMLOpen () {
     const attributes = this[$attributes]
-    return `</${this[$name]}${Object.keys(attributes).map(name => ` ${name}="${attributes[name]}"`).join('')}>`
+    return `<${this[$name]}${Object.keys(attributes).map(name => ` ${name}="${attributes[name]}"`).join('')}>`
   }
 }
 
