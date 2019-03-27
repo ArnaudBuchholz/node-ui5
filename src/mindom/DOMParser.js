@@ -35,17 +35,17 @@ const handlers = [
 
   // XML_CLOSE_TAG
   (current, match) => {
-      return current.parentNode
+    return current.parentNode
   },
 
   // XML_TEXT
   (current, match) => {
-      const text = match[XML_TEXT].trim() // ignore xml:space
-      if (text.length) {
-          const node = new Node(current[$window], Node.TEXT_NODE)
-          node.nodeValue = text
-          current.appendChild(node)
-      }
+    const text = match[XML_TEXT].trim() // ignore xml:space
+    if (text.length) {
+      const node = new Node(current[$window], Node.TEXT_NODE)
+      node.nodeValue = text
+      current.appendChild(node)
+    }
   }
 ]
 
