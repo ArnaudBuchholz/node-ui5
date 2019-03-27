@@ -87,13 +87,13 @@ class Element extends Node {
 
   getElementsByTagName (name) {
     const lowerCaseName = name.toLowerCase()
-    return this._getChildren()
+    return this._getSelfAndAllChildren()
       .filter(node => node[$nodeType] === Node.ELEMENT_NODE &&
                         (node[$name] || '').toLowerCase() === lowerCaseName)
   }
 
   get innerHTML () {
-    return this._getChildren()
+    return this.childNodes
       .map(node => node._toHTML())
       .join('')
   }
@@ -124,7 +124,7 @@ class Element extends Node {
 
   querySelector (selector) {
     if (selector === 'SCRIPT[src][id=sap-ui-bootstrap]') {
-      return this._getChildren()
+      return this._getSelfAndAllChildren()
         .filter(node => node[$nodeType] === Node.ELEMENT_NODE &&
                         node.getAttribute('src') &&
                         node.id === 'sap-ui-bootstrap')[0] || null
@@ -149,7 +149,7 @@ class Element extends Node {
   }
 
   get textContent () {
-    return this._getChildren()
+    return this._getSelfAndAllChildren()
       .filter(node => node[$nodeType] === Node.TEXT_NODE)
       .map(node => node.nodeValue)
       .join('')
