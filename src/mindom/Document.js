@@ -43,7 +43,7 @@ class Document extends Element {
   }
 
   getElementById (id) {
-    return this._getChildren().filter(node => node[$nodeType] === Node.ELEMENT_NODE && node.id === id)[0] || null
+    return this._getSelfAndAllChildren().filter(node => node[$nodeType] === Node.ELEMENT_NODE && node.id === id)[0] || null
   }
 
   get location () {
