@@ -70,9 +70,10 @@ module.exports = async function (settings) {
   }
   window.document.documentElement.appendChild(ui5Boot)
 
-  // Create the custom bootstrap node
+  // Create the custom bootstrap node (& tweak theme loading detection)
   var customBoot = window.document.createElement('script')
   customBoot.textContent = `
+  document.getElementById('sap-ui-theme-sap.ui.core').setAttribute('data-sap-ui-ready', 'true')
   if (typeof sap !== 'undefined') {
     sap.ui.getCore().attachInit(function() {
       window.__factory__.resolve(sap)
