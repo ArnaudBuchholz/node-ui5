@@ -2,23 +2,23 @@
 
 const Document = require('./Document')
 const Element = require('./Element')
+const Node = require('./Node')
 
 const { $window } = require('./const')
 
-const parser = /<\?([^?]+)\?>|<((?:\w+:)?\w+)|\s*((?:\w+:)?\w+)=(?:"|')([^"']+)(?:"|')|(\/>|<\/(?:\w+:)?\w+>)|>/y
+const parser = /<\?([^?]+)\?>|<((?:\w+:)?\w+)|\s*((?:\w+:)?\w+)=(?:"|')([^"']+)(?:"|')|(\s*\/>|<\/(?:\w+:)?\w+>)|([^</>]+)|>/y
 const XML_PROCESSING_INSTRUCTION = 1
-const XML_OPEN_TAG = 1
-const XML_ATTRIBUTE_NAME = 2
-const XML_ATTRIBUTE_VALUE = 3
-const XML_CLOSE_TAG = 4
+const XML_OPEN_TAG = 2
+const XML_ATTRIBUTE_NAME = 3
+const XML_ATTRIBUTE_VALUE = 4
+const XML_CLOSE_TAG = 5
+const XML_TEXT = 6
 
 const handlers = [
   undefined,
 
   // XML_PROCESSING_INSTRUCTION
-  (current, match) => {
-
-  },
+  undefined,
 
   // XML_OPEN_TAG
   (current, match) => {
@@ -36,6 +36,16 @@ const handlers = [
   // XML_CLOSE_TAG
   (current, match) => {
       return current.parentNode
+  },
+
+  // XML_TEXT
+  (current, match) => {
+      const text = match[XML_TEXT].trim() // ignore xml:space
+      if (text.length) {
+          const node = new Node(current[$window], Node.TEXT_NODE)
+          node.nodeValue = text
+          current.appendChild(node)
+      }
   }
 ]
 
@@ -45,23 +55,21 @@ class DOMParser {
   }
 
   parseFromString (string, type) {
-    let lastIndex = 0
     parser.lastIndex = 0
     const document = new Document(this[$window])
     document._clearChildren()
     let current = document
     let match = parser.exec(string)
-    let result
     while (match) {
-      handlers.every((handler, index) => {
+      let newCurrent
+      if (!handlers.every((handler, index) => {
         if (handler && match[index]) {
-          result = handler(current, match)
+          newCurrent = handler(current, match)
           return false
         }
         return true
-      })
-      if (result) {
-        current = result
+      }) && newCurrent) {
+        current = newCurrent
       }
       match = parser.exec(string)
     }
