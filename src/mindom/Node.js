@@ -69,8 +69,8 @@ class Node extends EventTarget {
     return null
   }
 
-  _getChildren () {
-    return this[$childNodes].reduce((result, child) => [...result, ...child._getChildren()], [this])
+  _getSelfAndAllChildren () {
+    return this[$childNodes].reduce((result, child) => [...result, ...child._getSelfAndAllChildren()], [this])
   }
 
   insertBefore (node, refNode) {
