@@ -28,19 +28,22 @@ assert(() => window)
 const parser = new window.DOMParser()
 assert(() => parser)
 
-const tests = [() => {
-  const string = '<html />'
+function parse (string) {
   console.log(string.yellow)
   const doc = parser.parseFromString(string)
+  console.log(doc.innerHTML.gray)
+  return doc
+}
+
+const tests = [() => {
+  const doc = parse('<html />')
   assert(() => doc.nodeType === Node.DOCUMENT_NODE)
   const html = doc.firstChild
   assert(() => html && html.nodeType === Node.ELEMENT_NODE)
   assert(() => html.nodeName === 'html')
   assert(() => html.childNodes.length === 0)
 }, () => {
-  const string = '<html style="border: 1px;"/>'
-  console.log(string.yellow)
-  const doc = parser.parseFromString(string)
+  const doc = parse('<html style="border: 1px;"/>')
   assert(() => doc.nodeType === Node.DOCUMENT_NODE)
   const html = doc.firstChild
   assert(() => html && html.nodeType === Node.ELEMENT_NODE)
@@ -48,9 +51,7 @@ const tests = [() => {
   assert(() => html.childNodes.length === 0)
   assert(() => html.getAttribute('style') === 'border: 1px;')
 }, () => {
-  const string = '<html><head /><body><h1>Hello</h1></body></html>'
-  console.log(string.yellow)
-  const doc = parser.parseFromString(string)
+  const doc = parse('<html><head /><body><h1>Hello</h1></body></html>')
   assert(() => doc.nodeType === Node.DOCUMENT_NODE)
   const html = doc.firstChild
   assert(() => html && html.nodeType === Node.ELEMENT_NODE)
@@ -65,7 +66,7 @@ const tests = [() => {
   const h1 = body.firstChild
   assert(() => h1 && h1.nodeType === Node.ELEMENT_NODE)
   assert(() => h1.nodeName === 'h1')
-  assert(() => h1.nodeValue === 'Hello')
+  assert(() => h1.textContent === 'Hello')
 }]
 
 tests.forEach(test => {
