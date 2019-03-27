@@ -94,8 +94,8 @@ class Element extends Node {
 
   get innerHTML () {
     return this._getChildren()
-        .map(node => node._toHTML())
-        .join('')
+      .map(node => node._toHTML())
+      .join('')
   }
 
   set innerHTML (value) {
@@ -125,10 +125,9 @@ class Element extends Node {
   querySelector (selector) {
     if (selector === 'SCRIPT[src][id=sap-ui-bootstrap]') {
       return this._getChildren()
-        .filter(node => node[$nodeType] === Node.ELEMENT_NODE
-                        && node.getAttribute('src')
-                        && node.id === 'sap-ui-bootstrap')[0] || null
-
+        .filter(node => node[$nodeType] === Node.ELEMENT_NODE &&
+                        node.getAttribute('src') &&
+                        node.id === 'sap-ui-bootstrap')[0] || null
     }
     return null
   }
