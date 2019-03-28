@@ -3,7 +3,6 @@
 const EventTarget = require('./EventTarget')
 
 const {
-  $name,
   $nodeType,
   $settings,
   $window
@@ -40,9 +39,7 @@ class Node extends EventTarget {
   }
 
   _cloneNode () {
-    const clone = new Node(this[$window], this[$nodeType])
-    clone[$name] = this[$name]
-    return clone
+    return new Node(this[$window], this[$nodeType])
   }
 
   cloneNode (deep) {
@@ -73,6 +70,16 @@ class Node extends EventTarget {
     return this[$childNodes].reduce((result, child) => [...result, ...child._getSelfAndAllChildren()], [this])
   }
 
+  get _hierarchy () {
+    const hierarchy = []
+    let node = this
+    while (node) {
+      hierarchy.push(node)
+      node = node[$parent]
+    }
+    return hierarchy
+  }
+
   insertBefore (node, refNode) {
     node[$parent] = this
     const pos = this[$childNodes].indexOf(refNode)
@@ -85,14 +92,6 @@ class Node extends EventTarget {
       return this[$childNodes][length - 1]
     }
     return null
-  }
-
-  get localName () {
-    return this[$name]
-  }
-
-  get nodeName () {
-    return this[$name]
   }
 
   get nodeType () {
