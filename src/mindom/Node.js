@@ -138,6 +138,9 @@ class Node extends EventTarget {
   }
 
   _toHTML () {
+    if (this[$nodeType] === Node.COMMENT_NODE) {
+      return `<!--${this[$nodeValue]}-->`
+    }
     if (this._hasValue()) {
       return this[$nodeValue]
     }
@@ -148,11 +151,9 @@ class Node extends EventTarget {
     ].join('')
   }
 
-  _toHTMLClose () {
-  }
+  _toHTMLClose () {}
 
-  _toHTMLOpen () {
-  }
+  _toHTMLOpen () {}
 }
 
 function defineConstants (constants) {
