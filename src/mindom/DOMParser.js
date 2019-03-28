@@ -7,11 +7,11 @@ const Node = require('./Node')
 const { $window } = require('./const')
 
 const parser = /<\?([^?]+)\?>|<((?:\w+:)?\w+)|\s*((?:\w+:)?\w+)=(?:"|')([^"']+)(?:"|')|(\s*\/>|<\/(?:\w+:)?\w+>)|<!--([^-]*)-->|([^</>]+)|>/y
-const XML_PROCESSING_INSTRUCTION = 1
+// const XML_PROCESSING_INSTRUCTION = 1
 const XML_OPEN_TAG = 2
 const XML_ATTRIBUTE_NAME = 3
 const XML_ATTRIBUTE_VALUE = 4
-const XML_CLOSE_TAG = 5
+// const XML_CLOSE_TAG = 5
 const XML_COMMENT = 6
 const XML_TEXT = 7
 
