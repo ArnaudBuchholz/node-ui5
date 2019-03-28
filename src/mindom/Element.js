@@ -102,7 +102,7 @@ class Element extends Node {
     this._clearChildren()
     if (value) {
       const window = this[$window]
-      const parser = new window.DOMParser(window);
+      const parser = new window.DOMParser(window)
       const document = parser.parseFromString(value, 'text/html')
       this.appendChild(document.firstChild)
     }
