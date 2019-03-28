@@ -75,10 +75,10 @@ const tests = [() => {
   assert(() => comment.nodeValue === 'This is a comment')
 }, () => {
   const doc = parse(`<edmx:Edmx
-  	Version="1.0"
-  	xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
-  	xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata"
-  	xmlns:sap="http://www.sap.com/Protocols/SAPData"
+    Version="1.0"
+    xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
+    xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata"
+    xmlns:sap="http://www.sap.com/Protocols/SAPData"
   />`, XML)
   const edmx = doc.firstChild
   assert(() => edmx && edmx.nodeType === Node.ELEMENT_NODE)
