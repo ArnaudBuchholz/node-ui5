@@ -13,6 +13,24 @@ const $attributes = Symbol('attributes')
 const $classList = Symbol('classList')
 const $style = Symbol('style')
 
+function _getNamespaceprefixAndBasename (name) {
+  let namespacePrefix = ''
+  let baseName = ''
+  if (name) {
+    const pos = name.indexOf(':')
+    if (pos === -1) {
+      baseName = name
+    } else {
+      namespacePrefix = name.substring(0, pos)
+      baseName = name.substring(pos + 1)
+    }
+  }
+  return {
+    namespacePrefix,
+    baseName
+  }
+}
+
 class Element extends Node {
   constructor (window, name = undefined, nodeType = Node.ELEMENT_NODE) {
     super(window, nodeType)
@@ -25,12 +43,24 @@ class Element extends Node {
 
   get attributes () {
     const attributes = this[$attributes]
-    return Object.keys(attributes).map(name => {
+    const namespacePrefixes = this._namespacePrefixes
+    const result = Object.keys(attributes).map(name => {
+      const {
+        namespacePrefix,
+        baseName
+      } = _getNamespaceprefixAndBasename(name)
       return {
         name,
+        localName: baseName,
+        namespaceURI: namespacePrefixes[namespacePrefix],
         value: attributes[name]
       }
     })
+    Object.defineProperty(result, 'item', {
+      value: index => result[index],
+      enumerable: false
+    })
+    return result
   }
 
   get classList () {
@@ -106,6 +136,44 @@ class Element extends Node {
       const document = parser.parseFromString(value, 'text/html')
       this.appendChild(document.firstChild)
     }
+  }
+
+  get localName () {
+    return _getNamespaceprefixAndBasename(this[$name]).baseName
+  }
+
+  get _namespacePrefixes () {
+    const namespacePrefix = 'xmlns:'
+    const namespaceAttribute = 'xmlns'
+    return this._hierarchy
+      .reverse()
+      .map(node => {
+        const attributes = node[$attributes] || {}
+        return Object.keys(attributes)
+          .filter(name => name.startsWith(namespacePrefix) || name === namespaceAttribute)
+          .reduce((prefixes, name) => {
+            if (name === namespaceAttribute) {
+              prefixes[''] = attributes[name]
+            } else {
+              prefixes[name.substring(namespacePrefix.length)] = attributes[name]
+            }
+            return prefixes
+          }, {})
+      })
+      .reduce((consolidated, dictionary) => {
+        return { ...consolidated, ...dictionary }
+      }, {
+        '': 'http://www.w3.org/1999/xhtml',
+        'xmlns': 'http://www.w3.org/2000/xmlns/'
+      })
+  }
+
+  get namespaceURI () {
+    return this._namespacePrefixes[_getNamespaceprefixAndBasename(this[$name]).namespacePrefix]
+  }
+
+  get nodeName () {
+    return this[$name]
   }
 
   querySelector (selector) {
