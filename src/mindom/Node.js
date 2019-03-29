@@ -94,6 +94,18 @@ class Node extends EventTarget {
     return null
   }
 
+  get nextSibling () {
+    const parent = this[$parent]
+    if (parent) {
+      const parentChildren = parent[$childNodes]
+      const pos = parentChildren.indexOf(this) + 1
+      if (pos && pos < parentChildren.length) {
+        return parentChildren[pos]
+      }
+    }
+    return null
+  }
+
   get nodeType () {
     return this[$nodeType]
   }
@@ -127,6 +139,18 @@ class Node extends EventTarget {
 
   get parentNode () {
     return this[$parent] || null
+  }
+
+  get previousSibling () {
+    const parent = this[$parent]
+    if (parent) {
+      const parentChildren = parent[$childNodes]
+      const pos = parentChildren.indexOf(this) - 1
+      if (pos >= 0) {
+        return parentChildren[pos]
+      }
+    }
+    return null
   }
 
   removeChild (node) {
