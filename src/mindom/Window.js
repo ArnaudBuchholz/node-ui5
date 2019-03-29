@@ -1,5 +1,6 @@
 'use strict'
 
+const Document = require('./Document')
 const DOMParser = require('./DOMParser')
 const EventTarget = require('./EventTarget')
 const Node = require('./Node')
@@ -14,6 +15,10 @@ const $location = Symbol('location')
 const $performance = Symbol('performance')
 
 class Window extends EventTarget {
+  get Document () {
+    return Document
+  }
+
   get DOMParser () {
     return DOMParser
   }
@@ -119,7 +124,7 @@ class Window extends EventTarget {
 }, {
   name: 'document',
   symbol: $document,
-  Class: require('./Document')
+  Class: Document
 }, {
   name: 'history',
   symbol: $history,
