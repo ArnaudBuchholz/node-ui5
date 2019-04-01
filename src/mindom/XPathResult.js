@@ -19,6 +19,8 @@ class XPathResult {
 }
 
 XPathResult.evaluate = function (xpathExpression, contextNode, namespaceResolver, resultType, result) {
+  const newResult = new XPathResult()
+  return newResult
 }
 
 defineConstants(XPathResult, {
