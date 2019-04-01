@@ -95,6 +95,12 @@ function selectNodes (xpath, rootNode) {
   console.log(xpath.yellow)
   const result = document.evaluate(xpath, rootNode, prefix => namespacePrefixes[prefix] || null, /* ORDERED_NODE_SNAPSHOT_TYPE: */ 7, null)
   assert(() => result)
+  return result
 }
 
-const schema = selectNodes('//d:Schema', document)
+const allSchema = selectNodes('//d:Schema', document)
+assert(() => allSchema.snapshotLength === 1)
+const schemaNode = allSchema.snapshotItem(0)
+assert(() => schemaNode && schemaNode.nodeType === Node.ELEMENT_NODE)
+assert(() => schemaNode.nodeName === 'Schema')
+assert(() => schemaNode.getAttribute('Namespace') === 'ODataDemo')
