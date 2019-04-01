@@ -1,22 +1,10 @@
 'use strict'
 
-require('colors')
-
-function assert (code) {
-  let message = code.toString().match(/(?:=>|{)([^}]*)\}?/)[1].toString().trim()
-  let condition
-  try {
-    condition = code()
-  } catch (e) {
-    condition = false
-    message += ' ' + e.toString().gray
-  }
-  if (condition) {
-    console.log('OK'.green, message)
-  } else {
-    console.error('KO'.red, message)
-  }
-}
+const {
+  HTML,
+  XML,
+  assert
+} = require('./common')
 
 const Node = require('../../src/mindom/Node')
 const Window = require('../../src/mindom/Window')
@@ -27,9 +15,6 @@ assert(() => window)
 
 const parser = new window.DOMParser()
 assert(() => parser)
-
-const HTML = 'text/html'
-const XML = 'application/xml'
 
 function parse (string, type) {
   console.log(string.yellow)
