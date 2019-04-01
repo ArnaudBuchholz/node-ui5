@@ -5,7 +5,8 @@ const EventTarget = require('./EventTarget')
 const {
   $nodeType,
   $settings,
-  $window
+  $window,
+  defineConstants
 } = require('./const')
 const $childNodes = Symbol('childNodes')
 const $nodeValue = Symbol('nodeValue')
@@ -179,17 +180,8 @@ class Node extends EventTarget {
   _toHTMLOpen () {}
 }
 
-function defineConstants (constants) {
-  Object.keys(constants).forEach(name => {
-    Object.defineProperty(Node, name, {
-      value: constants[name],
-      writable: false
-    })
-  })
-}
-
 // Node types
-defineConstants({
+defineConstants(Node, {
   ELEMENT_NODE: 1,
   TEXT_NODE: 3,
   CDATA_SECTION_NODE: 4,
@@ -201,7 +193,7 @@ defineConstants({
 })
 
 // Document position mask
-defineConstants({
+defineConstants(Node, {
   DOCUMENT_POSITION_DISCONNECTED: 1,
   DOCUMENT_POSITION_PRECEDING: 2,
   DOCUMENT_POSITION_FOLLOWING: 4,
