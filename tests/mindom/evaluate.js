@@ -104,3 +104,13 @@ const schemaNode = allSchema.snapshotItem(0)
 assert(() => schemaNode && schemaNode.nodeType === Node.ELEMENT_NODE)
 assert(() => schemaNode.nodeName === 'Schema')
 assert(() => schemaNode.getAttribute('Namespace') === 'ODataDemo')
+
+/* To validate (extracted \node_modules\@openui5\sap.ui.core\dist\resources\sap\ui\model\odata\AnnotationParser.js):
+  ./d:Annotation
+  //d:Annotations[contains(@Target, 'something')]//d:PropertyValue[contains(@Path, '/')]//@Path
+  //edmx:Reference/edmx:Include[@Namespace and @Alias]
+  //edmx:Reference[@Uri]/edmx:IncludeAnnotations[@TermNamespace]
+  ./d:Collection/d:Record | ./d:Collection/d:If/d:Record
+  ./d:Collection/d:AnnotationPath | ./d:Collection/d:NavigationPropertyPath | ./d:Collection/d:PropertyPath
+  ./d:*
+*/
