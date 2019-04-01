@@ -2,6 +2,7 @@
 
 const Element = require('./Element')
 const Node = require('./Node')
+const XPathResult = require('./XPathResult')
 
 const resources = require('../resources')
 
@@ -40,6 +41,10 @@ class Document extends Element {
 
   get documentElement () {
     return this
+  }
+
+  evaluate (xpathExpression, contextNode, namespaceResolver, resultType, result) {
+    return XPathResult.evaluate(xpathExpression, contextNode, namespaceResolver, resultType, result)
   }
 
   getElementById (id) {
