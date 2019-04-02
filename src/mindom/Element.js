@@ -147,7 +147,6 @@ class Element extends Node {
     const namespacePrefix = 'xmlns:'
     const namespaceAttribute = 'xmlns'
     return this._hierarchy
-      .reverse()
       .map(node => {
         const attributes = node[$attributes] || {}
         return Object.keys(attributes)
