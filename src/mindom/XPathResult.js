@@ -1,8 +1,24 @@
 'use strict'
 
-const { defineConstants } = require('./const')
+const {
+  XHTML_NAMESPACE,
+  defineConstants
+} = require('./const')
+const Node = require('./Node')
 
 const $snapshot = Symbol('snapshot')
+
+const reXPath = /(\/\/|\.\/|\/)(@)?(?:(\w+):)?(\w+|\*)(\[[^\]]+\])*/
+const XPATH_LEVEL = 1
+const XPATH_ATTRIBUTE = 2
+const XPATH_NAMESPACE_PREFIX = 3
+const XPATH_NAME = 4
+const XPATH_FILTER = 5
+
+const reFilter = /@(\w+)|contains\(@(\w+),\s*'([^']+)'\)/
+const FILTER_HAS_ATTRIBUTE = 1
+const FILTER_CONTAINS_ATTRIBUTE = 2
+const FILTER_CONTAINS_VALUE = 3
 
 class XPathResult {
   constructor () {
@@ -20,6 +36,42 @@ class XPathResult {
 
 XPathResult.evaluate = function (xpathExpression, contextNode, namespaceResolver, resultType, result) {
   const newResult = new XPathResult()
+
+  reXPath.lastIndex = 0
+  const match = reXPath.exec(xpathExpression)
+  let root = true
+  if (match) {
+    const anyLevel = match[XPATH_LEVEL] === '//'
+    const isAttribute = !!match[XPATH_ATTRIBUTE]
+    const namespace = match[XPATH_NAMESPACE_PREFIX] && namespaceResolver(match[XPATH_NAMESPACE_PREFIX]) || XHTML_NAMESPACE
+    const name = match[XPATH_NAME]
+
+    let nodes
+    if (anyLevel && root) {
+      nodes = contextNode.ownerDocument._getSelfAndAllChildren()
+    } else if (anyLevel) {
+      nodes = contextNode._getSelfAndAllChildren()
+    } else {
+      nodes = contextNode.childNodes
+    }
+    if (isAttribute) {
+      
+    } else {
+      nodes = nodes.filter(node => node.nodeType === Node.ELEMENT_NODE)
+      nodes = nodes.filter(node => node.namespaceURI === namespace)
+      if (name !== '*') {
+        nodes = nodes.filter(node => node.localName === name)
+      }
+    }
+
+    const filter = match[XPATH_FILTER]
+    if (filter) {
+      // apply filter on nodes
+    }
+    // then do the rest recursively?
+
+  }
+
   return newResult
 }
 
