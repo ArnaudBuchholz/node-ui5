@@ -106,6 +106,7 @@ assert(() => schemaNode.nodeName === 'Schema')
 assert(() => schemaNode.getAttribute('Namespace') === 'ODataDemo')
 
 /* To validate (extracted \node_modules\@openui5\sap.ui.core\dist\resources\sap\ui\model\odata\AnnotationParser.js):
+  //d:Schema
   ./d:Annotation
   //d:Annotations[contains(@Target, 'something')]//d:PropertyValue[contains(@Path, '/')]//@Path
   //edmx:Reference/edmx:Include[@Namespace and @Alias]
