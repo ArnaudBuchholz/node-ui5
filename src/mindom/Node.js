@@ -75,7 +75,7 @@ class Node extends EventTarget {
     const hierarchy = []
     let node = this
     while (node) {
-      hierarchy.push(node)
+      hierarchy.unshift(node)
       node = node[$parent]
     }
     return hierarchy
