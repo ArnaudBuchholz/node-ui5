@@ -4,6 +4,7 @@ const ClassList = require('./ClassList')
 const Node = require('./Node')
 
 const {
+  XHTML_NAMESPACE,
   $dataset,
   $name,
   $nodeType,
@@ -163,7 +164,7 @@ class Element extends Node {
       .reduce((consolidated, dictionary) => {
         return { ...consolidated, ...dictionary }
       }, {
-        '': 'http://www.w3.org/1999/xhtml',
+        '': XHTML_NAMESPACE,
         'xmlns': 'http://www.w3.org/2000/xmlns/'
       })
   }
