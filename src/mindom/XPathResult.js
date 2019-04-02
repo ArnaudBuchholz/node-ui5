@@ -48,7 +48,7 @@ XPathResult.evaluate = function (xpathExpression, contextNode, namespaceResolver
 
     let nodes
     if (anyLevel && root) {
-      nodes = contextNode.ownerDocument._getSelfAndAllChildren()
+      nodes = contextNode._hierarchy[0]._getSelfAndAllChildren()
     } else if (anyLevel) {
       nodes = contextNode._getSelfAndAllChildren()
     } else {
@@ -70,7 +70,6 @@ XPathResult.evaluate = function (xpathExpression, contextNode, namespaceResolver
       // apply filter on nodes
     }
     // then do the rest recursively?
-
   }
 
   return newResult
