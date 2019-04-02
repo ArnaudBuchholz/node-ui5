@@ -55,13 +55,14 @@ XPathResult.evaluate = function (xpathExpression, contextNode, namespaceResolver
       nodes = contextNode.childNodes
     }
     if (isAttribute) {
-      
+      // Use reduce to convert to attributes
+
     } else {
       nodes = nodes.filter(node => node.nodeType === Node.ELEMENT_NODE)
-      nodes = nodes.filter(node => node.namespaceURI === namespace)
-      if (name !== '*') {
-        nodes = nodes.filter(node => node.localName === name)
-      }
+    }
+    nodes = nodes.filter(node => node.namespaceURI === namespace)
+    if (name !== '*') {
+      nodes = nodes.filter(node => node.localName === name)
     }
 
     const filter = match[XPATH_FILTER]
