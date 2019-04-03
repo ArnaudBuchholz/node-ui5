@@ -8,7 +8,7 @@ const Node = require('./Node')
 
 const $snapshot = Symbol('snapshot')
 
-const reXPath = /(\/\/|\.\/|\/)(@)?(?:(\w+):)?(\w+|\*)(\[[^\]]+\])*/
+const reXPath = /(\/\/|\.\/|\/)(@)?(?:(\w+):)?(\w+|\*)(?:\[([^\]]+)\])*/
 const XPATH_LEVEL = 1
 const XPATH_ATTRIBUTE = 2
 const XPATH_NAMESPACE_PREFIX = 3
@@ -38,15 +38,16 @@ XPathResult.evaluate = function (xpathExpression, contextNode, namespaceResolver
   const newResult = new XPathResult()
 
   reXPath.lastIndex = 0
-  const match = reXPath.exec(xpathExpression)
+  let match = reXPath.exec(xpathExpression)
   let root = true
+  let nodes
+
   if (match) {
     const anyLevel = match[XPATH_LEVEL] === '//'
     const isAttribute = !!match[XPATH_ATTRIBUTE]
     const namespace = match[XPATH_NAMESPACE_PREFIX] && namespaceResolver(match[XPATH_NAMESPACE_PREFIX]) || XHTML_NAMESPACE
     const name = match[XPATH_NAME]
 
-    let nodes
     if (anyLevel && root) {
       nodes = contextNode._hierarchy[0]._getSelfAndAllChildren()
     } else if (anyLevel) {
@@ -70,6 +71,7 @@ XPathResult.evaluate = function (xpathExpression, contextNode, namespaceResolver
       // apply filter on nodes
     }
     // then do the rest recursively?
+    newResult[$snapshot] = nodes
   }
 
   return newResult
