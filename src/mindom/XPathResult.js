@@ -38,15 +38,15 @@ XPathResult.evaluate = function (xpathExpression, contextNode, namespaceResolver
   const newResult = new XPathResult()
 
   reXPath.lastIndex = 0
-  let match = reXPath.exec(xpathExpression)
+  let xpathMatch = reXPath.exec(xpathExpression)
   let root = true
   let nodes
 
-  if (match) {
-    const anyLevel = match[XPATH_LEVEL] === '//'
-    const isAttribute = !!match[XPATH_ATTRIBUTE]
-    const namespace = match[XPATH_NAMESPACE_PREFIX] && namespaceResolver(match[XPATH_NAMESPACE_PREFIX]) || XHTML_NAMESPACE
-    const name = match[XPATH_NAME]
+  if (xpathMatch) {
+    const anyLevel = xpathMatch[XPATH_LEVEL] === '//'
+    const isAttribute = !!xpathMatch[XPATH_ATTRIBUTE]
+    const namespace = (xpathMatch[XPATH_NAMESPACE_PREFIX] && namespaceResolver(xpathMatch[XPATH_NAMESPACE_PREFIX])) || XHTML_NAMESPACE
+    const name = xpathMatch[XPATH_NAME]
 
     if (anyLevel && root) {
       nodes = contextNode._hierarchy[0]._getSelfAndAllChildren()
@@ -66,11 +66,23 @@ XPathResult.evaluate = function (xpathExpression, contextNode, namespaceResolver
       nodes = nodes.filter(node => node.localName === name)
     }
 
-    const filter = match[XPATH_FILTER]
+    const filter = xpathMatch[XPATH_FILTER]
     if (filter) {
-      // apply filter on nodes
+      reFilter.lastIndex = 0
+      let filterMatch = reFilter.exec(filter)
+      if (filterMatch) {
+        const hasAttribute = filterMatch[FILTER_HAS_ATTRIBUTE]
+        if (hasAttribute) {
+          nodes = nodes.filter(node => !!node.getAttribute(hasAttribute))
+        } else {
+          const containsAttribute = filterMatch[FILTER_CONTAINS_ATTRIBUTE]
+          const containsValue = filterMatch[FILTER_CONTAINS_VALUE]
+          nodes = nodes.filter(node => (node.getAttribute(containsAttribute) || '').includes(containsValue))
+        }
+      }
+      // Loop ?
     }
-    // then do the rest recursively?
+    // Loop ?
     newResult[$snapshot] = nodes
   }
 
