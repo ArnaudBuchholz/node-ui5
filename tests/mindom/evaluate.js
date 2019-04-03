@@ -98,7 +98,7 @@ function selectNodes (xpath, rootNode) {
   return result
 }
 
-function checkElement(node, {nodeName, attributeName, attributeValue}) {
+function checkElement (node, { nodeName, attributeName, attributeValue }) {
   assert(() => node && node.nodeType === Node.ELEMENT_NODE)
   assert(() => node.nodeName === nodeName)
   assert(() => node.getAttribute(attributeName) === attributeValue)
@@ -108,33 +108,50 @@ const allSchema = selectNodes('//edm:Schema', document)
 assert(() => allSchema.snapshotLength === 1)
 const schemaNode = allSchema.snapshotItem(0)
 checkElement(schemaNode, {
-    nodeName: 'Schema',
-    attributeName: 'Namespace',
-    attributeValue: 'ODataDemo'
+  nodeName: 'Schema',
+  attributeName: 'Namespace',
+  attributeValue: 'ODataDemo'
 })
 
 const allEntities = selectNodes('./edm:EntityType', schemaNode)
 assert(() => allEntities.snapshotLength === 3)
 const productEntity = allEntities.snapshotItem(0)
 checkElement(productEntity, {
-    nodeName: 'EntityType',
-    attributeName: 'Name',
-    attributeValue: 'Product'
+  nodeName: 'EntityType',
+  attributeName: 'Name',
+  attributeValue: 'Product'
 })
 checkElement(allEntities.snapshotItem(1), {
-    nodeName: 'EntityType',
-    attributeName: 'Name',
-    attributeValue: 'Category'
+  nodeName: 'EntityType',
+  attributeName: 'Name',
+  attributeValue: 'Category'
 })
 checkElement(allEntities.snapshotItem(2), {
-    nodeName: 'EntityType',
-    attributeName: 'Name',
-    attributeValue: 'Supplier'
+  nodeName: 'EntityType',
+  attributeName: 'Name',
+  attributeValue: 'Supplier'
 })
 
 const categoryAssociations = selectNodes('//edm:Association[contains(@Name, \'Category_Category\')]', schemaNode)
 assert(() => categoryAssociations.snapshotLength === 1)
+checkElement(categoryAssociations.snapshotItem(0), {
+  nodeName: 'Association',
+  attributeName: 'Name',
+  attributeValue: 'Product_Category_Category_Products'
+})
 
+const navigationProperties = selectNodes('./edm:*[@Relationship]', productEntity)
+assert(() => navigationProperties.snapshotLength === 2)
+checkElement(navigationProperties.snapshotItem(0), {
+  nodeName: 'NavigationProperty',
+  attributeName: 'Name',
+  attributeValue: 'Category'
+})
+checkElement(navigationProperties.snapshotItem(1), {
+  nodeName: 'NavigationProperty',
+  attributeName: 'Name',
+  attributeValue: 'Supplier'
+})
 
 /* To validate (extracted \node_modules\@openui5\sap.ui.core\dist\resources\sap\ui\model\odata\AnnotationParser.js):
   //d:Schema <-- OK
