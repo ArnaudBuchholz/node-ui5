@@ -87,8 +87,8 @@ const xmlSource = `<edmx:Edmx xmlns:edmx="http://schemas.microsoft.com/ado/2007/
 const document = parser.parseFromString(xmlSource, XML)
 
 const namespacePrefixes = {
-  edmx: 'http://docs.oasis-open.org/odata/ns/edmx',
-  d: 'http://docs.oasis-open.org/odata/ns/edm'
+  edmx: 'http://schemas.microsoft.com/ado/2007/06/edmx',
+  edm: 'http://schemas.microsoft.com/ado/2007/05/edm'
 }
 
 function selectNodes (xpath, rootNode) {
@@ -98,16 +98,47 @@ function selectNodes (xpath, rootNode) {
   return result
 }
 
-const allSchema = selectNodes('//d:Schema', document)
+function checkElement(node, {nodeName, attributeName, attributeValue}) {
+  assert(() => node && node.nodeType === Node.ELEMENT_NODE)
+  assert(() => node.nodeName === nodeName)
+  assert(() => node.getAttribute(attributeName) === attributeValue)
+}
+
+const allSchema = selectNodes('//edm:Schema', document)
 assert(() => allSchema.snapshotLength === 1)
 const schemaNode = allSchema.snapshotItem(0)
-assert(() => schemaNode && schemaNode.nodeType === Node.ELEMENT_NODE)
-assert(() => schemaNode.nodeName === 'Schema')
-assert(() => schemaNode.getAttribute('Namespace') === 'ODataDemo')
+checkElement(schemaNode, {
+    nodeName: 'Schema',
+    attributeName: 'Namespace',
+    attributeValue: 'ODataDemo'
+})
+
+const allEntities = selectNodes('./edm:EntityType', schemaNode)
+assert(() => allEntities.snapshotLength === 3)
+const productEntity = allEntities.snapshotItem(0)
+checkElement(productEntity, {
+    nodeName: 'EntityType',
+    attributeName: 'Name',
+    attributeValue: 'Product'
+})
+checkElement(allEntities.snapshotItem(1), {
+    nodeName: 'EntityType',
+    attributeName: 'Name',
+    attributeValue: 'Category'
+})
+checkElement(allEntities.snapshotItem(2), {
+    nodeName: 'EntityType',
+    attributeName: 'Name',
+    attributeValue: 'Supplier'
+})
+
+const categoryAssociations = selectNodes('//edm:Association[contains(@Name, \'Category_Category\')]', schemaNode)
+assert(() => categoryAssociations.snapshotLength === 1)
+
 
 /* To validate (extracted \node_modules\@openui5\sap.ui.core\dist\resources\sap\ui\model\odata\AnnotationParser.js):
-  //d:Schema
-  ./d:Annotation
+  //d:Schema <-- OK
+  ./d:Annotation <-- OK
   //d:Annotations[contains(@Target, 'something')]//d:PropertyValue[contains(@Path, '/')]//@Path
   //edmx:Reference/edmx:Include[@Namespace and @Alias]
   //edmx:Reference[@Uri]/edmx:IncludeAnnotations[@TermNamespace]
