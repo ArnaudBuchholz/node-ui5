@@ -4,13 +4,13 @@ const EventTarget = require('./EventTarget')
 
 const {
   $nodeType,
+  $parent,
   $settings,
   $window,
   defineConstants
 } = require('./const')
 const $childNodes = Symbol('childNodes')
 const $nodeValue = Symbol('nodeValue')
-const $parent = Symbol('parent')
 
 class Node extends EventTarget {
   constructor (window, nodeType) {
@@ -178,6 +178,14 @@ class Node extends EventTarget {
   _toHTMLClose () {}
 
   _toHTMLOpen () {}
+
+  get value () {
+    return this.nodeValue
+  }
+
+  set value (value) {
+    this.nodeValue = value
+  }
 }
 
 // Node types
