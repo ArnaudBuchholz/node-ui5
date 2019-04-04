@@ -112,7 +112,12 @@ class Node extends EventTarget {
   }
 
   _hasValue () {
-    return [Node.TEXT_NODE, Node.PROCESSING_INSTRUCTION_NODE, Node.COMMENT_NODE].includes(this[$nodeType])
+    return [
+      Node.TEXT_NODE,
+      Node.ATTRIBUTE_NODE,
+      Node.PROCESSING_INSTRUCTION_NODE,
+      Node.COMMENT_NODE
+    ].includes(this[$nodeType])
   }
 
   get nodeValue () {
