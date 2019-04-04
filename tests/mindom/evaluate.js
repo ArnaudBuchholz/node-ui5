@@ -98,7 +98,7 @@ function selectNodes (xpath, rootNode) {
   return result
 }
 
-function checkElement (node, { nodeName, attributeName, attributeValue }) {
+function checkElement (node, { nodeName, attributeName = 'Name', attributeValue }) {
   assert(() => node && node.nodeType === Node.ELEMENT_NODE)
   assert(() => node.nodeName === nodeName)
   assert(() => node.getAttribute(attributeName) === attributeValue)
@@ -118,17 +118,14 @@ assert(() => allEntities.snapshotLength === 3)
 const productEntity = allEntities.snapshotItem(0)
 checkElement(productEntity, {
   nodeName: 'EntityType',
-  attributeName: 'Name',
   attributeValue: 'Product'
 })
 checkElement(allEntities.snapshotItem(1), {
   nodeName: 'EntityType',
-  attributeName: 'Name',
   attributeValue: 'Category'
 })
 checkElement(allEntities.snapshotItem(2), {
   nodeName: 'EntityType',
-  attributeName: 'Name',
   attributeValue: 'Supplier'
 })
 
@@ -136,7 +133,6 @@ const categoryAssociations = selectNodes('//edm:Association[contains(@Name, \'Ca
 assert(() => categoryAssociations.snapshotLength === 1)
 checkElement(categoryAssociations.snapshotItem(0), {
   nodeName: 'Association',
-  attributeName: 'Name',
   attributeValue: 'Product_Category_Category_Products'
 })
 
@@ -144,22 +140,45 @@ const navigationProperties = selectNodes('./edm:*[@Relationship]', productEntity
 assert(() => navigationProperties.snapshotLength === 2)
 checkElement(navigationProperties.snapshotItem(0), {
   nodeName: 'NavigationProperty',
-  attributeName: 'Name',
   attributeValue: 'Category'
 })
 checkElement(navigationProperties.snapshotItem(1), {
   nodeName: 'NavigationProperty',
-  attributeName: 'Name',
   attributeValue: 'Supplier'
 })
 
-/* To validate (extracted \node_modules\@openui5\sap.ui.core\dist\resources\sap\ui\model\odata\AnnotationParser.js):
-  //d:Schema <-- OK
-  ./d:Annotation <-- OK
-  //d:Annotations[contains(@Target, 'something')]//d:PropertyValue[contains(@Path, '/')]//@Path
-  //edmx:Reference/edmx:Include[@Namespace and @Alias]
-  //edmx:Reference[@Uri]/edmx:IncludeAnnotations[@TermNamespace]
-  ./d:Collection/d:Record | ./d:Collection/d:If/d:Record
-  ./d:Collection/d:AnnotationPath | ./d:Collection/d:NavigationPropertyPath | ./d:Collection/d:PropertyPath
-  ./d:*
-*/
+const productProperties = selectNodes('//edm:EntityType[@Name=\'Product\']/edm:Property/@Name', document)
+assert(() => productProperties.snapshotLength === 7)
+'ID,Name,Description,ReleaseDate,DiscontinuedDate,Rating,Price'
+  .split(',')
+  .forEach((name, index) => assert(() => productProperties.snapshotItem(index).value === name))
+
+const productKeys = selectNodes('//edm:EntityType[@Name=\'Product\']//edm:PropertyRef/@Name', document)
+assert(() => productKeys.snapshotLength === 1)
+assert(() => productKeys.snapshotItem(0).value === 'ID')
+
+const gorNavigationProperties = selectNodes('./edm:*[@Relationship and contains(@Name, \'gor\')]', productEntity)
+assert(() => gorNavigationProperties.snapshotLength === 1)
+checkElement(gorNavigationProperties.snapshotItem(0), {
+  nodeName: 'NavigationProperty',
+  attributeValue: 'Category'
+})
+
+const definedTypes = selectNodes('//edm:EntityType | //edm:ComplexType', document)
+assert(() => definedTypes.snapshotLength === 4)
+checkElement(definedTypes.snapshotItem(0), {
+  nodeName: 'EntityType',
+  attributeValue: 'Product'
+})
+checkElement(definedTypes.snapshotItem(1), {
+  nodeName: 'EntityType',
+  attributeValue: 'Category'
+})
+checkElement(definedTypes.snapshotItem(2), {
+  nodeName: 'EntityType',
+  attributeValue: 'Supplier'
+})
+checkElement(definedTypes.snapshotItem(3), {
+  nodeName: 'ComplexType',
+  attributeValue: 'Address'
+})
