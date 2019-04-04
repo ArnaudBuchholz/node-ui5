@@ -6,6 +6,7 @@ module.exports = {
 
   $name: Symbol('name'),
   $nodeType: Symbol('nodeType'),
+  $parent: Symbol('parent'),
   $settings: Symbol('settings'),
   $window: Symbol('window'),
 
