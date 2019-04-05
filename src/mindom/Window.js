@@ -48,14 +48,6 @@ class Window extends EventTarget {
     this.location = new URL(settings.baseURL)
   }
 
-  get clearInterval () {
-    return clearInterval
-  }
-
-  get clearTimeout () {
-    return clearTimeout
-  }
-
   eval (code) {
     // Create a secure context
     const params = ['window', 'global', 'require']
@@ -107,21 +99,13 @@ class Window extends EventTarget {
     return this
   }
 
-  get setInterval () {
-    return setInterval
-  }
-
-  get setTimeout () {
-    return setTimeout
-  }
-
   get top () {
     return this
   }
 }
 
 // Members allocated when requested
-[{
+const dynamicMembers = [{
   name: 'console',
   symbol: $console,
   Class: require('./Console')
@@ -137,8 +121,9 @@ class Window extends EventTarget {
   name: 'localStorage',
   symbol: $localStorage,
   Class: require('./LocalStorage')
+}]
 
-}].forEach(member => {
+dynamicMembers.forEach(member => {
   Object.defineProperty(Window.prototype, member.name, {
     get: function () {
       if (!this[member.symbol]) {
@@ -147,6 +132,36 @@ class Window extends EventTarget {
       return this[member.symbol]
     },
     set: () => false
+  })
+})
+
+// Overridable members
+const overridableMembers = [{
+  name: 'setTimeout',
+  initial: setTimeout
+}, {
+  name: 'clearTimeout',
+  initial: clearTimeout
+}, {
+  name: 'setInterval',
+  initial: setInterval
+}, {
+  name: 'clearInterval',
+  initial: clearInterval
+}]
+
+overridableMembers.forEach(member => {
+  const symbol = Symbol(member.name)
+  Object.defineProperty(Window.prototype, member.name, {
+    get: function () {
+      if (!this[symbol]) {
+        this[symbol] = member.initial
+      }
+      return this[symbol]
+    },
+    set: function (value) {
+      this[symbol] = value
+    }
   })
 })
 
