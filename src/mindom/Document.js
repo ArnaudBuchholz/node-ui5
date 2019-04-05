@@ -51,6 +51,10 @@ class Document extends Element {
     return this._getSelfAndAllChildren().filter(node => node[$nodeType] === Node.ELEMENT_NODE && node.id === id)[0] || null
   }
 
+  get hidden () {
+    return true
+  }
+
   get location () {
     return this[$window].location
   }
