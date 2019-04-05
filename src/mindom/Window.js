@@ -23,6 +23,10 @@ class Window extends EventTarget {
     return DOMParser
   }
 
+  get JSON () {
+    return JSON
+  }
+
   get Node () {
     return Node
   }
