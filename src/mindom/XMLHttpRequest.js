@@ -23,12 +23,18 @@ class XMLHttpRequest extends EventTarget {
       headers: {},
       asynchronous: asynchronous !== false
     }
+    if (this[$settings].debug) {
+      console.log('XHR'.magenta, `${method} ${url}`.gray)
+    }
     if (method === 'GET') {
       this[$content] = resources.read({ ...this[$settings], verbose: false }, url)
     }
   }
 
   setRequestHeader (name, value) {
+    if (this[$settings].debug) {
+      console.log('XHR'.magenta, `HEADER >> ${name}: ${value}`.gray)
+    }
     this[$request].headers[name] = value
   }
 
@@ -55,6 +61,28 @@ class XMLHttpRequest extends EventTarget {
     this.dispatchEvent({ type: 'load' })
   }
 
+  _debugHeaders (headers) {
+    if (this[$settings].debug) {
+      Object.keys(headers).forEach(name => {
+        console.log('XHR'.magenta, `HEADER << ${name}: ${headers[name]}`.gray)
+      })
+    }
+  }
+
+  _debugText (type, text) {
+    if (this[$settings].debug) {
+      console.log('XHR'.magenta, `${type} (content-length: ${text.length})`.gray)
+      text.split('\n').every((line, index) => {
+        if (index === 6) {
+          console.log('XHR'.magenta, `${type}  ...`.gray)
+        } else {
+          console.log('XHR'.magenta, `${type}  ${line}`.gray)
+        }
+        return index < 6
+      })
+    }
+  }
+
   send (data) {
     const content = this[$content]
     if (undefined !== content) {
@@ -63,9 +91,14 @@ class XMLHttpRequest extends EventTarget {
     } else {
       const request = this[$request]
       request.data = data
+      if (data) {
+        this._debugText('REQUEST >>', data)
+      }
       let requestInProgress = true
       gpf.http.request(request).then(response => {
         this[$headers] = response.headers
+        this._debugHeaders(response.headers)
+        this._debugText('RESPONSE <<', response.responseText)
         this._setResult(response.responseText, response.status)
         requestInProgress = false
       })
