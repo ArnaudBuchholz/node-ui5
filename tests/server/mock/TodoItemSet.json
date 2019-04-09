@@ -1,0 +1,25 @@
+[{
+	"Guid": "0MOCKSVR-TODO-MKII-MOCK-00000001",
+	"Title": "Start this app",
+	"DueDate": "/Date(1526389176552)/",
+	"Completed": true,
+	"CompletionDate": "/Date(1526389176552)/"
+}, {
+	"Title": "Learn OpenUI5",
+	"Guid": "0MOCKSVR-TODO-MKII-MOCK-00000002",
+	"DueDate": "/Date(1546318800000)/",
+	"Completed": false,
+	"CompletionDate": null
+}, {
+	"Guid": "0MOCKSVR-TODO-MKII-MOCK-00000003",
+	"Title": "Finish UICon'18 presentation",
+	"DueDate": "/Date(1526918400000)/",
+	"Completed": false,
+	"CompletionDate": null
+}, {
+	"Guid": "0MOCKSVR-TODO-MKII-MOCK-00000000",
+	"Title": "Stop procrastinating",
+	"DueDate": "/Date(1526918400000)/",
+	"Completed": false,
+	"CompletionDate": null
+}]
