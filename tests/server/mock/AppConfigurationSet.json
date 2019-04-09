@@ -1,0 +1,13 @@
+[{
+	"Key": "ClearCompleted",
+	"Enable": true
+}, {
+	"Key": "ItemEditing",
+	"Enable": true
+}, {
+	"Key": "ItemCompletion",
+	"Enable": true
+}, {
+	"Key": "NewItem",
+	"Enable": true
+}]
