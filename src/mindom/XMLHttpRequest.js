@@ -91,8 +91,8 @@ class XMLHttpRequest extends EventTarget {
     }
     const request = this[$request]
     if (!request.url.startsWith('http')) {
-        // No way to handle this request
-        return this._setResult('', 501)
+      // No way to handle this request
+      return this._setResult('', 501)
     }
     request.data = data
     if (data) {
