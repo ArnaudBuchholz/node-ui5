@@ -14,10 +14,10 @@ module.exports = async function (settings) {
   })
 
   const resourceroots = Object.keys(settings.resourceroots).reduce((roots, root) => {
-    roots[root] = resources.declare(settings.resourceroots[root])
+    roots[root] = resources.declare(settings, settings.resourceroots[root])
     return roots
   }, {
-    'node-ui5': resources.declare(path.join(__dirname, '../lib'))
+    'node-ui5': resources.declare(settings, path.join(__dirname, '../lib'))
   })
 
   let selector
