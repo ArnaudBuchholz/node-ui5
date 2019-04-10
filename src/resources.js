@@ -8,7 +8,7 @@ const debug = require('./debug')
 const moduleHelper = require('./moduleHelper')
 const ui5corePath = moduleHelper.find('@openui5/sap.ui.core')
 const ui5CoreDistResourcePath = path.join(ui5corePath, 'dist/resources')
-const RESOURCE_ROOT_PREFIX = 'http://resource.root/'
+const RESOURCE_ROOT_PREFIX = '/_/'
 
 function trace (settings, url, status) {
   if (settings.verbose) {
@@ -37,11 +37,11 @@ function sendFile (settings, url, filePath) {
 
 module.exports = {
 
-  declare: resourceroot => {
+  declare: (settings, resourceroot) => {
     if (resourceroot.startsWith('http')) {
       return resourceroot
     }
-    return RESOURCE_ROOT_PREFIX + resourceroot
+    return settings.baseURL + RESOURCE_ROOT_PREFIX + resourceroot
   },
 
   read: (settings, url) => {
@@ -56,8 +56,9 @@ module.exports = {
         }
       })
     }
-    if (url.startsWith(RESOURCE_ROOT_PREFIX)) {
-      return sendFile(settings, url, url.substring(RESOURCE_ROOT_PREFIX.length))
+    const sResourceRoot = settings.baseURL + RESOURCE_ROOT_PREFIX
+    if (url.startsWith(sResourceRoot)) {
+      return sendFile(settings, url, url.substring(sResourceRoot.length))
     }
     const reResource = new RegExp(`^(?:${settings.baseURL})?resources/(.*)$`)
     const match = reResource.exec(url)
