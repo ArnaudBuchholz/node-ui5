@@ -3,7 +3,8 @@ const http = require('http')
 
 // Will happen because of missing annotations
 process.on('unhandledRejection', error => {
-  console.log('unhandledRejection'.red, error.message.gray)
+  console.log('unhandledRejection'.red, (error.message || error.toString()).gray)
+  console.log(error)
 })
 
 module.exports = function ({
@@ -13,7 +14,7 @@ module.exports = function ({
   port = 8080
 }) {
   const server = http.createServer((request, response) => {
-    console.log('SERVE'.magenta, `${request.method} ${request.url}`.gray))
+    console.log('SERVE'.magenta, `${request.method} ${request.url}`.gray)
     // Handle static path first
     // if file not found, forward
     /*
