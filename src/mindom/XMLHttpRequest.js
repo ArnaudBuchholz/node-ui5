@@ -87,24 +87,27 @@ class XMLHttpRequest extends EventTarget {
     const content = this[$content]
     if (undefined !== content) {
       this[$headers] = {}
-      this._setResult(content || '', content !== null ? 200 : 404)
-    } else {
-      const request = this[$request]
-      request.data = data
-      if (data) {
-        this._debugText('REQUEST >>', data)
-      }
-      let requestInProgress = true
-      gpf.http.request(request).then(response => {
-        this[$headers] = response.headers
-        this._debugHeaders(response.headers)
-        this._debugText('RESPONSE <<', response.responseText)
-        this._setResult(response.responseText, response.status)
-        requestInProgress = false
-      })
-      if (!request.asynchronous) {
-        deasync.loopWhile(() => requestInProgress)
-      }
+      return this._setResult(content || '', content !== null ? 200 : 404)
+    }
+    const request = this[$request]
+    if (!request.url.startsWith('http')) {
+        // No way to handle this request
+        return this._setResult('', 501)
+    }
+    request.data = data
+    if (data) {
+      this._debugText('REQUEST >>', data)
+    }
+    let requestInProgress = true
+    gpf.http.request(request).then(response => {
+      this[$headers] = response.headers
+      this._debugHeaders(response.headers)
+      this._debugText('RESPONSE <<', response.responseText)
+      this._setResult(response.responseText, response.status)
+      requestInProgress = false
+    })
+    if (!request.asynchronous) {
+      deasync.loopWhile(() => requestInProgress)
     }
   }
 
