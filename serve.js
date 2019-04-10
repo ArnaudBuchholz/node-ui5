@@ -1,10 +1,10 @@
+require('colors')
+const http = require('http')
 
+// Will happen because of missing annotations
 process.on('unhandledRejection', error => {
   console.log('unhandledRejection'.red, error.message.gray)
 })
-
-require('colors')
-const http = require('http')
 
 module.exports = function ({
   window,
@@ -12,8 +12,8 @@ module.exports = function ({
   hostname = '127.0.0.1',
   port = 8080
 }) {
-  console.log('pouet')
   const server = http.createServer((request, response) => {
+    console.log('SERVE'.magenta, `${request.method} ${request.url}`.gray))
     // Handle static path first
     // if file not found, forward
     /*
