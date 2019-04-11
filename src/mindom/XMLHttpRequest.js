@@ -86,7 +86,6 @@ class XMLHttpRequest extends EventTarget {
   send (data) {
     const content = this[$content]
     if (undefined !== content) {
-      this[$headers] = {}
       return this._setResult(content || '', content !== null ? 200 : 404)
     }
     const request = this[$request]
@@ -122,5 +121,7 @@ class XMLHttpRequest extends EventTarget {
     return this[$headers][name] || null
   }
 }
+
+XMLHttpRequest.prototype[$headers] = {}
 
 module.exports = XMLHttpRequest
