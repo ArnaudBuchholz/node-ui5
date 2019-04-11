@@ -9,6 +9,7 @@ const { $settings } = require('./const')
 const $content = Symbol('content')
 const $request = Symbol('request')
 const $headers = Symbol('headers')
+const $withCredentials = Symbol('headers')
 
 class XMLHttpRequest extends EventTarget {
   constructor (settings) {
@@ -120,8 +121,17 @@ class XMLHttpRequest extends EventTarget {
   getResponseHeader (name) {
     return this[$headers][name] || null
   }
+
+  get withCredentials () {
+    return this[$withCredentials]
+  }
+
+  set withCredentials (value) {
+    this[$withCredentials] = value
+  }
 }
 
 XMLHttpRequest.prototype[$headers] = {}
+XMLHttpRequest.prototype[$withCredentials] = false
 
 module.exports = XMLHttpRequest
