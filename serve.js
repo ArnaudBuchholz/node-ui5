@@ -1,20 +1,22 @@
 require('colors')
 const http = require('http')
 
-// Will happen because of missing annotations
-process.on('unhandledRejection', error => {
+process.on('unhandledRejection', error => { // Absorb
   console.log('unhandledRejection'.red, (error.message || error.toString()).gray)
-  console.log(error)
 })
 
 module.exports = function ({
   window,
   files = '',
   hostname = '127.0.0.1',
-  port = 8080
+  port = 8080,
+  verbose = process.argv.some(param => ['--verbose', '--debug'].includes(param))
 }) {
   const server = http.createServer((request, response) => {
-    console.log('SERVE'.magenta, `${request.method} ${request.url}`.gray)
+    const start = new Date()
+    if (verbose) {
+      console.log('SERVE'.magenta, `${request.method} ${request.url}`.gray)
+    }
     // Handle static path first
     // if file not found, forward
     /*
@@ -35,6 +37,8 @@ module.exports = function ({
       headers: request.headers,
       data: request.body, // Need to get them
       complete: jqXHR => {
+        const status = jqXHR.status
+        const responseText = jqXHR.responseText
         jqXHR.getAllResponseHeaders()
           .split('\n')
           .filter(header => header)
@@ -42,8 +46,16 @@ module.exports = function ({
             const pos = header.indexOf(':')
             response.setHeader(header.substr(0, pos).trim(), header.substr(pos + 1).trim())
           })
-        response.setStatus(jqXHR.status)
-        response.send(jqXHR.responseText)
+        response.statusCode = status
+        response.end(responseText)
+        let report
+        if (status.toString().startsWith(2)) {
+          report = `${status} ${responseText.length}`.green
+        } else {
+          report = status.toString().red
+        }
+        report += ` ${new Date() - start} ms`.magenta
+        console.log('SERVE'.magenta, `${request.method} ${request.url}`.cyan, report)
       }
     })
   })
