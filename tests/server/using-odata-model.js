@@ -60,11 +60,10 @@ async function checkItemLifecycle (model) {
   }
 }
 
-require('node-ui5') // TODO update after publishing node-ui5
-// require('node-ui5/factory')({
+require('../../factory')({
 //   bootstrapLocation: 'resources/sap-ui-core-dbg.js',
 //   verbose: true
-// })
+})
   .then(({ sap }) => {
     sap.ui.require([
       'sap/ui/model/odata/v2/ODataModel',
