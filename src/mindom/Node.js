@@ -140,7 +140,10 @@ class Node extends EventTarget {
   }
 
   get ownerDocument () {
-    return this[$window].document
+    if (this[$window]) {
+      return this[$window].document
+    }
+    return null
   }
 
   get parentNode () {
