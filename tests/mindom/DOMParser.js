@@ -75,7 +75,11 @@ const tests = [() => {
 }, () => {
   const source = readFileSync(path.join(__dirname, '../server/mock/metadata.xml')).toString()
   const doc = parse(source)
-
+  const html = doc.innerHTML
+  assert(() => html.includes('<EntityType Name="AppConfiguration"'))
+  assert(() => html.includes('<EntityType Name="TodoItem"'))
+  assert(() => html.includes('<ComplexType Name="ClearCompletedResult"'))
+  assert(() => html.includes('FunctionImport Name="ClearCompleted"'))
 }]
 
 tests.forEach(test => {
