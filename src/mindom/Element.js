@@ -100,7 +100,18 @@ class Element extends Node {
   }
 
   getAttribute (name) {
-    return this[$attributes][name]
+    const attributes = this[$attributes]
+    const value = attributes[name]
+    if (value) {
+      return value
+    }
+    // case insensitive version
+    const keys = Object.keys(attributes)
+    const lowerKeys = keys.map(key => key.toLowerCase())
+    const pos = lowerKeys.indexOf(name.toLowerCase())
+    if (pos !== -1) {
+      return attributes[keys[pos]]
+    }
   }
 
   getBoundingClientRect () {
