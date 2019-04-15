@@ -1,5 +1,8 @@
 'use strict'
 
+const { readFileSync } = require('fs')
+const path = require('path')
+
 const {
   HTML,
   XML,
@@ -69,6 +72,10 @@ const tests = [() => {
   assert(() => edmx && edmx.nodeType === Node.ELEMENT_NODE)
   assert(() => edmx.nodeName === 'edmx:Edmx')
   assert(() => edmx.getAttribute('Version') === '1.0')
+}, () => {
+  const source = readFileSync(path.join(__dirname, '../server/mock/metadata.xml')).toString()
+  const doc = parse(source)
+
 }]
 
 tests.forEach(test => {
