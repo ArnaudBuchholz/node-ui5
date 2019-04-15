@@ -13,6 +13,7 @@ const $history = Symbol('history')
 const $localStorage = Symbol('localStorage')
 const $location = Symbol('location')
 const $performance = Symbol('performance')
+const $XMLHttpRequest = Symbol('XMLHttpRequest')
 
 class Window extends EventTarget {
   get Document () {
@@ -37,9 +38,16 @@ class Window extends EventTarget {
 
   get XMLHttpRequest () {
     const settings = this[$settings]
-    return function () {
-      return new XMLHttpRequest(settings)
+    if (!this[$XMLHttpRequest]) {
+      this[$XMLHttpRequest] = function () {
+        return new XMLHttpRequest(settings)
+      }
     }
+    return this[$XMLHttpRequest]
+  }
+
+  set XMLHttpRequest (value) {
+    this[$XMLHttpRequest] = value
   }
 
   constructor (settings) {
@@ -53,7 +61,7 @@ class Window extends EventTarget {
     const params = ['window', 'global', 'require']
     const securedContext = Function.apply(null, params.concat(`with (window) {\n${code}\n}`))
     try {
-      securedContext.call(this, this)
+      securedContext.call(this, this, this) // global also set to window because of sinon
     } catch (e) {
       console.error(e)
     }
