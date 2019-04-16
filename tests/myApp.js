@@ -1,6 +1,6 @@
 'use strict'
 
-/* global process */
+const { assert } = require('./common')
 
 require('../factory')({
   exposeAsGlobals: true,
@@ -10,12 +10,9 @@ require('../factory')({
 }).then(() => {
   /* global sap */
   console.log('Loading local module...')
-  sap.ui.define([
+  sap.ui.require([
     'myApp/localModule'
   ], function (module) {
-    console.log(module)
-    if (module !== 'Hello World!') {
-      process.exit(-1)
-    }
+    assert(() => module === 'Hello World !')
   })
 })
