@@ -1,5 +1,7 @@
 'use strict'
 
+const { assert } = require('./common')
+
 module.exports = ({ sap }) => {
   sap.ui.require([
     'sap/ui/model/odata/v2/ODataModel'
@@ -15,6 +17,7 @@ module.exports = ({ sap }) => {
         data.results.forEach(product => {
           console.log(product.Name.padEnd(20, ' '), product.Description)
         })
+        assert(() => data.results.length !== 0)
       }
     })
   })
