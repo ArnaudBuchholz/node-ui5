@@ -1,12 +1,11 @@
 'use strict'
 
-/* global process */
+const { assert } = require('./common')
 
 require('../factory')({
   bootstrapLocation: 'resources/sap-ui-core-unk.js'
 }).then(({ sap }) => {
-  console.error('unexpected success')
-  process.exit(-1)
+  assert(() => !'unexpected success')
 }, reason => {
-  console.log(reason.toString())
+  assert(() => !!reason.toString())
 })
