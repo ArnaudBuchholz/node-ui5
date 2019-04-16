@@ -3,6 +3,7 @@
 const Document = require('./Document')
 const DOMParser = require('./DOMParser')
 const EventTarget = require('./EventTarget')
+const FormData = require('./FormData')
 const Node = require('./Node')
 const XMLHttpRequest = require('./XMLHttpRequest')
 
@@ -22,6 +23,10 @@ class Window extends EventTarget {
 
   get DOMParser () {
     return DOMParser
+  }
+
+  get FormData () {
+    return FormData
   }
 
   get JSON () {
