@@ -1,4 +1,6 @@
 require('colors')
+
+const EventEmitter = require('events')
 const http = require('http')
 
 process.on('unhandledRejection', error => { // Absorb
@@ -12,6 +14,7 @@ module.exports = function ({
   port = 8080,
   verbose = process.argv.some(param => ['--verbose', '--debug'].includes(param))
 }) {
+  const eventEmitter = new EventEmitter()
   const server = http.createServer((request, response) => {
     const start = new Date()
     if (verbose) {
@@ -56,5 +59,7 @@ module.exports = function ({
   })
   server.listen(port, hostname, () => {
     console.log(`Server running at http://${hostname}:${port}/`.yellow)
+    eventEmitter.emit('ready')
   })
+  return eventEmitter
 }
