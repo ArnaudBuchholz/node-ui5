@@ -1,4 +1,4 @@
-/*global process*/
+/* global process */
 require('../../factory')({
   resourceroots: {
     myApp: __dirname
