@@ -24,7 +24,7 @@ function startServer () {
 }
 
 function stopServer () {
-  server.kill('SIGINT');
+  server.kill('SIGINT')
 }
 
 async function all () {
