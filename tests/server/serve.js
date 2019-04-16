@@ -1,3 +1,4 @@
+/*global process*/
 require('../../factory')({
   resourceroots: {
     myApp: __dirname
@@ -9,6 +10,10 @@ require('../../factory')({
     require('../../serve')({
       window,
       port: 8080
+    }).on('ready', () => {
+      if (process.send) {
+        process.send('ready')
+      }
     })
   })
 })
