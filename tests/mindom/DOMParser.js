@@ -7,7 +7,7 @@ const {
   HTML,
   XML,
   assert
-} = require('./common')
+} = require('../common')
 
 const Node = require('../../src/mindom/Node')
 const Window = require('../../src/mindom/Window')
