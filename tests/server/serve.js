@@ -9,7 +9,11 @@ require('../../factory')({
   ], function () {
     require('../../serve')({
       window,
-      port: 8080
+      port: 8080,
+      redirect: [{
+        match: /\/google(.*)/,
+        url: 'http://www.google.com$1'
+      }]
     }).on('ready', () => {
       if (process.send) {
         process.send('ready')
