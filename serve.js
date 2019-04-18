@@ -3,6 +3,7 @@ require('colors')
 const EventEmitter = require('events')
 const gpf = require('gpf-js')
 const http = require('http')
+const https = require('https')
 
 process.on('unhandledRejection', error => { // Absorb
   console.log('unhandledRejection'.red, (error.message || error.toString()).gray)
@@ -20,18 +21,37 @@ function log (request, response, responseText) {
   console.log('SERVE'.magenta, `${request.method} ${request.url}`.cyan, report)
 }
 
+function getUrlHandler (url) {
+  if (url.startsWith('https')) {
+    return https
+  }
+  return http
+}
+
 function redirectToUrl (request, url, response) {
-  delete request.headers.host; // May cause issues
-  gpf.http.request({...request, url})
-    .then(httpResponse => {
-      Object.keys(httpResponse.headers).forEach(key => {
-        response.setHeader(key, httpResponse.headers[key])
-      })
-      response.statusCode = httpResponse.status;
-      const responseText = httpResponse.responseText
-      response.end(responseText)
-      log(request, response, responseText)
-    })
+  const handler = getUrlHandler(url)
+  const {
+    method
+    headers
+  } = request
+  delete headers.host
+  const redirectedRequest = handler.request(url, { method, headers }, redirectedResponse => {
+
+  })
+  if (request.data) {
+      redirectedRequest.write(request.data)
+  }
+  redirectedRequest.end()
+  // gpf.http.request({...request, url})
+  //   .then(httpResponse => {
+  //     Object.keys(httpResponse.headers).forEach(key => {
+  //       response.setHeader(key, httpResponse.headers[key])
+  //     })
+  //     response.statusCode = httpResponse.status;
+  //     const responseText = httpResponse.responseText
+  //     response.end(responseText)
+  //     log(request, response, responseText)
+  //   })
 }
 
 function forwardToAjax (window, request, response) {
