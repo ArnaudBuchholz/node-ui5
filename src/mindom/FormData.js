@@ -1,7 +1,5 @@
 'use strict'
 
-const { $window } = require('./const')
-
 class FormData {
 }
 
