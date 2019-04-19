@@ -13,6 +13,18 @@ require('../../factory')({
       redirect: [{
         match: /\/google(.*)/,
         url: 'http://www.google.com$1'
+      }, {
+        match: /\/\/ui5\/resources\/(.*)/,
+        res: ''
+      }, {
+        match: /\/\/ui5\/test-resources\/(.*)/,
+        res: ''
+      }, {
+        match: /odata(.*)/,
+        ajax: ''
+      }, {
+        match: /.*/,
+        file: ''
       }]
     }).on('ready', () => {
       if (process.send) {
