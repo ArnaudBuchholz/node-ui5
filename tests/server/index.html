@@ -1,0 +1,27 @@
+<html>
+  <head>
+    <script src="/gpf.js"></script>
+    <script>
+
+function onLoad () {
+    gpf.http.get('/mock/AppConfigurationSet.json')
+      .then(function (response) {
+        if (response.status !== 200) {
+          throw new Error('not found')
+        }
+        JSON.parse(response.responseText); // Valid JSON?
+      })
+      .then(function () {
+        // Succeeded
+      }, function () {
+        // Failed
+      })
+}
+
+    </script>
+  </head>
+  <body onload="onLoad()">
+    <img id="proxy" src="/proxy/http/facetheforce.today/luke/200" />
+    <!-- Wait for page to be loaded and push the result on the simulated ODATA service -->
+  </body>
+</html>
