@@ -1,5 +1,6 @@
 require('colors')
 
+const fs = require('fs')
 const EventEmitter = require('events')
 const http = require('http')
 const https = require('https')
@@ -55,16 +56,32 @@ function redirectToUrl (request, url, response) {
   })
 }
 
-function forwardToAjax (window, request, response) {
+function redirectToFile (request, path, response) {
+  fs.stat(path, (err, stat) => {
+    if (err) {
+      response.statusCode = 404
+      response.end('Not found')
+    } else {
+      response.writeHead(200, {
+        'Content-Length': stat.size
+      })
+      fs.createReadStream(path)
+        .on('end', () => log(request, response, stat.size))
+        .pipe(response)
+    }
+  })
+}
+
+function forwardToAjax (request, url, response) {
   const dataChunks = []
   request.on('data', chunk => dataChunks.push(chunk.toString()))
   request.on('end', () => {
     if (dataChunks.length) {
       request.data = dataChunks.join('')
     }
-    window.jQuery.ajax({
+    request.window.jQuery.ajax({
       method: request.method,
-      url: request.url,
+      url,
       headers: request.headers,
       data: request.data, // Need to get them
       complete: jqXHR => {
@@ -84,6 +101,21 @@ function forwardToAjax (window, request, response) {
   })
 }
 
+const noHandler = type => (request, redirect, response) => {
+  response.statusCode = 500
+  response.end(`${type} not implemented: ${redirect}`)
+}
+
+const typeHandlers = {
+  url: redirectToUrl,
+  ui5resources: noHandler('ui5resources'),
+  ui5Testresources: noHandler('ui5Testresources'),
+  mock: forwardToAjax,
+  file: redirectToFile
+}
+
+const types = Object.keys(typeHandlers)
+
 module.exports = function ({
   window,
   redirect = [],
@@ -94,25 +126,33 @@ module.exports = function ({
   const eventEmitter = new EventEmitter()
   const server = http.createServer((request, response) => {
     request.start = new Date()
+    request.window = window
     if (verbose) {
       console.log('SERVE'.magenta, `${request.method} ${request.url}`.gray)
     }
     if (redirect.every(pattern => {
       const match = pattern.match.exec(request.url)
       if (match) {
-        let url = pattern.url
+        let redirect
+        let type
+        types.every(member => {
+          type = member
+          redirect = pattern[member]
+          return !redirect
+        })
         for (let capturingGroupIndex = match.length; capturingGroupIndex > 0; --capturingGroupIndex) {
-          url = url.replace(new RegExp(`\\$${capturingGroupIndex}`, 'g'), match[capturingGroupIndex])
+          redirect = redirect.replace(new RegExp(`\\$${capturingGroupIndex}`, 'g'), match[capturingGroupIndex])
         }
         if (verbose) {
-          console.log('SERVE'.magenta, `${request.url} => ${url}`.gray)
-          redirectToUrl(request, url, response)
+          console.log('SERVE'.magenta, `${request.url} => ${type} ${redirect}`.gray)
         }
+        typeHandlers[type](request, redirect, response)
         return false
       }
       return true
     })) {
-      forwardToAjax(window, request, response);
+      response.statusCode = 500
+      response.end(`${request.url} not implemented`)
     }
   })
   server.listen(port, hostname, () => {
