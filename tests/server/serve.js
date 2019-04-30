@@ -24,7 +24,7 @@ require('../../factory')({
         match: /^\/(odata\/.*)/,
         mock: '$1'
       }, {
-        match: /^\/fs\/(.*)/,
+        match: /(.*)/,
         file: path.join(__dirname, '$1')
       }]
     }).on('ready', () => {
