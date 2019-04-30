@@ -1,4 +1,5 @@
 /* global process */
+const path = require('path')
 require('../../factory')({
   resourceroots: {
     myApp: __dirname
@@ -11,20 +12,20 @@ require('../../factory')({
       window,
       port: 8080,
       redirect: [{
-        match: /\/google(.*)/,
-        url: 'http://www.google.com$1'
+        match: /^\/proxy\/(https?)\/(.*)/,
+        url: '$1://$2'
       }, {
-        match: /\/\/ui5\/resources\/(.*)/,
-        res: ''
+        match: /\/resources\/(.*)/,
+        ui5resources: '$1'
       }, {
-        match: /\/\/ui5\/test-resources\/(.*)/,
-        res: ''
+        match: /\/test-resources\/(.*)/,
+        ui5Testresources: '$1'
       }, {
-        match: /odata(.*)/,
-        ajax: ''
+        match: /^\/(odata\/.*)/,
+        mock: '$1'
       }, {
-        match: /.*/,
-        file: ''
+        match: /^\/fs\/(.*)/,
+        file: path.join(__dirname, '$1')
       }]
     }).on('ready', () => {
       if (process.send) {
