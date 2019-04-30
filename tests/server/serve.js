@@ -24,6 +24,12 @@ require('../../factory')({
         match: /^\/(odata\/.*)/,
         mock: '$1'
       }, {
+        match: /^\/gpf\.js$/,
+        file: path.join(__dirname, '../../node_modules/gpf-js/build/gpf.js')
+      }, {
+        match: /^\/$/,
+        file: path.join(__dirname, 'index.html')
+      }, {
         match: /(.*)/,
         file: path.join(__dirname, '$1')
       }]
