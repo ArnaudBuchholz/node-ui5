@@ -50,6 +50,10 @@ function redirectToUrl (request, url, response) {
       log(request, response, responseLength)
     })
   })
+  redirectedRequest.on('error', err => {
+    response.statusCode = 500
+    response.end(err.toString())
+  })
   request.on('data', chunk => redirectedRequest.write(chunk))
   request.on('end', () => {
     redirectedRequest.end()
