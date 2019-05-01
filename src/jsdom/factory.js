@@ -4,11 +4,12 @@ const jsdom = require('jsdom')
 const JSDOM = jsdom.JSDOM
 const Console = require('../Console')
 const ResourceLoader = require('./ResourceLoader')
+const { $settings } = require('./../mindom/const')
 
 module.exports = settings => {
   const virtualConsole = new jsdom.VirtualConsole()
   virtualConsole.sendTo(new Console(settings))
-  return new JSDOM('', {
+  const window = new JSDOM('', {
     url: settings.baseURL,
     referrer: settings.baseURL,
     contentType: 'text/html',
@@ -27,4 +28,6 @@ module.exports = settings => {
       window.XMLHttpRequest = require('./XMLHttpRequest')(settings)
     }
   }).window
+  window[$settings] = settings
+  return window
 }
