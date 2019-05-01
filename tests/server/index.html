@@ -1,21 +1,21 @@
 <html>
   <head>
     <script src="/gpf.js"></script>
+    <script src="/proxy/https/arnaudbuchholz.github.io/blog/jsfiddle-assert.js"></script>
     <script>
 
 function onLoad () {
     gpf.http.get('/mock/AppConfigurationSet.json')
       .then(function (response) {
         if (response.status !== 200) {
-          throw new Error('not found')
+          throw new Error('/mock/AppConfigurationSet.json not found')
         }
-        JSON.parse(response.responseText); // Valid JSON?
+        JSON.parse(response.responseText);
+        assert(true, 'Loading of /mock/AppConfigurationSet.json');
       })
-      .then(function () {
-        // Succeeded
-      }, function () {
-        // Failed
-      })
+      .catch(function (reason) {
+        assert(false, reason.toString());
+      });
 }
 
     </script>
