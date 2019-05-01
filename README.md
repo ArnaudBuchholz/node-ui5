@@ -1,5 +1,8 @@
 # node-ui5
-A [NodeJS](https://nodejs.org/) wrapper for [OpenUI5](https://openui5.org/) to leverage tools like [MockServer](https://openui5.hana.ondemand.com/#/api/sap.ui.core.util.MockServer) or [ODataModel](https://openui5.hana.ondemand.com/#/api/sap.ui.model.odata.v2.ODataModel)
+A [NodeJS](https://nodejs.org/) wrapper for [OpenUI5](https://openui5.org/) to leverage
+tools like
+[MockServer](https://openui5.hana.ondemand.com/#/api/sap.ui.core.util.MockServer) or
+[ODataModel](https://openui5.hana.ondemand.com/#/api/sap.ui.model.odata.v2.ODataModel).
 
 [![dependencies Status](https://david-dm.org/ArnaudBuchholz/node-ui5/status.svg)](https://david-dm.org/ArnaudBuchholz/node-ui5)
 [![devDependencies Status](https://david-dm.org/ArnaudBuchholz/node-ui5/dev-status.svg)](https://david-dm.org/ArnaudBuchholz/node-ui5?type=dev)
@@ -35,7 +38,7 @@ require('node-ui5').then(({sap}) => {
 })
 ```
 
-You may use the factory to provide options:
+You may use the factory to specify options:
 ```javascript
 require('node-ui5/factory')({
   bootstrapLocation: 'https://openui5.hana.ondemand.com/resources/sap-ui-core.js',
@@ -68,14 +71,20 @@ require('node-ui5/factory')({
 * **exposeAsGlobals**: set to `true` to make `window` and `sap` be globally available in NodeJS
 * **resourceroots**: an optional dictionary for mapping resources to local folders or remote resources
 * **verbose**: set to `true` to see details on HTTP requests and output ui5 traces
+* **fastButIncompleteSimulation**: set to `true` to replace jsdom with a faster (but incomplete) browser simulation.
+Can also be set by adding `--fast` on the command line.
+* **verbose**: set to `true` to enable traces.
+Can also be set by adding `--verbose` on the command line.
+* **debug**: set to `true` to enable all UI5 traces. When set, verbose mode is automatically enabled.
+Can also be set by adding `--debug` on the command line.
 
 ## node-ui5 helpers
 
-The library also offers convenient helpers to simplify development:
-* `'node-ui5/authenticate/basic-with-csrf'` offers a
+The library also offers helpers to simplify development:
+* `'node-ui5/authenticate/basic-with-csrf'` provides a
 [basic authentication](https://en.wikipedia.org/wiki/Basic_access_authentication) method with
 [x-csrf-token](https://en.wikipedia.org/wiki/Cross-site_request_forgery) generation. The method expects an object
-composed of url, user and password string values and returns a promise resolved to an object containing parameters
+composed of `url`, `user` and `password` string values and returns a promise resolved to an object containing parameters
 expected by the
 [ODataModel constructor](https://openui5.hana.ondemand.com/#/api/sap.ui.model.odata.v2.ODataModel/constructor)
 * `'node-ui5/promisify'` converts some callback API onto promise API by generating Async methods:
@@ -115,6 +124,9 @@ require('node-ui5').then(({sap}) => {
 
 Thanks to [jsdom](https://github.com/jsdom/jsdom) and some tweaked [XHR](https://developer.mozilla.org/fr/docs/Web/API/XMLHttpRequest) objects, the library is loaded in a [NodeJS](https://nodejs.org/) environment.
 
+With version 2, a faster *but limited* simulation of browser is implemented (and available with the
+**fastButIncompleteSimulation** option).
+
 **NOTES**
 
 [CORS](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing) implementation of [jsdom](https://github.com/jsdom/jsdom) is prevented by the custom XHR overrides.
@@ -128,4 +140,6 @@ If you plan to install the module globally (`npm install -g node-ui5`), you must
 If you plan to connect to an [https](https://en.wikipedia.org/wiki/HTTPS) server with specific certificates,
 make sure to declare the [certificate authority](https://en.wikipedia.org/wiki/Certificate_authority) with the
 [environment variable](https://en.wikipedia.org/wiki/Environment_variable)
-[`NODE_EXTRA_CA_CERTS`](https://nodejs.org/api/cli.html#cli_node_extra_ca_certs_file).
+[`NODE_EXTRA_CA_CERTS`](https://nodejs.org/api/cli.html#cli_node_extra_ca_certs_file) or to ignore certificate errors by
+setting the environment variable
+[`NODE_TLS_REJECT_UNAUTHORIZED`](https://nodejs.org/api/cli.html#cli_node_tls_reject_unauthorized_value) to `0`.
