@@ -4,24 +4,34 @@
     <script src="/proxy/https/arnaudbuchholz.github.io/blog/jsfiddle-assert.js"></script>
     <script>
 
+function tryLoad (url, validate) {
+  return gpf.http.get(url)
+    .then(function (response) {
+      if (response.status !== 200) {
+        throw new Error(url + ' ' + response.status)
+      }
+      if (validate) {
+        validate(response.responseText)
+      }
+      assert(true, url)
+    })
+}
+
 function onLoad () {
-    gpf.http.get('/mock/AppConfigurationSet.json')
-      .then(function (response) {
-        if (response.status !== 200) {
-          throw new Error('/mock/AppConfigurationSet.json not found')
-        }
-        JSON.parse(response.responseText);
-        assert(true, 'Loading of /mock/AppConfigurationSet.json');
-      })
-      .catch(function (reason) {
-        assert(false, reason.toString());
-      });
+  assert(document.getElementById("imgOK").naturalWidth !== 0, "/proxy/http/facetheforce.today/luke/200 loaded")
+  assert(document.getElementById("imgKO").naturalWidth === 0, "/proxy/http/facethe4th.tomorrow/luke/200 failed")
+  tryLoad('/mock/AppConfigurationSet.json', JSON.parse)
+    .then(function () { return tryLoad('/api/$metadata') })
+    .then(function () { return tryLoad('/any/path/resources/sap-ui-core.js') })
+    .catch(function (reason) {
+      assert(false, reason.toString());
+    });
 }
 
     </script>
   </head>
   <body onload="onLoad()">
-    <img id="proxy" src="/proxy/http/facetheforce.today/luke/200" />
-    <!-- Wait for page to be loaded and push the result on the simulated ODATA service -->
+    <img id="imgOK" src="/proxy/http/facetheforce.today/luke/200" />
+    <img id="imgKO" src="/proxy/http/facethe4th.tomorrow/luke/200" />
   </body>
 </html>
