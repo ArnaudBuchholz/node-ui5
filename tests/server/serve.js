@@ -21,7 +21,7 @@ require('../../factory')({
         match: /\/test-resources\/(.*)/,
         ui5Testresources: '$1'
       }, {
-        match: /^\/(odata\/.*)/,
+        match: /^(\/odata\/.*)/,
         mock: '$1'
       }, {
         match: /^\/gpf\.js$/,
