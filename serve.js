@@ -125,7 +125,8 @@ const typeHandlers = {
   file: redirectToFile,
   mock: redirectToMock,
   ui5resources: redirectToUI5resource,
-  url: redirectToUrl
+  url: redirectToUrl,
+  custom: null
 }
 
 const types = Object.keys(typeHandlers)
@@ -155,6 +156,14 @@ module.exports = function ({
           return !redirect
         })) {
           error(request, response, { message: 'invalid mapping' })
+          return false
+        }
+        if (type === 'custom') {
+          if (verbose) {
+            console.log('SERVE'.magenta, `${request.url} => ${type}`.gray)
+          }
+          redirect(request, response, ...[].slice.call(match, 1))
+          response.on('finish', () => log(request, response, -1))
           return false
         }
         for (let capturingGroupIndex = match.length; capturingGroupIndex > 0; --capturingGroupIndex) {
