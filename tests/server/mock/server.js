@@ -74,19 +74,6 @@ sap.ui.require([
     sMockdataBaseUrl: sap.ui.require.toUrl('myApp/mock')
   })
 
-  // Trace requests
-  // Object.keys(MockServer.HTTPMETHOD).forEach(function (sMethodName) {
-  //   var sMethod = MockServer.HTTPMETHOD[sMethodName]
-  //   _oMockServer.attachBefore(sMethod, function (oEvent) {
-  //     var oXhr = oEvent.getParameters().oXhr
-  //     console.log('MockServer::before', sMethod, oXhr.url, oXhr)
-  //   })
-  //   _oMockServer.attachAfter(sMethod, function (oEvent) {
-  //     var oXhr = oEvent.getParameters().oXhr
-  //     console.log('MockServer::after', sMethod, oXhr.url, oXhr)
-  //   })
-  // })
-
   // Generate random items
   var aTodoItemSet = _oMockServer.getEntitySetData(CONST.OData.entityNames.todoItemSet)
   var sDateMax = '/Date(' + new Date(2099, 11, 31).getTime() + ')/'
@@ -168,19 +155,6 @@ sap.ui.require([
     path: _updatePath,
     response: _handleUpdateBody
   })
-
-  // Getting a todo list item with filter
-  // aRequests.push({
-  //   method: 'GET',
-  //   path: CONST.OData.entityNames.todoItemSet + '\\?.*\\$filter=.*',
-  //   response: function (oXhr) {
-  //     // Simulate error
-  //     oXhr.respond(400, {
-  //       'Content-Type': 'text/plain;charset=utf-8'
-  //     }, 'Get failed')
-  //     return true // Skip default processing
-  //   }
-  // })
 
   // Clear Completed
   aRequests.push({
