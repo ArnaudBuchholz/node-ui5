@@ -4,6 +4,7 @@ tools like
 [MockServer](https://openui5.hana.ondemand.com/#/api/sap.ui.core.util.MockServer) or
 [ODataModel](https://openui5.hana.ondemand.com/#/api/sap.ui.model.odata.v2.ODataModel).
 
+[![Travis-CI](https://travis-ci.org/ArnaudBuchholz/node-ui5.svg?branch=master)](https://travis-ci.org/ArnaudBuchholz/node-ui5#)
 [![dependencies Status](https://david-dm.org/ArnaudBuchholz/node-ui5/status.svg)](https://david-dm.org/ArnaudBuchholz/node-ui5)
 [![devDependencies Status](https://david-dm.org/ArnaudBuchholz/node-ui5/dev-status.svg)](https://david-dm.org/ArnaudBuchholz/node-ui5?type=dev)
 [![node-ui5](http://img.shields.io/npm/dm/node-ui5.svg)](https://www.npmjs.org/package/node-ui5)
