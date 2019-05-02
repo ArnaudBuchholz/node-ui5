@@ -5,6 +5,7 @@ Desktop.ini
 # Project files & folders
 
 tests
+.travis.yml
 
 # Editors
 
