@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "standard --fix & node tests/all",
+    "lint": "standard --fix",
     "postinstall": "node src/post-install.js"
   },
   "repository": {
