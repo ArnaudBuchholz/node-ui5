@@ -32,6 +32,11 @@ function onLoad () {
       })
     })
     .then(function () {
+      if (document.querySelector(".assert.ko")) {
+        throw new Error("At least one assertion failed")
+      }
+    })
+    .then(function () {
       gpf.http.get('/chrome/OK')
     })
     .catch(function (reason) {
