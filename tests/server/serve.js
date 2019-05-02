@@ -28,6 +28,29 @@ require('../../factory')({
         match: /^\/api\/(.*)/,
         mock: '/odata/TODO_SRV/$1'
       }, {
+        // custom echo handler
+        match: /^\/echo\/(.*)$/,
+        custom: (request, response, path) => {
+          response.writeHead(200, {
+            'Content-Type': 'text/plain',
+            'Content-Length': path.length
+          })
+          response.end(path)
+        }
+      }, {
+        // custom test handler to signal end of browser tests
+        match: /^\/chrome\/(.*)$/,
+        custom: (request, response, status) => {
+          if (process.send) {
+            process.send(status)
+          }
+          response.writeHead(200, {
+            'Content-Type': 'text/plain',
+            'Content-Length': 0
+          })
+          response.end()
+        }
+      }, {
         // gpf.js
         match: /^\/gpf\.js$/,
         file: path.join(__dirname, '../../node_modules/gpf-js/build/gpf.js')
