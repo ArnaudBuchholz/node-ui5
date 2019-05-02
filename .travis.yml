@@ -1,0 +1,10 @@
+language: node_js
+node_js:
+  - "lts/*"
+cache: npm
+addons:
+  chrome: stable
+before_install:
+  - npm install -g grunt-cli
+install:
+  - npm install
