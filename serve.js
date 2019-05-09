@@ -49,7 +49,7 @@ function redirectToFile (request, filePath, response) {
   fs.stat(filePath, (err, stat) => {
     if (err || stat.isDirectory()) {
       error(request, response, { status: 404, message: 'Not found' })
-  } else {
+    } else {
       response.writeHead(200, {
         'Content-Type': mime.getType(path.extname(filePath)) || mime.getType('bin'),
         'Content-Length': stat.size
