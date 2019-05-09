@@ -81,7 +81,12 @@ Can also be set by adding `--debug` on the command line.
 
 ## node-ui5 helpers
 
-The library also offers helpers to simplify development:
+### Own modules
+
+The package offers specific modules available through
+[sap.ui.define](https://openui5.hana.ondemand.com/#/api/sap.ui/methods/sap.ui.define) /
+[sap.ui.require](https://openui5.hana.ondemand.com/#/api/sap.ui/methods/sap.ui.require) to simplify development:
+
 * `'node-ui5/authenticate/basic-with-csrf'` provides a
 [basic authentication](https://en.wikipedia.org/wiki/Basic_access_authentication) method with
 [x-csrf-token](https://en.wikipedia.org/wiki/Cross-site_request_forgery) generation. The method expects an object
@@ -116,6 +121,31 @@ require('node-ui5').then(({sap}) => {
       })
       console.log(`Found ${data.results.length} entities`)
     })
+})
+```
+
+### Server / Proxy
+
+The package also provides a server that includes proxy features.
+
+```javascript
+require('node-ui5/serve')({
+  port: 8080,
+  mappings: [{
+    // http/https proxy
+    match: /^\/proxy\/(https?)\/(.*)/,
+    url: '$1://$2'
+  }, {
+    // default access to index.html
+    match: /^\/$/,
+    file: path.join(__dirname, 'index.html')
+  }, {
+    // mapping to file access
+    match: /(.*)/,
+    file: path.join(__dirname, '$1')
+  }]
+}).on('ready', () => {
+  console.log('Server started')
 })
 ```
 
