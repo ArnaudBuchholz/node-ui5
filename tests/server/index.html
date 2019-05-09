@@ -17,12 +17,25 @@ function tryLoad (url, validate) {
     })
 }
 
+function checkFileNotFound (url) {
+  return gpf.http.get(url)
+    .then(function (response) {
+      if (response.status !== 404) {
+        throw new Error(url + ' ' + response.status)
+      }
+      assert(true, url)
+    })
+}
+
 function onLoad () {
   assert(document.getElementById("imgOK").naturalWidth !== 0, "/proxy/http/facetheforce.today/luke/200 loaded")
   assert(document.getElementById("imgKO").naturalWidth === 0, "/proxy/http/facethe4th.tomorrow/luke/200 failed")
   tryLoad('/mock/AppConfigurationSet.json', JSON.parse)
     .then(function () { return tryLoad('/api/$metadata') })
     .then(function () { return tryLoad('/any/path/resources/sap-ui-core.js') })
+    .then(function () { return checkFileNotFound('/not-found') })
+    .then(function () { return checkFileNotFound('/mock') })
+    .then(function () { return checkFileNotFound('/mock/') })
     .then(function () {
       var token = encodeURIComponent((new Date()).toString())
       return tryLoad('/echo/' + token, function (content) {
