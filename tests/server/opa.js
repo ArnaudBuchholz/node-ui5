@@ -15,14 +15,14 @@ sap.ui.require([
   })
 
   function clickButton (oOpa, mProperties, sLabel) {
-      oOpa.waitFor({
-        controlType: 'sap.m.Button',
-        matchers: [new Properties(mProperties)],
-        actions: new Press(),
-        success: function () {
-          Opa5.assert.ok(true, sLabel)
-        }
-      })
+    oOpa.waitFor({
+      controlType: 'sap.m.Button',
+      matchers: [new Properties(mProperties)],
+      actions: new Press(),
+      success: function () {
+        Opa5.assert.ok(true, sLabel)
+      }
+    })
   }
 
   opaTest('Should get a response', function (Given, When, Then) {
