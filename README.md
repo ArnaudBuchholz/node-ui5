@@ -124,9 +124,9 @@ require('node-ui5').then(({sap}) => {
 })
 ```
 
-### Server / Proxy
+### Proxy server
 
-The package also provides a server that includes proxy features.
+The package also provides a server module that implements proxy features.
 
 ```javascript
 require('node-ui5/serve')({
@@ -147,6 +147,67 @@ require('node-ui5/serve')({
 }).on('ready', () => {
   console.log('Server started')
 })
+```
+
+The options are:
+
+* **hostname**: *(default: `'127.0.0.1'`)* hostname the server should listen to
+* **port**: *(default: `8080`)* port the server should listen to
+* **ssl**: specify to implement secured http *(https)*, it must contain the path to the private key (member `key`) and to the certificate (member `cert`)
+* **window**: if you plan to use the *mock* mapping, the `window` object must be transmitted
+* **verbose**: *(default: `true` if `--verbose` or `--debug` is specified on the command line)* set to `true` to enable traces
+* **mappings**: an array of mapping objects as detailed below. Mappings are evaluated in the given order
+
+A mapping object is composed of at least two members:
+* **match**: a regular expression matching the requested URL, capturing groups can be specified and values reused in the handler using $1, $2...
+* One of these handlers:
+    * **file**: file redirection
+```javascript
+{
+// default access to index.html
+  match: /^\/$/,
+  file: path.join(__dirname, 'index.html')
+}, {
+  // mapping to file access
+  match: /(.*)/,
+  file: path.join(__dirname, '$1')
+}
+```
+    * **mock**: transmit to the mock server by redirecting to an AJAX request
+```javascript
+{
+  // mock server mapping (with a different base URL)
+  match: /^\/api\/(.*)/,
+  mock: '/odata/TODO_SRV/$1'
+}
+```
+    * **ui5resources**: transmit to UI5 resources loaded by node-ui5
+```javascript
+{
+  match: /\/resources\/(.*)/,
+  ui5resources: '$1'
+}
+```
+    * **url**: URL redirection
+```javascript
+{
+  // http/https proxy
+  match: /^\/proxy\/(https?)\/(.*)/,
+  url: '$1://$2'
+}
+```
+    * **custom**: a function receiving [request](https://nodejs.org/dist/latest-v10.x/docs/api/http.html#http_class_http_incomingmessage) and [response](https://nodejs.org/dist/latest-v10.x/docs/api/http.html#http_class_http_serverresponse). Capturing group values are transmitted as additional parameters
+```javascript
+{
+  match: /^\/echo\/(.*)$/,
+  custom: (request, response, textToEcho) => {
+    response.writeHead(200, {
+      'Content-Type': 'text/plain',
+      'Content-Length': textToEcho.length
+    })
+    response.end(textToEcho)
+  }
+}
 ```
 
 # How does it work ?
