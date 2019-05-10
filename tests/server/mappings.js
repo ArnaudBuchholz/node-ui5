@@ -5,7 +5,8 @@ const path = require('path')
 module.exports = [{
   // http/https proxy
   match: /^\/proxy\/(https?)\/(.*)/,
-  url: '$1://$2'
+  url: '$1://$2',
+  'unsecure-cookies': true
 }, {
   // ui5 resource access
   match: /\/resources\/(.*)/,
