@@ -1,8 +1,8 @@
 'use strict'
 
 require('colors')
-const fs = require('fs')
 const EventEmitter = require('events')
+const fs = require('fs')
 const http = require('http')
 const https = require('https')
 const mime = require('mime')
@@ -135,11 +135,12 @@ module.exports = function ({
   hostname = '127.0.0.1',
   port = 8080,
   mappings = [],
+  ssl,
   verbose = process.argv.some(param => ['--verbose', '--debug'].includes(param)),
   window
 }) {
   const eventEmitter = new EventEmitter()
-  const server = http.createServer((request, response) => {
+  const requestHandler = (request, response) => {
     request.start = new Date()
     request.window = window
     if (verbose) {
@@ -179,9 +180,21 @@ module.exports = function ({
     })) {
       error(request, response, { message: 'not mapped' })
     }
-  })
+  }
+  let protocol
+  let server
+  if (ssl) {
+    protocol = 'https'
+    server = https.createServer({
+      key: fs.readFileSync(ssl.key),
+      cert: fs.readFileSync(ssl.cert)
+    }, requestHandler)
+  } else {
+    protocol = 'http'
+    server = http.createServer(requestHandler)
+  }
   server.listen(port, hostname, () => {
-    console.log(`Server running at http://${hostname}:${port}/`.yellow)
+    console.log(`Server running at ${protocol}://${hostname}:${port}/`.yellow)
     eventEmitter.emit('ready')
   })
   return eventEmitter
