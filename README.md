@@ -161,52 +161,29 @@ The options are:
 A mapping object is composed of at least two members:
 * **match**: a regular expression matching the requested URL, capturing groups can be specified and values reused in the handler using $1, $2...
 * One of these handlers:
+    * **mock**: transmit to the mock server by redirecting to an AJAX request
+    * **ui5resources**: transmit to UI5 resources loaded by node-ui5
+    * **url**: URL redirection
+    * **custom**: a function receiving [request](https://nodejs.org/dist/latest-v10.x/docs/api/http.html#http_class_http_incomingmessage) and [response](https://nodejs.org/dist/latest-v10.x/docs/api/http.html#http_class_http_serverresponse). Capturing group values are transmitted as additional parameters
     * **file**: file redirection
 
-```javascript
-{
-// default access to index.html
-  match: /^\/$/,
-  file: path.join(__dirname, 'index.html')
-}, {
-  // mapping to file access
-  match: /(.*)/,
-  file: path.join(__dirname, '$1')
-}
-```
-    * **mock**: transmit to the mock server by redirecting to an AJAX request
+Example:
 
 ```javascript
-{
+[{
   // mock server mapping (with a different base URL)
   match: /^\/api\/(.*)/,
   mock: '/odata/TODO_SRV/$1'
-}
-```
-
-    * **ui5resources**: transmit to UI5 resources loaded by node-ui5
-
-```javascript
-{
+}, {
+  // UI5 resources
   match: /\/resources\/(.*)/,
   ui5resources: '$1'
-}
-```
-
-    * **url**: URL redirection
-
-```javascript
-{
+}, {
   // http/https proxy
   match: /^\/proxy\/(https?)\/(.*)/,
   url: '$1://$2'
-}
-```
-
-    * **custom**: a function receiving [request](https://nodejs.org/dist/latest-v10.x/docs/api/http.html#http_class_http_incomingmessage) and [response](https://nodejs.org/dist/latest-v10.x/docs/api/http.html#http_class_http_serverresponse). Capturing group values are transmitted as additional parameters
-
-```javascript
-{
+}, {
+  // echo service
   match: /^\/echo\/(.*)$/,
   custom: (request, response, textToEcho) => {
     response.writeHead(200, {
@@ -215,7 +192,15 @@ A mapping object is composed of at least two members:
     })
     response.end(textToEcho)
   }
-}
+}, {
+  // default access to index.html
+  match: /^\/$/,
+  file: path.join(__dirname, 'index.html')
+}, {
+  // mapping to file access
+  match: /(.*)/,
+  file: path.join(__dirname, '$1')
+}]
 ```
 
 # How does it work ?
