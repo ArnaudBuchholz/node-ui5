@@ -162,6 +162,7 @@ A mapping object is composed of at least two members:
 * **match**: a regular expression matching the requested URL, capturing groups can be specified and values reused in the handler using $1, $2...
 * One of these handlers:
     * **file**: file redirection
+
 ```javascript
 {
 // default access to index.html
@@ -174,6 +175,7 @@ A mapping object is composed of at least two members:
 }
 ```
     * **mock**: transmit to the mock server by redirecting to an AJAX request
+
 ```javascript
 {
   // mock server mapping (with a different base URL)
@@ -181,14 +183,18 @@ A mapping object is composed of at least two members:
   mock: '/odata/TODO_SRV/$1'
 }
 ```
+
     * **ui5resources**: transmit to UI5 resources loaded by node-ui5
+
 ```javascript
 {
   match: /\/resources\/(.*)/,
   ui5resources: '$1'
 }
 ```
+
     * **url**: URL redirection
+
 ```javascript
 {
   // http/https proxy
@@ -196,7 +202,9 @@ A mapping object is composed of at least two members:
   url: '$1://$2'
 }
 ```
+
     * **custom**: a function receiving [request](https://nodejs.org/dist/latest-v10.x/docs/api/http.html#http_class_http_incomingmessage) and [response](https://nodejs.org/dist/latest-v10.x/docs/api/http.html#http_class_http_serverresponse). Capturing group values are transmitted as additional parameters
+
 ```javascript
 {
   match: /^\/echo\/(.*)$/,
