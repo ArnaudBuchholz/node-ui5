@@ -102,6 +102,14 @@ function redirectToUI5resource (request, resPath, response) {
   log(request, response, content.length)
 }
 
+function unsecureCookies (headers) {
+  ['Set-Cookie', 'set-cookie'].forEach(name => {
+    if (headers[name]) {
+      headers[name] = headers[name].map(cookie => cookie.replace(/\s*secure;/i, ''))
+    }
+  })
+}
+
 function redirectToUrl (request, url, response) {
   const handler = getUrlHandler(url)
   const {
@@ -110,6 +118,9 @@ function redirectToUrl (request, url, response) {
   } = request
   delete headers.host // Some websites rely on the host header
   const redirectedRequest = handler.request(url, { method, headers }, redirectedResponse => {
+    if (request.mapping['unsecure-cookies']) {
+      unsecureCookies(redirectedResponse.headers)
+    }
     response.writeHead(redirectedResponse.statusCode, redirectedResponse.headers)
     redirectedResponse
       .on('end', () => log(request, response, redirectedResponse.headers['content-length'] || 0))
@@ -149,6 +160,7 @@ module.exports = function ({
     if (mappings.every(mapping => {
       const match = mapping.match.exec(request.url)
       if (match) {
+        request.mapping = mapping
         let redirect
         let type
         if (types.every(member => {
