@@ -45,7 +45,8 @@ function getUrlHandler (url) {
   return http
 }
 
-function redirectToFile (request, filePath, response) {
+function redirectToFile (request, redirect, response) {
+  const filePath = /([^?]+)/.exec(redirect)[1]
   fs.stat(filePath, (err, stat) => {
     if (err || stat.isDirectory()) {
       error(request, response, { status: 404, message: 'Not found' })
