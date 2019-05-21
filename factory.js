@@ -37,11 +37,11 @@ module.exports = (userSettings = {}) => {
     debug
   })
     .then(result => {
-        bootInProgress = false
-        return result
+      bootInProgress = false
+      return result
     })
   if (synchronousBoot) {
-      deasync.loopWhile(() => bootInProgress)
+    deasync.loopWhile(() => bootInProgress)
   }
   return promise
 }
