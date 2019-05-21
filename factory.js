@@ -1,6 +1,7 @@
 'use strict'
 
 const browserFactory = require('./src/browser')
+const deasync = require('deasync')
 
 module.exports = (userSettings = {}) => {
   let {
@@ -10,7 +11,8 @@ module.exports = (userSettings = {}) => {
     fastButIncompleteSimulation = false,
     resourceroots = {},
     verbose = false,
-    debug = false
+    debug = false,
+    synchronousBoot = false
   } = userSettings
   process.argv.forEach(param => {
     if (param === '--verbose') {
@@ -24,7 +26,8 @@ module.exports = (userSettings = {}) => {
       debug = true
     }
   })
-  return browserFactory({
+  let bootInProgress = true
+  const promise = browserFactory({
     baseURL,
     bootstrapLocation,
     exposeAsGlobals,
@@ -33,4 +36,12 @@ module.exports = (userSettings = {}) => {
     verbose,
     debug
   })
+    .then(result => {
+        bootInProgress = false
+        return result
+    })
+  if (synchronousBoot) {
+      deasync.loopWhile(() => bootInProgress)
+  }
+  return promise
 }
