@@ -9,6 +9,7 @@ tools like
 [![devDependencies Status](https://david-dm.org/ArnaudBuchholz/node-ui5/dev-status.svg)](https://david-dm.org/ArnaudBuchholz/node-ui5?type=dev)
 [![node-ui5](http://img.shields.io/npm/dm/node-ui5.svg)](https://www.npmjs.org/package/node-ui5)
 [![MIT License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FArnaudBuchholz%2Fnode-ui5.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FArnaudBuchholz%2Fnode-ui5?ref=badge_shield)
 
 # Setup
 
@@ -228,3 +229,7 @@ make sure to declare the [certificate authority](https://en.wikipedia.org/wiki/C
 [`NODE_EXTRA_CA_CERTS`](https://nodejs.org/api/cli.html#cli_node_extra_ca_certs_file) or to ignore certificate errors by
 setting the environment variable
 [`NODE_TLS_REJECT_UNAUTHORIZED`](https://nodejs.org/api/cli.html#cli_node_tls_reject_unauthorized_value) to `0`.
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FArnaudBuchholz%2Fnode-ui5.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FArnaudBuchholz%2Fnode-ui5?ref=badge_large)
