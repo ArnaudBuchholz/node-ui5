@@ -9,6 +9,7 @@ tools like
 [![devDependencies Status](https://david-dm.org/ArnaudBuchholz/node-ui5/dev-status.svg)](https://david-dm.org/ArnaudBuchholz/node-ui5?type=dev)
 [![node-ui5](http://img.shields.io/npm/dm/node-ui5.svg)](https://www.npmjs.org/package/node-ui5)
 [![MIT License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FArnaudBuchholz%2Fnode-ui5.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FArnaudBuchholz%2Fnode-ui5?ref=badge_shield)
 
 # Setup
 
