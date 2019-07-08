@@ -3,7 +3,7 @@
 const { assert } = require('./common')
 
 require('../factory')({
-  bootstrapLocation: 'resources/sap-ui-core-unk.js'
+  bootstrapLocation: 'invalid-path/sap-ui-core.js'
 }).then(({ sap }) => {
   assert(() => !'unexpected success')
 }, reason => {
