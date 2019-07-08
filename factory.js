@@ -1,12 +1,13 @@
 'use strict'
 
+const bootstrapLocator = require('./src/bootstrapLocator')
 const browserFactory = require('./src/browser')
 const deasync = require('deasync')
 
 module.exports = (userSettings = {}) => {
   let {
     baseURL = 'http://node-ui5.server.net/',
-    bootstrapLocation = 'resources/sap-ui-core.js',
+    bootstrapLocation = '',
     exposeAsGlobals = false,
     fastButIncompleteSimulation = false,
     resourceroots = {},
@@ -27,18 +28,23 @@ module.exports = (userSettings = {}) => {
     }
   })
   let bootInProgress = true
-  const promise = browserFactory({
-    baseURL,
-    bootstrapLocation,
-    exposeAsGlobals,
-    fastButIncompleteSimulation,
-    resourceroots,
-    verbose,
-    debug
-  })
+  const promise = bootstrapLocator(bootstrapLocation)
+    .then(resolvedLocation => browserFactory({
+      baseURL,
+      bootstrapLocation: resolvedLocation,
+      exposeAsGlobals,
+      fastButIncompleteSimulation,
+      resourceroots,
+      verbose,
+      debug
+    }))
     .then(result => {
       bootInProgress = false
       return result
+    })
+    .catch(reason => {
+      bootInProgress = false
+      return Promise.reject(reason)
     })
   if (synchronousBoot) {
     deasync.loopWhile(() => bootInProgress)
