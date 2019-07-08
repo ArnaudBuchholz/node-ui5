@@ -15,6 +15,15 @@ tools like
 
 * Use [npm](https://www.npmjs.com/) to install: `npm install node-ui5` *(don't forget `--save` if part of your project)*
 
+# Breaking change
+
+In order to reduce the package size (and comply with the licensing requirements), starting from major version 3, node-ui5 does not include the following packages / resources:
+* [jsdom](https://www.npmjs.com/package/jsdom)
+* [@openui5/sap.ui.core](https://www.npmjs.com/package/@openui5/sap.ui.core)
+* [@ui5/cli](https://www.npmjs.com/package/@ui5/cli)
+
+It means that if jsdom is not already installed, node-ui5 will run with `fastButIncompleteSimulation` set to true.
+
 # Usage
 
 ```javascript
