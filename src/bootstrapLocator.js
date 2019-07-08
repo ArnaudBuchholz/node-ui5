@@ -10,7 +10,6 @@ const UI5_CDN = {
   open: 'https://openui5.hana.ondemand.com',
   sap: 'https://ui5.sap.com'
 }
-const reLocator = /(open|sap)ui5@(latest|\d\.\d+\.\d+)(\/debug)?/
 
 function cdn (flavor, version, debug) {
   return gpf.http.get(`${UI5_CDN[flavor]}/neo-app.json`)
@@ -39,11 +38,18 @@ function locateLocal () {
     .then(() => LOCAL_DIST)
 }
 
+const WEB_LOCATION = /^https?:\/\//
+
+const UI5_LOCATOR = /(open|sap)ui5@(latest|\d\.\d+\.\d+)(\/debug)?/
+
 module.exports = function (bootstrapLocation) {
   if (!bootstrapLocation) {
     return locateLocal().catch(() => cdn('open', 'latest'))
   }
-  const match = reLocator.exec(bootstrapLocation)
+  if (WEB_LOCATION.exec(bootstrapLocation)) {
+    return Promise.resolve(bootstrapLocation);
+  }
+  const match = UI5_LOCATOR.exec(bootstrapLocation)
   if (match) {
     return cdn(match[1], match[2], match[3])
   }
