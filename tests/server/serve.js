@@ -13,7 +13,10 @@ require('../../factory')({
     require('../../serve')({
       window,
       port: 8080,
-      mappings: require('./mappings')
+      mappings: [{
+        match: /^\/api\/(.*)/,
+        mock: '/odata/TODO_SRV/$1'
+      }]
     }).on('ready', () => {
       if (process.send) {
         process.send('ready')
