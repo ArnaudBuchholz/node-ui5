@@ -26,6 +26,14 @@ module.exports = async function (settings) {
     selector = 'mindom'
   } else {
     selector = 'jsdom'
+    try {
+      require('jsdom')
+    } catch (e) {
+      if (settings.debug) {
+        console.log(`jsdom not detected, switching to fast implementation`.gray)
+      }
+      selector = 'mindom'
+    }
   }
   const start = new Date()
   window = require(`./${selector}/factory`)(settings)
