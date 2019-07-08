@@ -1,3 +1,3 @@
 require('../factory')({
-  bootstrapLocation: 'resources/sap-ui-core-dbg.js'
+  bootstrapLocation: 'openui5@latest/debug'
 }).then(require('./odata-client'))
