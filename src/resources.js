@@ -5,9 +5,6 @@ const fs = require('fs')
 const path = require('path')
 const gpf = require('gpf-js')
 const debug = require('./debug')
-const moduleHelper = require('./moduleHelper')
-const ui5corePath = moduleHelper.find('@openui5/sap.ui.core')
-const ui5CoreDistResourcePath = path.join(ui5corePath, 'dist/resources')
 const RESOURCE_ROOT_PREFIX = '/_/'
 
 function trace (settings, url, status) {
