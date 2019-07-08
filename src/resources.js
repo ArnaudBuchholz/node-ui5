@@ -57,7 +57,7 @@ module.exports = {
     if (url.startsWith(sResourceRoot)) {
       return sendFile(settings, url, url.substring(sResourceRoot.length))
     }
-    const reResource = new RegExp(`^(?:${settings.baseURL})?resources/(.*)$`)
+    const reResource = new RegExp(`^(?:${settings.baseURL})?\bresources/(.*)$`)
     const match = reResource.exec(url)
     if (!match) {
       return
