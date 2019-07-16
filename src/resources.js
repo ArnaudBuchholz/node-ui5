@@ -66,7 +66,7 @@ module.exports = {
       trace(settings, url, 'css'.green)
       return '/* style must not be empty */'
     }
-    return sendFile(settings, url, path.join(ui5CoreDistResourcePath, match[1]))
+    return sendFile(settings, url, path.join(settings.bootstrapLocation, '..', match[1]))
   }
 
 }
