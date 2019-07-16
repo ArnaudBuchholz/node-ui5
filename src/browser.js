@@ -21,7 +21,6 @@ module.exports = async function (settings) {
   })
 
   let selector
-  let window
   if (settings.fastButIncompleteSimulation) {
     selector = 'mindom'
   } else {
@@ -36,7 +35,7 @@ module.exports = async function (settings) {
     }
   }
   const start = new Date()
-  window = require(`./${selector}/factory`)(settings)
+  const window = require(`./${selector}/factory`)(settings)
   if (settings.debug) {
     console.log(`Loaded '${selector}' implementation: ${new Date() - start}ms`.gray)
   }
