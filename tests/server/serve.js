@@ -14,7 +14,7 @@ require('../../factory')({
       window,
       port: 8080,
       mappings: [{
-        match: /^\/api\/(.*)/,
+        match: /^\/odata\/TODO_SRV\/(.*)/,
         mock: '/odata/TODO_SRV/$1'
       }]
     }).on('ready', () => {
