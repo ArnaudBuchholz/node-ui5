@@ -53,7 +53,7 @@ sap.ui.require([
   }
 
   function _setIfNotSet (oTodoItemSet, sPropertyName, vDefaultValue) {
-    if (!oTodoItemSet.hasOwnProperty(sPropertyName)) {
+    if (!Object.prototype.hasOwnProperty.call(oTodoItemSet, sPropertyName)) {
       oTodoItemSet[sPropertyName] = vDefaultValue
     }
   }
