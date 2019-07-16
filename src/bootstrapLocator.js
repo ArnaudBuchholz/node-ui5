@@ -47,7 +47,7 @@ module.exports = function (bootstrapLocation) {
     return locateLocal().catch(() => cdn('open', 'latest'))
   }
   if (WEB_LOCATION.exec(bootstrapLocation)) {
-    return Promise.resolve(bootstrapLocation);
+    return Promise.resolve(bootstrapLocation)
   }
   const match = UI5_LOCATOR.exec(bootstrapLocation)
   if (match) {
