@@ -1,7 +1,7 @@
 'use strict'
 
-const reserve = require('../reserve/serve')
-const log = require('../reserve/log')
+const reserve = require('reserve/serve')
+const log = require('reserve/log')
 
 process.on('unhandledRejection', error => { // Absorb
   console.log('unhandledRejection'.red, (error.message || error.toString()).gray)
