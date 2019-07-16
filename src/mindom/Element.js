@@ -175,7 +175,7 @@ class Element extends Node {
         return { ...consolidated, ...dictionary }
       }, {
         '': XHTML_NAMESPACE,
-        'xmlns': 'http://www.w3.org/2000/xmlns/'
+        xmlns: 'http://www.w3.org/2000/xmlns/'
       })
   }
 
