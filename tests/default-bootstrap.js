@@ -1,1 +1,1 @@
-require('..').then(require('./odata-client'))
+require('./odata-client')(require('..'))
