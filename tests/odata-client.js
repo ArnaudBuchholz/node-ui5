@@ -2,7 +2,7 @@
 
 const { assert } = require('./common')
 
-module.exports = ({ sap }) => {
+module.exports = oNodeUI5Promise => oNodeUI5Promise.then(({ sap }) => {
   sap.ui.require([
     'sap/ui/model/odata/v2/ODataModel'
   ], async function (ODataModel) {
@@ -21,4 +21,7 @@ module.exports = ({ sap }) => {
       }
     })
   })
-}
+}, reason => {
+  console.error(reason)
+  assert(() => !'node-ui5 promise rejected')
+})
