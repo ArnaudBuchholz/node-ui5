@@ -32,6 +32,18 @@ function sendFile (settings, url, filePath) {
   return null // resource but not found
 }
 
+function sendUrl (settings, url) {
+  return gpf.http.get(url).then(response => {
+    if (response.status.toString().startsWith('2')) {
+      trace(settings, url, `${response.status} ${response.responseText.length}`.green)
+      return inject(settings, url, response.responseText)
+    } else {
+      trace(settings, url, `${response.status}`.red)
+      return ''
+    }
+  })
+}
+
 module.exports = {
 
   declare: (settings, resourceroot) => {
@@ -42,20 +54,17 @@ module.exports = {
   },
 
   read: (settings, url) => {
-    if (url.startsWith('http') && url === settings.bootstrapLocation) {
-      return gpf.http.get(url).then(response => {
-        if (response.status.toString().startsWith('2')) {
-          trace(settings, url, `${response.status} ${response.responseText.length}`.green)
-          return inject(settings, url, response.responseText)
-        } else {
-          trace(settings, url, `${response.status}`.red)
-          return ''
-        }
-      })
+    const isHttpUrl = url.startsWith('http')
+    if (isHttpUrl && url === settings.bootstrapLocation) {
+      return sendUrl(settings, url)
     }
     const sResourceRoot = settings.baseURL + RESOURCE_ROOT_PREFIX
     if (url.startsWith(sResourceRoot)) {
       return sendFile(settings, url, url.substring(sResourceRoot.length))
+    }
+    const dirname = path.dirname(settings.bootstrapLocation)
+    if (!isHttpUrl && url.startsWith(dirname)) {
+      return sendFile(settings, url, url)
     }
     const reResource = new RegExp(`^(?:${settings.baseURL})?\bresources/(.*)$`)
     const match = reResource.exec(url)
@@ -66,7 +75,7 @@ module.exports = {
       trace(settings, url, 'css'.green)
       return '/* style must not be empty */'
     }
-    return sendFile(settings, url, path.join(settings.bootstrapLocation, '..', match[1]))
+    return sendFile(settings, url, path.join(dirname, '..', match[1]))
   }
 
 }
