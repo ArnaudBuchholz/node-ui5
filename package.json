@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "standard --fix & node tests/all --fast",
-    "lint": "standard --fix",
-    "postinstall": "node postinstall.js"
+    "lint": "standard --fix"
   },
   "repository": {
     "type": "git",
@@ -33,7 +32,6 @@
   },
   "devDependencies": {
     "@openui5/sap.ui.core": "^1.67.1",
-    "@ui5/cli": "^1.6.0",
     "js-yaml": "^3.13.1",
     "lodash": ">=4.17.13",
     "standard": "^13.0.2"
