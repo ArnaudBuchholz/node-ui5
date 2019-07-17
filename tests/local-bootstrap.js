@@ -1,7 +1,5 @@
 const { join } = require('path')
-const localBootstrap = join(__dirname, '../node_modules/@openui5/sap.ui.core/dist/resources/sap-ui-core.js')).replace(/\\/g, '/')
-console.log(localBootstrap)
-require('../factory')({
+require('./odata-client')(require('../factory')({
   debug: true,
-  bootstrapLocation: localBootstrap
-}).then(require('./odata-client'))
+  bootstrapLocation: join(__dirname, '../node_modules/@openui5/sap.ui.core/src/sap-ui-core.js')
+}))
