@@ -2,8 +2,12 @@
 
 require('colors')
 const debug = require('./debug')
+const fs = require('fs')
 const path = require('path')
 const resources = require('./resources')
+const { promisify } = require('util')
+
+const statAsync = promisify(fs.stat)
 
 module.exports = async function (settings) {
   let promiseResolve
@@ -64,7 +68,7 @@ module.exports = async function (settings) {
   // Create the UI5 bootstrap node
   var ui5Boot = window.document.createElement('script')
   ui5Boot.id = 'sap-ui-bootstrap'
-  ui5Boot.setAttribute('src', settings.bootstrapLocation)
+  ui5Boot.setAttribute('src', resources.declare(settings.bootstrapLocation))
   ui5Boot.setAttribute('data-sap-ui-compatVersion', 'edge')
   ui5Boot.setAttribute('data-sap-ui-frameOptions', 'allow')
   ui5Boot.setAttribute('data-sap-ui-resourceroots', JSON.stringify(resourceroots))
