@@ -2,12 +2,8 @@
 
 require('colors')
 const debug = require('./debug')
-const fs = require('fs')
 const path = require('path')
 const resources = require('./resources')
-const { promisify } = require('util')
-
-const statAsync = promisify(fs.stat)
 
 module.exports = async function (settings) {
   let promiseResolve
