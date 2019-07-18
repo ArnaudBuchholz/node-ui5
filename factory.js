@@ -33,6 +33,7 @@ module.exports = (userSettings = {}) => {
     .then(resolvedLocation => browserFactory({
       baseURL,
       bootstrapLocation: resolvedLocation,
+      bootstrapCache,
       exposeAsGlobals,
       fastButIncompleteSimulation,
       resourceroots,
