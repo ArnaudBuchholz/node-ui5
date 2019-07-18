@@ -63,12 +63,13 @@ module.exports = async function (settings) {
 
   if (settings.debug) {
     debug.configure(settings, window)
+    console.log(`Bootstrap location: ${settings.bootstrapLocation}`.gray)
   }
 
   // Create the UI5 bootstrap node
   var ui5Boot = window.document.createElement('script')
   ui5Boot.id = 'sap-ui-bootstrap'
-  ui5Boot.setAttribute('src', resources.declare(settings.bootstrapLocation))
+  ui5Boot.setAttribute('src', resources.declare(settings, settings.bootstrapLocation))
   ui5Boot.setAttribute('data-sap-ui-compatVersion', 'edge')
   ui5Boot.setAttribute('data-sap-ui-frameOptions', 'allow')
   ui5Boot.setAttribute('data-sap-ui-resourceroots', JSON.stringify(resourceroots))
