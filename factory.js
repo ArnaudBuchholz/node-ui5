@@ -8,6 +8,7 @@ module.exports = (userSettings = {}) => {
   let {
     baseURL = 'http://node-ui5.server.net/',
     bootstrapLocation = '',
+    bootstrapCache = '',
     exposeAsGlobals = false,
     fastButIncompleteSimulation = false,
     resourceroots = {},
