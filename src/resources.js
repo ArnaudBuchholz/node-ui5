@@ -61,8 +61,7 @@ module.exports = {
 
   read: (settings, url) => {
     console.log('RES'.gray, url.gray)
-    const isHttpUrl = url.startsWith('http')
-    if (isHttpUrl && url === settings.bootstrapLocation) {
+    if (url.startsWith(settings.bootstrap.base)) {
       return sendUrl(settings, url)
     }
     const sResourceRoot = settings.baseURL + RESOURCE_ROOT_PREFIX
