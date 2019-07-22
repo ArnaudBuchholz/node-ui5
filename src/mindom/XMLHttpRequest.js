@@ -24,7 +24,7 @@ class XMLHttpRequest extends EventTarget {
       headers: {},
       asynchronous: asynchronous !== false
     }
-    if (this[$settings].debug) {
+    if (true || this[$settings].debug) {
       console.log('XHR'.magenta, `${method} ${url}`.gray)
     }
     if (method === 'GET') {
@@ -33,7 +33,7 @@ class XMLHttpRequest extends EventTarget {
   }
 
   setRequestHeader (name, value) {
-    if (this[$settings].debug) {
+    if (true || this[$settings].debug) {
       console.log('XHR'.magenta, `HEADER >> ${name}: ${value}`.gray)
     }
     this[$request].headers[name] = value
@@ -63,7 +63,7 @@ class XMLHttpRequest extends EventTarget {
   }
 
   _debugHeaders (headers) {
-    if (this[$settings].debug) {
+    if (true || this[$settings].debug) {
       Object.keys(headers).forEach(name => {
         console.log('XHR'.magenta, `HEADER << ${name}: ${headers[name]}`.gray)
       })
@@ -71,7 +71,7 @@ class XMLHttpRequest extends EventTarget {
   }
 
   _debugText (type, text) {
-    if (this[$settings].debug) {
+    if (true || this[$settings].debug) {
       console.log('XHR'.magenta, `${type} (content-length: ${text.length})`.gray)
       text.split('\n').every((line, index) => {
         if (index === 6) {
@@ -85,27 +85,31 @@ class XMLHttpRequest extends EventTarget {
   }
 
   send (data) {
-    const content = this[$content]
-    if (undefined !== content) {
-      return this._setResult(content || '', content !== null ? 200 : 404)
-    }
-    const request = this[$request]
-    if (!request.url.startsWith('http')) {
-      // No way to handle this request
-      return this._setResult('', 501)
-    }
-    request.data = data
-    if (data) {
-      this._debugText('REQUEST >>', data)
-    }
     let requestInProgress = true
-    gpf.http.request(request).then(response => {
-      this[$headers] = response.headers
-      this._debugHeaders(response.headers)
-      this._debugText('RESPONSE <<', response.responseText)
-      this._setResult(response.responseText, response.status)
-      requestInProgress = false
-    })
+    Promise.resolve(this[$content])
+      .then(content => {
+        if (null !== content) {
+          return this._setResult(content || '', content !== null ? 200 : 404)
+        }
+        const request = this[$request]
+        if (!request.url.startsWith('http')) {
+          // No way to handle this request
+          return this._setResult('', 501)
+        }
+        request.data = data
+        if (data) {
+          this._debugText('REQUEST >>', data)
+        }
+        return gpf.http.request(request).then(response => {
+          this[$headers] = response.headers
+          this._debugHeaders(response.headers)
+          this._debugText('RESPONSE <<', response.responseText)
+          this._setResult(response.responseText, response.status)
+        })
+      })
+      .finally(() => {
+        requestInProgress = false
+      })
     if (!request.asynchronous) {
       deasync.loopWhile(() => requestInProgress)
     }
