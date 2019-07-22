@@ -67,6 +67,7 @@ module.exports = async function (settings) {
   ui5Boot.id = 'sap-ui-bootstrap'
   ui5Boot.setAttribute('src', resources.declare(settings, settings.bootstrapLocation))
   ui5Boot.setAttribute('data-sap-ui-compatVersion', 'edge')
+  ui5Boot.setAttribute('data-sap-ui-async', 'true')
   ui5Boot.setAttribute('data-sap-ui-frameOptions', 'allow')
   ui5Boot.setAttribute('data-sap-ui-resourceroots', JSON.stringify(resourceroots))
   if (settings.debug) {
