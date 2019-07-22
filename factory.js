@@ -32,8 +32,11 @@ module.exports = (userSettings = {}) => {
   const promise = bootstrapLocator(bootstrapLocation)
     .then(resolvedLocation => browserFactory({
       baseURL,
-      bootstrapLocation: resolvedLocation,
-      bootstrapCache,
+      bootstrap: {
+        location: resolvedLocation,
+        base: resolvedLocation.match(/^(.*\/)/)[1],
+        cache: bootstrapCache
+      },
       exposeAsGlobals,
       fastButIncompleteSimulation,
       resourceroots,
