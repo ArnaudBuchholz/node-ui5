@@ -40,7 +40,7 @@ class XMLHttpRequest extends EventTarget {
   }
 
   _setResult (responseText, status) {
-    if (this[$settings].verbose) {
+    if (this[$settings].traces.verbose) {
       const request = this[$request]
       let report
       if (status.toString().startsWith(2)) {
@@ -48,9 +48,7 @@ class XMLHttpRequest extends EventTarget {
       } else {
         report = status.toString().red
       }
-      if (this[$content]) {
-        report += ' sync resource'.magenta
-      } else if (!request.asynchronous) {
+      if (!request.asynchronous) {
         report += ' synchronous'.magenta
       }
       console.log('XHR'.magenta, `${request.method} ${request.url}`.cyan, report)
@@ -85,13 +83,14 @@ class XMLHttpRequest extends EventTarget {
   }
 
   send (data) {
+    const request = this[$request]
+    console.log('XHR'.magenta, 'send'.magenta, request.url.gray)
     let requestInProgress = true
     Promise.resolve(this[$content])
       .then(content => {
         if (null !== content) {
-          return this._setResult(content || '', content !== null ? 200 : 404)
+          return this._setResult(content || '', content ? 200 : 404)
         }
-        const request = this[$request]
         if (!request.url.startsWith('http')) {
           // No way to handle this request
           return this._setResult('', 501)
@@ -111,7 +110,10 @@ class XMLHttpRequest extends EventTarget {
         requestInProgress = false
       })
     if (!request.asynchronous) {
+      console.log('XHR'.magenta, request.url.gray, 'sync send'.magenta)
       deasync.loopWhile(() => requestInProgress)
+    } else {
+      console.log('XHR'.magenta, request.url.gray, 'async send'.magenta)
     }
   }
 
