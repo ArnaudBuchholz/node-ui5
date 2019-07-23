@@ -13,13 +13,13 @@ const readFileAsync = promisify(fs.readFile)
 const RESOURCE_ROOT_PREFIX = '/_/'
 
 function trace (settings, url, status) {
-  if (settings.verbose) {
+  if (settings.traces.verbose) {
     console.log('RES'.magenta, url.cyan, status)
   }
 }
 
 function inject (settings, url, content) {
-  if (settings.debug) {
+  if (settings.traces.ui5) {
     return debug.inject(settings, url, content)
   }
   return content
@@ -60,7 +60,6 @@ module.exports = {
   },
 
   read: (settings, url) => {
-    console.log('RES'.gray, url.gray)
     if (url.startsWith(settings.bootstrap.base)) {
       return sendUrl(settings, url)
     }
@@ -68,22 +67,7 @@ module.exports = {
     if (url.startsWith(sResourceRoot)) {
       return sendFile(settings, url, url.substring(sResourceRoot.length))
     }
-    console.log('RES'.gray, url.gray, 'NOPE'.red)
-    return Promise.resolve(null)
-    // const dirname = path.dirname(settings.bootstrapLocation)
-    // if (!isHttpUrl && url.startsWith(dirname)) {
-    //   return sendFile(settings, url, url)
-    // }
-    // const reResource = new RegExp(`^(?:${settings.baseURL})?\bresources/(.*)$`)
-    // const match = reResource.exec(url)
-    // if (!match) {
-    //   return
-    // }
-    // if (url.endsWith('css')) {
-    //   trace(settings, url, 'css'.green)
-    //   return '/* style must not be empty */'
-    // }
-    // return sendFile(settings, url, path.join(dirname, '..', match[1]))
+    return null
   }
 
 }
