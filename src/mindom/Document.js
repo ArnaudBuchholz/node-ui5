@@ -91,6 +91,7 @@ class Document extends Element {
         const content = script.textContent
         this[$window].eval(content)
         this[$scripts].shift()
+        script.dispatchEvent({ type: 'load' })
         if (this[$scripts].length) {
           this._processScripts()
         }
