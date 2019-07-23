@@ -4,6 +4,15 @@ const bootstrapLocator = require('./src/bootstrapLocator')
 const browserFactory = require('./src/browser')
 const deasync = require('deasync')
 
+const traces = new Proxy({
+  verbose: false,
+  debug: false
+}, {
+  get: (obj, property) => {
+    return obj.debug || obj[property]
+  }
+})
+
 module.exports = (userSettings = {}) => {
   let {
     baseURL = 'http://node-ui5.server.net/',
@@ -16,18 +25,11 @@ module.exports = (userSettings = {}) => {
     debug = false,
     synchronousBoot = false
   } = userSettings
-  process.argv.forEach(param => {
-    if (param === '--verbose') {
-      verbose = true
-    }
-    if (param === '--fast') {
-      fastButIncompleteSimulation = true
-    }
-    if (param === '--debug') {
-      verbose = true
-      debug = true
-    }
-  })
+  traces.verbose = verbose || process.argv.some(param => param === '--verbose')
+  traces.debug = debug  || process.argv.some(param => param === '--debug')
+  process.argv
+    .filter(param => param.startsWith('--trace:'))
+    .forEach(param => traces[param.substring(8)] = true)
   let bootInProgress = true
   const promise = bootstrapLocator(bootstrapLocation)
     .then(resolvedLocation => browserFactory({
@@ -40,8 +42,7 @@ module.exports = (userSettings = {}) => {
       exposeAsGlobals,
       fastButIncompleteSimulation,
       resourceroots,
-      verbose,
-      debug
+      traces
     }))
     .then(result => {
       bootInProgress = false
