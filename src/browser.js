@@ -28,7 +28,7 @@ module.exports = async function (settings) {
     try {
       require('jsdom')
     } catch (e) {
-      if (settings.debug) {
+      if (settings.traces.nodeui5) {
         console.log(`jsdom not detected, switching to fast implementation`.gray)
       }
       selector = 'mindom'
@@ -36,7 +36,7 @@ module.exports = async function (settings) {
   }
   const start = new Date()
   const window = require(`./${selector}/factory`)(settings)
-  if (settings.debug) {
+  if (settings.traces.performance) {
     console.log(`Loaded '${selector}' implementation: ${new Date() - start}ms`.gray)
   }
 
@@ -47,7 +47,7 @@ module.exports = async function (settings) {
         global.window = window
         global.sap = sap
       }
-      if (settings.debug) {
+      if (settings.traces.performance) {
         console.log(`UI5 loading time: ${new Date() - start}ms`.gray)
       }
       promiseResolve({ window, sap })
