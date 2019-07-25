@@ -88,7 +88,7 @@ class XMLHttpRequest extends EventTarget {
     let requestInProgress = true
     Promise.resolve(this[$content])
       .then(content => {
-        if (null !== content) {
+        if (content !== null) {
           return this._setResult(content || '', content ? 200 : 404)
         }
         if (!request.url.startsWith('http')) {
