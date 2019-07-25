@@ -3,15 +3,7 @@
 const bootstrapLocator = require('./src/bootstrapLocator')
 const browserFactory = require('./src/browser')
 const deasync = require('deasync')
-
-const traces = new Proxy({
-  verbose: false,
-  debug: false
-}, {
-  get: (obj, property) => {
-    return obj.debug || obj[property]
-  }
-})
+const Traces = require('./src/Traces')
 
 module.exports = (userSettings = {}) => {
   let {
@@ -22,16 +14,12 @@ module.exports = (userSettings = {}) => {
     fastButIncompleteSimulation = false,
     resourceroots = {},
     verbose = false,
-    debug = false,
+    debug = false, // Might be an object
     synchronousBoot = false
   } = userSettings
-  traces.verbose = verbose || process.argv.some(param => param === '--verbose')
-  traces.debug = debug  || process.argv.some(param => param === '--debug')
-  process.argv
-    .filter(param => param.startsWith('--trace:'))
-    .forEach(param => traces[param.substring(8)] = true)
+  const traces = new Traces(verbose, debug)
   let bootInProgress = true
-  const promise = bootstrapLocator(bootstrapLocation)
+  const promise = bootstrapLocator(traces, bootstrapLocation)
     .then(resolvedLocation => browserFactory({
       baseURL,
       bootstrap: {
