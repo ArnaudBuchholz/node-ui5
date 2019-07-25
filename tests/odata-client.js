@@ -18,6 +18,10 @@ module.exports = oNodeUI5Promise => oNodeUI5Promise.then(({ sap }) => {
           console.log(product.Name.padEnd(20, ' '), product.Description)
         })
         assert(() => data.results.length !== 0)
+      },
+      error: reason =>  {
+        console.error(reason)
+        assert(() => !'read failed')
       }
     })
   })
