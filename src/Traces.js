@@ -7,13 +7,10 @@ const INFO = Symbol('info')
 const ERROR = Symbol('error')
 const SUCCESS = Symbol('success')
 
-const levels = {}
-
 class Traces {
-
   constructor (verbose, debug) {
     this._enabled = {}
-    if (typeof debug === "object") {
+    if (typeof debug === 'object') {
       Object.assign(this._enabled, debug)
     }
     if (verbose || process.argv.some(param => param === '--verbose')) {
@@ -24,14 +21,16 @@ class Traces {
     this._debug = debug === true || process.argv.some(param => param === '--debug')
     process.argv
       .filter(param => param.startsWith(debugPrefix))
-      .forEach(param => this._enabled[param.substring(debugPrefix.length)] = true, this)
+      .forEach(param => {
+        this._enabled[param.substring(debugPrefix.length)] = true
+      }, this)
     Object.getOwnPropertyNames(Traces.prototype)
       .filter(name => name !== 'constructor' && !name.startsWith('_'))
       .forEach(name => {
-      if (!this._debug && !this._enabled[name]) {
-        this[name] = noop
-      }
-    }, this)
+        if (!this._debug && !this._enabled[name]) {
+          this[name] = noop
+        }
+      }, this)
   }
 
   _out (type, ...parts) {
@@ -70,7 +69,6 @@ class Traces {
   console () {
     return true
   }
-
 }
 
 Traces.INFO = INFO
