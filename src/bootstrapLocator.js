@@ -64,10 +64,10 @@ function locate (bootstrapLocation) {
 }
 
 module.exports = function (traces, bootstrapLocation) {
-  traces.boot(`'${bootstrapLocation}'`)
+  traces.boot(`>> '${bootstrapLocation}'`)
   return locate(bootstrapLocation)
     .then(resolvedLocation => {
-      traces.boot(`'${resolvedLocation}'`, Traces.SUCCESS)
+      traces.boot(`<< '${resolvedLocation}'`, Traces.SUCCESS)
       return resolvedLocation
     }, reason => {
       traces.boot(reason.toString(), Traces.ERROR)
