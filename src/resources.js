@@ -2,12 +2,10 @@
 
 require('colors')
 const fs = require('fs')
-const path = require('path')
 const gpf = require('gpf-js')
 const debug = require('./debug')
 const { promisify } = require('util')
 const Traces = require('./Traces')
-
 
 const accessAsync = promisify(fs.access)
 const readFileAsync = promisify(fs.readFile)
@@ -23,7 +21,7 @@ function inject (settings, url, content) {
 
 async function sendFile (settings, url, filePath) {
   await accessAsync(filePath, fs.constants.R_OK)
-    .then(() => fs.readFileASync(filePath))
+    .then(() => readFileAsync(filePath))
     .then(buffer => buffer.toString())
     .then(content => {
       settings.traces.resource(url, content.length.toString(), Traces.SUCCESS)
