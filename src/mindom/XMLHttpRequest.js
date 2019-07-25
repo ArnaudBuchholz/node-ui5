@@ -4,12 +4,15 @@ const gpf = require('gpf-js')
 const deasync = require('deasync')
 const EventTarget = require('./EventTarget')
 const resources = require('../resources')
+const Traces = require('../Traces')
 
 const { $settings } = require('./const')
 const $content = Symbol('content')
 const $request = Symbol('request')
 const $headers = Symbol('headers')
-const $withCredentials = Symbol('headers')
+const $withCredentials = Symbol('withCredentials')
+
+let _lastId = 0
 
 class XMLHttpRequest extends EventTarget {
   constructor (settings) {
@@ -17,42 +20,41 @@ class XMLHttpRequest extends EventTarget {
     this[$settings] = settings
   }
 
+  _trace (text, status = '', level = Traces.INFO) {
+    this[$settings].traces.network(this[$request].id, text, status, level)
+  }
+
   open (method, url, asynchronous) {
     this[$request] = {
+      id: ++_lastId,
       method,
       url,
       headers: {},
       asynchronous: asynchronous !== false
     }
-    if (true || this[$settings].debug) {
-      console.log('XHR'.magenta, `${method} ${url}`.gray)
-    }
+    this._trace(`${method} ${url}`)
     if (method === 'GET') {
       this[$content] = resources.read({ ...this[$settings], verbose: false }, url)
     }
   }
 
   setRequestHeader (name, value) {
-    if (true || this[$settings].debug) {
-      console.log('XHR'.magenta, `HEADER >> ${name}: ${value}`.gray)
-    }
+    this._trace(`HEADER >> ${name}: ${value}`)
     this[$request].headers[name] = value
   }
 
   _setResult (responseText, status) {
-    if (this[$settings].traces.verbose) {
-      const request = this[$request]
-      let report
-      if (status.toString().startsWith(2)) {
-        report = `${status} ${responseText.length}`.green
-      } else {
-        report = status.toString().red
-      }
-      if (!request.asynchronous) {
-        report += ' synchronous'.magenta
-      }
-      console.log('XHR'.magenta, `${request.method} ${request.url}`.cyan, report)
+    const request = this[$request]
+    let traceStatus
+    let traceLevel
+    if (status.toString().startsWith(2)) {
+      traceStatus = `${status} ${responseText.length}`
+      traceLevel = Traces.SUCCESS
+    } else {
+      traceStatus = status.toString()
+      traceLevel = Traces.ERROR
     }
+    this._trace(`${request.method} ${request.url}`, traceStatus, traceLevel)
     Object.defineProperty(this, 'readyState', { get: () => 4 })
     Object.defineProperty(this, 'responseText', { get: () => responseText || '' })
     Object.defineProperty(this, 'status', { get: () => status })
@@ -61,30 +63,20 @@ class XMLHttpRequest extends EventTarget {
   }
 
   _debugHeaders (headers) {
-    if (true || this[$settings].debug) {
-      Object.keys(headers).forEach(name => {
-        console.log('XHR'.magenta, `HEADER << ${name}: ${headers[name]}`.gray)
-      })
-    }
+    Object.keys(headers).forEach(name => this._trace(`HEADER << ${name}: ${headers[name]}`), this)
   }
 
   _debugText (type, text) {
-    if (true || this[$settings].debug) {
-      console.log('XHR'.magenta, `${type} (content-length: ${text.length})`.gray)
-      text.split('\n').every((line, index) => {
-        if (index === 6) {
-          console.log('XHR'.magenta, `${type}  ...`.gray)
-        } else {
-          console.log('XHR'.magenta, `${type}  ${line}`.gray)
-        }
-        return index < 6
-      })
+    this._trace(`${type} (content-length: ${text.length})`)
+    const lines = text.split('\n')
+    lines.slice(0, 6).forEach(line => this._trace(`${type}  ${line}`), this)
+    if (lines.length > 5) {
+      this._trace(`${type}  ...`)
     }
   }
 
   send (data) {
     const request = this[$request]
-    console.log('XHR'.magenta, 'send'.magenta, request.url.gray)
     let requestInProgress = true
     Promise.resolve(this[$content])
       .then(content => {
@@ -110,10 +102,10 @@ class XMLHttpRequest extends EventTarget {
         requestInProgress = false
       })
     if (!request.asynchronous) {
-      console.log('XHR'.magenta, request.url.gray, 'sync send'.magenta)
+      this._trace(`${request.method} ${request.url}`, 'sync send')
       deasync.loopWhile(() => requestInProgress)
     } else {
-      console.log('XHR'.magenta, request.url.gray, 'async send'.magenta)
+      this._trace(`${request.method} ${request.url}`, 'async send')
     }
   }
 
