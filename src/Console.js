@@ -16,7 +16,7 @@ class Console {
   }
 
   _output (method, ...params) {
-    if (this._settings.traces.verbose) {
+    if (this._settings.traces.console()) {
       console.log.apply(console, params
         .map(param => {
           if (typeof param === 'string') {
