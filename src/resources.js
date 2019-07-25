@@ -6,17 +6,13 @@ const path = require('path')
 const gpf = require('gpf-js')
 const debug = require('./debug')
 const { promisify } = require('util')
+const Traces = require('./Traces')
+
 
 const accessAsync = promisify(fs.access)
 const readFileAsync = promisify(fs.readFile)
 
 const RESOURCE_ROOT_PREFIX = '/_/'
-
-function trace (settings, url, status) {
-  if (settings.traces.verbose) {
-    console.log('RES'.magenta, url.cyan, status)
-  }
-}
 
 function inject (settings, url, content) {
   if (settings.traces.ui5) {
@@ -30,11 +26,11 @@ async function sendFile (settings, url, filePath) {
     .then(() => fs.readFileASync(filePath))
     .then(buffer => buffer.toString())
     .then(content => {
-      trace(settings, url, content.length.toString().green)
+      settings.traces.resource(url, content.length.toString(), Traces.SUCCESS)
       return inject(settings, url, content)
     })
     .catch(reason => {
-      trace(settings, url, reason.toString().red)
+      settings.traces.resource(url, reason.toString(), Traces.ERROR)
       return null
     })
 }
@@ -42,10 +38,10 @@ async function sendFile (settings, url, filePath) {
 async function sendUrl (settings, url) {
   const response = await gpf.http.get(url)
   if (response.status.toString().startsWith('2')) {
-    trace(settings, url, `${response.status} ${response.responseText.length}`.green)
+    settings.traces.resource(url, `${response.status} ${response.responseText.length}`, Traces.SUCCESS)
     return inject(settings, url, response.responseText)
   } else {
-    trace(settings, url, `${response.status}`.red)
+    settings.traces.resource(url, response.status.toString(), Traces.ERROR)
     return ''
   }
 }
