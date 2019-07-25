@@ -6,7 +6,7 @@ const deasync = require('deasync')
 const Traces = require('./src/Traces')
 
 module.exports = (userSettings = {}) => {
-  let {
+  const {
     baseURL = 'http://node-ui5.server.net/',
     bootstrapLocation = '',
     bootstrapCache = '',
