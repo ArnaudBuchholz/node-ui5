@@ -19,7 +19,7 @@ module.exports = oNodeUI5Promise => oNodeUI5Promise.then(({ sap }) => {
         })
         assert(() => data.results.length !== 0)
       },
-      error: reason =>  {
+      error: reason => {
         console.error(reason)
         assert(() => !'read failed')
       }
