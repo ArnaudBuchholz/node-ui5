@@ -3,9 +3,17 @@
 const debugPrefix = '--debug:'
 const noop = () => false
 
-const INFO = Symbol('info')
-const ERROR = Symbol('error')
-const SUCCESS = Symbol('success')
+const INFO = 0
+const ERROR = 1
+const SUCCESS = 2
+
+const NO_INFO = 1
+
+const types = {
+  boot: 'BOOT',
+  resource: 'RSRC',
+  network: 'XHRQ'
+}
 
 class Traces {
   constructor (verbose, debug) {
@@ -15,8 +23,8 @@ class Traces {
     }
     if (verbose || process.argv.some(param => param === '--verbose')) {
       this._enabled.console = true
-      this._enabled.network = true
-      this._enabled.resource = true
+      this._enabled.network = NO_INFO
+      this._enabled.resource = NO_INFO
     }
     this._debug = debug === true || process.argv.some(param => param === '--debug')
     process.argv
@@ -33,36 +41,55 @@ class Traces {
       }, this)
   }
 
-  _out (type, ...parts) {
-    const level = parts.pop()
-    const status = parts.pop()
-    let coloredStatus
-    let api
+  _computeApiAndColoredStatus (level, status) {
     if (level === ERROR) {
-      coloredStatus = status.red
-      api = console.error
-    } else {
-      api = console.log
-      if (level === SUCCESS) {
-        coloredStatus = status.green
-      } else {
-        coloredStatus = status.gray
+      return {
+        api: console.error,
+        coloredStatus: status.red
       }
     }
-    if (parts.length) {
-      api(type.magenta, parts.join(' ').gray, coloredStatus)
+    let coloredStatus
+    if (level === SUCCESS) {
+      coloredStatus = status.green
     } else {
-      api(type.magenta, coloredStatus)
+      coloredStatus = status.gray
     }
+    return {
+      api: console.log,
+      coloredStatus
+    }
+  }
+
+  _out (type, level, { text, status }) {
+    const traceType = types[type]
+    const { api, coloredStatus } = this._computeApiAndColoredStatus(level, status)
+    if (text) {
+      api(traceType.magenta, text.gray, coloredStatus)
+    } else {
+      api(traceType.magenta, coloredStatus)
+    }
+  }
+
+  _trace (type, level, content) {
+    if (this._enabled[type] === NO_INFO && level === INFO) {
+      return // ignore
+    }
+    this._out(type, level, content)
   }
 
   // Bootstrap related messages
   boot (message, level = INFO) {
-    this._out('BOOT', message, level)
+    this._trace('boot', level, { status: message })
   }
 
+  // Resource handling
   resource (url, status, level) {
-    this._out('RSRC', url, status, level)
+    this._trace('resource', level, { text: url, status })
+  }
+
+  // Network (XHR) handling
+  network (id, text, status = '', level = INFO) {
+    this._trace('network', level, { text: `[${id}] ${text}`, status })
   }
 
   // Enables window console messages
