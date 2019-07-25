@@ -3,6 +3,7 @@
 const fs = require('fs')
 const util = require('util')
 const gpf = require('gpf-js')
+const Traces = require('./traces')
 
 const statAsync = util.promisify(fs.stat)
 
@@ -42,7 +43,7 @@ const WEB_LOCATION = /^https?:\/\//
 
 const UI5_LOCATOR = /(open|sap)ui5@(latest|\d\.\d+\.\d+)(\/debug)?/
 
-module.exports = function (bootstrapLocation) {
+function locate (bootstrapLocation) {
   if (!bootstrapLocation) {
     return locateLocal().catch(() => cdn('open', 'latest'))
   }
@@ -59,5 +60,17 @@ module.exports = function (bootstrapLocation) {
         throw new Error('invalid path')
       }
       return bootstrapLocation
+    })
+}
+
+module.exports = function (traces, bootstrapLocation) {
+  traces.boot(`'${bootstrapLocation}'`)
+  return locate(bootstrapLocation)
+    .then(resolvedLocation => {
+      traces.boot(`'${resolvedLocation}'`, Traces.SUCCESS)
+      return resolvedLocation
+    }, reason => {
+      traces.boot(reason.toString(), Traces.ERROR)
+      throw reason
     })
 }
