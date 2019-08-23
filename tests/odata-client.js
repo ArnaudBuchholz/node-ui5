@@ -8,7 +8,8 @@ module.exports = oNodeUI5Promise => oNodeUI5Promise.then(({ sap }) => {
   ], async function (ODataModel) {
     console.log('Creating ODataModel...')
     const model = new ODataModel({
-      serviceUrl: 'https://services.odata.org/V2/OData/OData.svc'
+      serviceUrl: 'https://services.odata.org/V2/OData/OData.svc',
+      useBatch: false
     })
     await model.metadataLoaded()
     console.log('Loading products...')
