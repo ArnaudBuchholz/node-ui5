@@ -4,6 +4,7 @@ require('colors')
 const debug = require('./debug')
 const path = require('path')
 const resources = require('./resources')
+const Traces = require('./traces')
 
 module.exports = async function (settings) {
   let promiseResolve
@@ -28,17 +29,13 @@ module.exports = async function (settings) {
     try {
       require('jsdom')
     } catch (e) {
-      if (settings.traces.nodeui5) {
-        console.log(`jsdom not detected, switching to fast implementation`.gray)
-      }
+      settings.traces.boot('jsdom not detected, switching to fast implementation', Traces.INFO)
       selector = 'mindom'
     }
   }
   const start = new Date()
   const window = require(`./${selector}/factory`)(settings)
-  if (settings.traces.performance) {
-    console.log(`Loaded '${selector}' implementation: ${new Date() - start}ms`.gray)
-  }
+  settings.traces.performance(`Loaded '${selector}' implementation`, start)
 
   // Inject factory hooks
   window.__factory__ = {
@@ -47,9 +44,7 @@ module.exports = async function (settings) {
         global.window = window
         global.sap = sap
       }
-      if (settings.traces.performance) {
-        console.log(`UI5 loading time: ${new Date() - start}ms`.gray)
-      }
+      settings.traces.performance('UI5 loading time', start)
       promiseResolve({ window, sap })
     },
     reject: reason => {
