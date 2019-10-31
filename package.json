@@ -26,9 +26,9 @@
   "dependencies": {
     "colors": "^1.3.3",
     "deasync": "^0.1.15",
-    "gpf-js": "^0.2.9",
+    "gpf-js": "^1.0.0",
     "mime": "^2.4.4",
-    "reserve": "^1.0.1"
+    "reserve": "^1.1.1"
   },
   "devDependencies": {
     "js-yaml": "^3.13.1",
