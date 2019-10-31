@@ -3,16 +3,20 @@
 const debugPrefix = '--debug:'
 const noop = () => false
 
-const INFO = 0
-const ERROR = 1
+const DEBUG = 0
+const INFO = 1
 const SUCCESS = 2
+const WARNING = 3
+const ERROR = 4
 
 const NO_INFO = 1
 
 const types = {
   boot: 'BOOT',
-  resource: 'RSRC',
-  network: 'XHRQ'
+  console: 'CONS',
+  network: 'XHRQ',
+  performance: 'PERF',
+  resource: 'RSRC'
 }
 
 class Traces {
@@ -21,21 +25,29 @@ class Traces {
     if (typeof debug === 'object') {
       Object.assign(this._enabled, debug)
     }
-    if (verbose || process.argv.some(param => param === '--verbose')) {
-      this._enabled.console = true
-      this._enabled.network = NO_INFO
-      this._enabled.resource = NO_INFO
+    verbose = verbose || process.argv.some(param => param === '--verbose')
+    if (verbose) {
+      this._enabled.console = DEBUG
     }
-    this._debug = debug === true || process.argv.some(param => param === '--debug')
-    process.argv
-      .filter(param => param.startsWith(debugPrefix))
-      .forEach(param => {
-        this._enabled[param.substring(debugPrefix.length)] = true
-      }, this)
+    debug = debug || process.argv.some(param => param === '--debug')
+    if (debug) {
+      Object.keys(types).forEach(name => {
+        this._enabled[name] = DEBUG
+      })
+    } else {
+      Object.keys(types).forEach(name => {
+        this._enabled[name] = SUCCESS
+      })
+      process.argv
+        .filter(param => param.startsWith(debugPrefix))
+        .forEach(param => {
+          this._enabled[param.substring(debugPrefix.length)] = DEBUG
+        }, this)
+    }
     Object.getOwnPropertyNames(Traces.prototype)
       .filter(name => name !== 'constructor' && !name.startsWith('_'))
       .forEach(name => {
-        if (!this._debug && !this._enabled[name]) {
+        if (!Object.prototype.hasOwnProperty.call(this._enabled, name)) {
           this[name] = noop
         }
       }, this)
@@ -71,7 +83,7 @@ class Traces {
   }
 
   _trace (type, level, content) {
-    if (this._enabled[type] === NO_INFO && level === INFO) {
+    if (this._enabled[type] > level) {
       return // ignore
     }
     this._out(type, level, content)
@@ -92,14 +104,33 @@ class Traces {
     this._trace('network', level, { text: `[${id}] ${text}`, status })
   }
 
+  // Performance related messages
+  performance (text, startTime, level = INFO) {
+    this._trace('performance', level, { text, status: `${new Date() - startTime}ms` })
+  }
+
   // Enables window console messages
-  console () {
-    return true
+  console (level, ...params) {
+    if (this._enabled.console > level) {
+      return // ignore
+    }
+    const status = params.map(param => {
+      if (typeof param === 'string') {
+        return param
+      }
+      if (typeof param === 'object') {
+        return JSON.stringify(param)
+      }
+      return param.toString()
+    }).join(' ')
+    this._out('console', level, { status })
   }
 }
 
+Traces.DEBUG = DEBUG
 Traces.INFO = INFO
-Traces.ERROR = ERROR
 Traces.SUCCESS = SUCCESS
+Traces.WARNING = WARNING
+Traces.ERROR = ERROR
 
 module.exports = Traces
