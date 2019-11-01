@@ -23,7 +23,7 @@ class Console {
   }
 
   _output (level, ...params) {
-    this._settings.traces.console(level, ...params);
+    this._settings.traces.console(level, ...params)
   }
 }
 
