@@ -36,7 +36,7 @@ class Traces {
       })
     } else {
       Object.keys(types).forEach(name => {
-        this._enabled[name] = SUCCESS
+        this._enabled[name] = WARNING
       })
       process.argv
         .filter(param => param.startsWith(debugPrefix))
