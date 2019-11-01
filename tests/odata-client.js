@@ -2,9 +2,10 @@
 
 const { assert } = require('./common')
 
-module.exports = oNodeUI5Promise => oNodeUI5Promise.then(({ sap }) => {
+module.exports = oNodeUI5Promise => oNodeUI5Promise.then(({ sap }) => new Promise(resolve => {
   sap.ui.require([
-    'sap/ui/model/odata/v2/ODataModel'
+    'sap/ui/model/odata/v2/ODataModel',
+    'node-ui5/promisify'
   ], async function (ODataModel) {
     console.log('Creating ODataModel...')
     const model = new ODataModel({
@@ -13,20 +14,14 @@ module.exports = oNodeUI5Promise => oNodeUI5Promise.then(({ sap }) => {
     })
     await model.metadataLoaded()
     console.log('Loading products...')
-    model.read('/Products', {
-      success: data => {
-        data.results.forEach(product => {
-          console.log(product.Name.padEnd(20, ' '), product.Description)
-        })
-        assert(() => data.results.length !== 0)
-      },
-      error: reason => {
-        console.error(reason)
-        assert(() => !'read failed')
-      }
-    })
+    resolve(model.readAsync('/Products').then(data => {
+      data.results.forEach(product => {
+        console.log(product.Name.padEnd(20, ' '), product.Description)
+      })
+      assert(() => data.results.length === 0)
+    }))
   })
-}, reason => {
+}), reason => {
   console.error(reason)
   assert(() => !'node-ui5 promise rejected')
 })
