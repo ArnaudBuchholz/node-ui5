@@ -59,7 +59,7 @@ module.exports = {
     }
     const sResourceRoot = settings.baseURL + RESOURCE_ROOT_PREFIX
     if (url.startsWith(sResourceRoot)) {
-      return sendFile(settings, url, url.substring(sResourceRoot.length))
+      return sendFile(settings, url, decodeURIComponent(url.substring(sResourceRoot.length)))
     }
     return null
   }
