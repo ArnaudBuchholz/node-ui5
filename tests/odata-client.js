@@ -1,27 +1,26 @@
 'use strict'
 
-const { assert } = require('./common')
-
-module.exports = oNodeUI5Promise => oNodeUI5Promise.then(({ sap }) => new Promise(resolve => {
+module.exports = ({ sap, assert, console = global.console }) => new Promise((resolve, reject) => {
   sap.ui.require([
     'sap/ui/model/odata/v2/ODataModel',
     'node-ui5/promisify'
   ], async function (ODataModel) {
-    console.log('Creating ODataModel...')
-    const model = new ODataModel({
-      serviceUrl: 'https://services.odata.org/V2/OData/OData.svc',
-      useBatch: false
-    })
-    await model.metadataLoaded()
-    console.log('Loading products...')
-    resolve(model.readAsync('/Products').then(data => {
-      data.results.forEach(product => {
+    try {
+      console.log('Creating ODataModel...')
+      const model = new ODataModel({
+        serviceUrl: 'https://services.odata.org/V2/OData/OData.svc',
+        useBatch: false
+      })
+      await model.metadataLoaded()
+      console.log('Loading products...')
+      const { results } = await model.readAsync('/Products')
+      results.forEach(product => {
         console.log(product.Name.padEnd(20, ' '), product.Description)
       })
-      assert(() => data.results.length === 0)
-    }))
+      assert(() => results.length != 0)
+    } catch (e) {
+      reject(e)
+    }
+    resolve()
   })
-}), reason => {
-  console.error(reason)
-  assert(() => !'node-ui5 promise rejected')
 })
