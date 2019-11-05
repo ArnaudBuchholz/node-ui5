@@ -10,7 +10,7 @@ process.on('exit', () => {
   if (failedCount) {
     console.error(`${failedCount} assertions failed`.red)
   } else {
-    console.error(`All assertions succeeded`.green)
+    console.error('All assertions succeeded'.green)
   }
 })
 
