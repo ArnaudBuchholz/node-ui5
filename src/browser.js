@@ -76,12 +76,12 @@ module.exports = async function (settings) {
   // Create the custom bootstrap node (& tweak theme loading detection)
   var customBoot = window.document.createElement('script')
   customBoot.textContent = `
-  var uiCoreTheme = document.getElementById('sap-ui-theme-sap.ui.core')
-  if (uiCoreTheme) {
-    uiCoreTheme.setAttribute('data-sap-ui-ready', 'true')
-  }
   if (typeof sap !== 'undefined') {
     sap.ui.getCore().attachInit(function() {
+      var uiCoreTheme = document.getElementById('sap-ui-theme-sap.ui.core')
+      if (uiCoreTheme) {
+        uiCoreTheme.setAttribute('data-sap-ui-ready', 'true')
+      }
       window.__factory__.resolve(sap)
     })
   } else {
