@@ -19,7 +19,7 @@ let server
 function startServer () {
   console.log('Starting server'.cyan)
   return new Promise(resolve => {
-    server = fork(path.join(__dirname, `server/serve.js`), process.argv.slice(2))
+    server = fork(path.join(__dirname, 'server/serve.js'), process.argv.slice(2))
     server.on('message', message => {
       console.log('server message'.yellow, message.gray)
       if (message === 'ready') {
@@ -48,10 +48,10 @@ async function all () {
   console.log('Total time (ms): ', new Date() - now)
   stopServer()
   if (failed) {
-    console.error(`At least one test failed`.red)
+    console.error('At least one test failed'.red)
     process.exit(-1)
   } else {
-    console.error(`All tests succeeded`.green)
+    console.error('All tests succeeded'.green)
     process.exit(0)
   }
 }
