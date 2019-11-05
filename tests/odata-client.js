@@ -17,7 +17,7 @@ module.exports = ({ sap, assert, console = global.console }) => new Promise((res
       results.forEach(product => {
         console.log(product.Name.padEnd(20, ' '), product.Description)
       })
-      assert(() => results.length != 0)
+      assert(() => results.length !== 0)
     } catch (e) {
       reject(e)
     }
