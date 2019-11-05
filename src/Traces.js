@@ -25,11 +25,11 @@ class Traces {
     if (typeof debug === 'object') {
       Object.assign(this._enabled, debug)
     }
-    verbose = verbose || process.argv.some(param => param === '--verbose')
+    verbose = verbose || process.argv.includes('--verbose')
     if (verbose) {
       this._enabled.console = DEBUG
     }
-    debug = debug || process.argv.some(param => param === '--debug')
+    debug = debug || process.argv.includes('--debug')
     if (debug) {
       Object.keys(types).forEach(name => {
         this._enabled[name] = DEBUG
