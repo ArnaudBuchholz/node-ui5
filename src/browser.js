@@ -4,6 +4,7 @@ require('colors')
 const debug = require('./debug')
 const path = require('path')
 const resources = require('./resources')
+const Traces = require('./traces')
 
 module.exports = async function (settings) {
   let promiseResolve
@@ -28,17 +29,13 @@ module.exports = async function (settings) {
     try {
       require('jsdom')
     } catch (e) {
-      if (settings.debug) {
-        console.log(`jsdom not detected, switching to fast implementation`.gray)
-      }
+      settings.traces.boot('jsdom not detected, switching to fast implementation', Traces.INFO)
       selector = 'mindom'
     }
   }
   const start = new Date()
   const window = require(`./${selector}/factory`)(settings)
-  if (settings.debug) {
-    console.log(`Loaded '${selector}' implementation: ${new Date() - start}ms`.gray)
-  }
+  settings.traces.performance(`Loaded '${selector}' implementation`, start)
 
   // Inject factory hooks
   window.__factory__ = {
@@ -47,9 +44,7 @@ module.exports = async function (settings) {
         global.window = window
         global.sap = sap
       }
-      if (settings.debug) {
-        console.log(`UI5 loading time: ${new Date() - start}ms`.gray)
-      }
+      settings.traces.performance('UI5 loading time', start)
       promiseResolve({ window, sap })
     },
     reject: reason => {
@@ -59,14 +54,15 @@ module.exports = async function (settings) {
 
   if (settings.debug) {
     debug.configure(settings, window)
-    console.log(`Bootstrap location: ${settings.bootstrapLocation}`.gray)
+    console.log(`Bootstrap location: ${settings.bootstrap.location}`.gray)
   }
 
   // Create the UI5 bootstrap node
   var ui5Boot = window.document.createElement('script')
   ui5Boot.id = 'sap-ui-bootstrap'
-  ui5Boot.setAttribute('src', resources.declare(settings, settings.bootstrapLocation))
+  ui5Boot.setAttribute('src', resources.declare(settings, settings.bootstrap.location))
   ui5Boot.setAttribute('data-sap-ui-compatVersion', 'edge')
+  ui5Boot.setAttribute('data-sap-ui-async', 'true')
   ui5Boot.setAttribute('data-sap-ui-frameOptions', 'allow')
   ui5Boot.setAttribute('data-sap-ui-resourceroots', JSON.stringify(resourceroots))
   if (settings.debug) {

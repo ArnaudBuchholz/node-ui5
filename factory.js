@@ -3,9 +3,10 @@
 const bootstrapLocator = require('./src/bootstrapLocator')
 const browserFactory = require('./src/browser')
 const deasync = require('deasync')
+const Traces = require('./src/Traces')
 
 module.exports = (userSettings = {}) => {
-  let {
+  const {
     baseURL = 'http://node-ui5.server.net/',
     bootstrapLocation = '',
     bootstrapCache = '',
@@ -13,32 +14,23 @@ module.exports = (userSettings = {}) => {
     fastButIncompleteSimulation = false,
     resourceroots = {},
     verbose = false,
-    debug = false,
+    debug = false, // Might be an object
     synchronousBoot = false
   } = userSettings
-  process.argv.forEach(param => {
-    if (param === '--verbose') {
-      verbose = true
-    }
-    if (param === '--fast') {
-      fastButIncompleteSimulation = true
-    }
-    if (param === '--debug') {
-      verbose = true
-      debug = true
-    }
-  })
+  const traces = new Traces(verbose, debug)
   let bootInProgress = true
-  const promise = bootstrapLocator(bootstrapLocation)
+  const promise = bootstrapLocator(traces, bootstrapLocation)
     .then(resolvedLocation => browserFactory({
       baseURL,
-      bootstrapLocation: resolvedLocation,
-      bootstrapCache,
+      bootstrap: {
+        location: resolvedLocation,
+        base: resolvedLocation.match(/^(.*\/)/)[1],
+        cache: bootstrapCache
+      },
       exposeAsGlobals,
       fastButIncompleteSimulation,
       resourceroots,
-      verbose,
-      debug
+      traces
     }))
     .then(result => {
       bootInProgress = false

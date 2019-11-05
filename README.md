@@ -81,12 +81,11 @@ require('node-ui5/factory')({
 * **bootstrapLocation**: provides URL of the `sap-ui-core.js` bootstrap
 * **exposeAsGlobals**: set to `true` to make `window` and `sap` be globally available in NodeJS
 * **resourceroots**: an optional dictionary for mapping resources to local folders or remote resources
-* **verbose**: set to `true` to see details on HTTP requests and output ui5 traces
 * **fastButIncompleteSimulation**: set to `true` to replace jsdom with a faster (but incomplete) browser simulation.
 Can also be set by adding `--fast` on the command line.
-* **verbose**: set to `true` to enable traces.
+* **verbose**: set to `true` to see details on HTTP requests and output console traces.
 Can also be set by adding `--verbose` on the command line.
-* **debug**: set to `true` to enable all UI5 traces. When set, verbose mode is automatically enabled.
+* **debug**: set to `true` to enable all traces. When set, verbose mode is automatically enabled.
 Can also be set by adding `--debug` on the command line.
 
 ## node-ui5 helpers

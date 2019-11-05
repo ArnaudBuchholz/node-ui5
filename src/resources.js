@@ -2,46 +2,46 @@
 
 require('colors')
 const fs = require('fs')
-const path = require('path')
 const gpf = require('gpf-js')
 const debug = require('./debug')
+const { promisify } = require('util')
+const Traces = require('./Traces')
+
+const accessAsync = promisify(fs.access)
+const readFileAsync = promisify(fs.readFile)
+
 const RESOURCE_ROOT_PREFIX = '/_/'
 
-function trace (settings, url, status) {
-  if (settings.verbose) {
-    console.log('RES'.magenta, url.cyan, status)
-  }
-}
-
 function inject (settings, url, content) {
-  if (settings.debug) {
+  if (settings.traces.ui5) {
     return debug.inject(settings, url, content)
   }
   return content
 }
 
-function sendFile (settings, url, filePath) {
-  try {
-    fs.accessSync(filePath, fs.constants.R_OK)
-    const content = fs.readFileSync(filePath).toString()
-    trace(settings, url, content.length.toString().green)
-    return inject(settings, url, content)
-  } catch (e) {
-    trace(settings, url, e.toString().red)
-  }
-  return null // resource but not found
+async function sendFile (settings, url, filePath) {
+  return await accessAsync(filePath, fs.constants.R_OK)
+    .then(() => readFileAsync(filePath))
+    .then(buffer => buffer.toString())
+    .then(content => {
+      settings.traces.resource(url, content.length.toString(), Traces.SUCCESS)
+      return inject(settings, url, content)
+    })
+    .catch(reason => {
+      settings.traces.resource(url, reason.toString(), Traces.ERROR)
+      return null
+    })
 }
 
-function sendUrl (settings, url) {
-  return gpf.http.get(url).then(response => {
-    if (response.status.toString().startsWith('2')) {
-      trace(settings, url, `${response.status} ${response.responseText.length}`.green)
-      return inject(settings, url, response.responseText)
-    } else {
-      trace(settings, url, `${response.status}`.red)
-      return ''
-    }
-  })
+async function sendUrl (settings, url) {
+  const response = await gpf.http.get(url)
+  if (response.status.toString().startsWith('2')) {
+    settings.traces.resource(url, `${response.status} ${response.responseText.length}`, Traces.SUCCESS)
+    return inject(settings, url, response.responseText)
+  } else {
+    settings.traces.resource(url, response.status.toString(), Traces.ERROR)
+    return ''
+  }
 }
 
 module.exports = {
@@ -54,28 +54,14 @@ module.exports = {
   },
 
   read: (settings, url) => {
-    const isHttpUrl = url.startsWith('http')
-    if (isHttpUrl && url === settings.bootstrapLocation) {
+    if (url.startsWith(settings.bootstrap.base)) {
       return sendUrl(settings, url)
     }
     const sResourceRoot = settings.baseURL + RESOURCE_ROOT_PREFIX
     if (url.startsWith(sResourceRoot)) {
-      return sendFile(settings, url, url.substring(sResourceRoot.length))
+      return sendFile(settings, url, decodeURIComponent(url.substring(sResourceRoot.length)))
     }
-    const dirname = path.dirname(settings.bootstrapLocation)
-    if (!isHttpUrl && url.startsWith(dirname)) {
-      return sendFile(settings, url, url)
-    }
-    const reResource = new RegExp(`^(?:${settings.baseURL})?\bresources/(.*)$`)
-    const match = reResource.exec(url)
-    if (!match) {
-      return
-    }
-    if (url.endsWith('css')) {
-      trace(settings, url, 'css'.green)
-      return '/* style must not be empty */'
-    }
-    return sendFile(settings, url, path.join(dirname, '..', match[1]))
+    return null
   }
 
 }

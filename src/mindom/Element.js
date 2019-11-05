@@ -242,7 +242,8 @@ class Element extends Node {
 // Map some attributes directly as properties
 [
   'href',
-  'id'
+  'id',
+  'src'
 ].forEach(name => {
   Object.defineProperty(Element.prototype, name, {
     get: function () {
