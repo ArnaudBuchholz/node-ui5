@@ -7,20 +7,20 @@ function _hookSetTimer (name, api, callback, delay) {
   const callbackName = callback.name || 'anonymous'
   const timerId = ++_lastTimerId
   const timer = api(() => {
-    console.log('TIMER'.magenta, `${name}(${timerId}): ${callbackName}`.gray)
+    console.log('TIMR'.magenta, `${name}(${timerId}): ${callbackName}`.gray)
     if (name !== 'timeout') {
       delete _timers[timerId]
     }
     callback()
   }, delay)
   _timers[timerId] = timer
-  console.log('TIMER'.magenta, `set${name.charAt(0).toUpperCase() + name.substring(1)}(${callbackName}, ${delay}): ${timerId}`.gray)
+  console.log('TIMR'.magenta, `set${name.charAt(0).toUpperCase() + name.substring(1)}(${callbackName}, ${delay}): ${timerId}`.gray)
   return timerId
 }
 
 function _hookClearTimer (name, api, timerId) {
   const timer = _timers[timerId]
-  console.log('TIMER'.magenta, `clear${name.charAt(0).toUpperCase() + name.substring(1)}(${timerId})`.gray)
+  console.log('TIMR'.magenta, `clear${name.charAt(0).toUpperCase() + name.substring(1)}(${timerId})`.gray)
   api(timer)
   delete _timers[timerId]
 }
