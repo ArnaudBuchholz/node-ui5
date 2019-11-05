@@ -3,13 +3,11 @@
 const debugPrefix = '--debug:'
 const noop = () => false
 
-const DEBUG = 0
-const INFO = 1
-const SUCCESS = 2
-const WARNING = 3
-const ERROR = 4
-
-const NO_INFO = 1
+const DEBUG = 1
+const INFO = 2
+const SUCCESS = 3
+const WARNING = 4
+const ERROR = 5
 
 const types = {
   boot: 'BOOT',
@@ -24,6 +22,10 @@ class Traces {
     this._enabled = {}
     if (typeof debug === 'object') {
       Object.assign(this._enabled, debug)
+    } else {
+      Object.keys(types).forEach(name => {
+        this._enabled[name] = WARNING
+      })
     }
     verbose = verbose || process.argv.includes('--verbose')
     if (verbose) {
@@ -34,18 +36,14 @@ class Traces {
       Object.keys(types).forEach(name => {
         this._enabled[name] = DEBUG
       })
-    } else {
-      Object.keys(types).forEach(name => {
-        this._enabled[name] = WARNING
-      })
-      process.argv
-        .filter(param => param.startsWith(debugPrefix))
-        .forEach(param => {
-          this._enabled[param.substring(debugPrefix.length)] = DEBUG
-        }, this)
     }
+    process.argv
+      .filter(param => param.startsWith(debugPrefix))
+      .forEach(param => {
+        this._enabled[param.substring(debugPrefix.length)] = DEBUG
+      }, this)
     Object.getOwnPropertyNames(Traces.prototype)
-      .filter(name => name !== 'constructor' && !name.startsWith('_'))
+      .filter(name => name !== 'constructor' && !name.startsWith('_') && name !== 'enabled')
       .forEach(name => {
         if (!Object.prototype.hasOwnProperty.call(this._enabled, name)) {
           this[name] = noop
@@ -87,6 +85,10 @@ class Traces {
       return // ignore
     }
     this._out(type, level, content)
+  }
+
+  get enabled () {
+    return this._enabled
   }
 
   // Bootstrap related messages
