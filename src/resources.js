@@ -19,8 +19,8 @@ function inject (settings, url, content) {
   return content
 }
 
-async function sendFile (settings, url, filePath) {
-  return await accessAsync(filePath, fs.constants.R_OK)
+function sendFile (settings, url, filePath) {
+  return accessAsync(filePath, fs.constants.R_OK)
     .then(() => readFileAsync(filePath))
     .then(buffer => buffer.toString())
     .then(content => {
