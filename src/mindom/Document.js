@@ -55,6 +55,14 @@ class Document extends Element {
     return true
   }
 
+  get implementation () {
+    return {
+      createHTMLDocument: () => {
+        return new Document(this[$window], this[$settings])
+      }
+    }
+  }
+
   get location () {
     return this[$window].location
   }
