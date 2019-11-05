@@ -11,7 +11,7 @@ module.exports = (userSettings = {}) => {
     bootstrapLocation = '',
     bootstrapCache = '',
     exposeAsGlobals = false,
-    fastButIncompleteSimulation = false,
+    fastButIncompleteSimulation = process.argv.includes('--fast'),
     resourceroots = {},
     verbose = false,
     debug = false, // Might be an object
