@@ -13,7 +13,7 @@ const readFileAsync = promisify(fs.readFile)
 const RESOURCE_ROOT_PREFIX = '/_/'
 
 function inject (settings, url, content) {
-  if (settings.traces.ui5) {
+  if (settings.traces.enabled.ui5) {
     return debug.inject(settings, url, content)
   }
   return content
