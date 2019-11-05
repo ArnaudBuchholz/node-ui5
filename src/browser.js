@@ -52,7 +52,7 @@ module.exports = async function (settings) {
     }
   }
 
-  if (settings.debug) {
+  if (settings.traces.enabled.ui5) {
     debug.configure(settings, window)
     console.log(`Bootstrap location: ${settings.bootstrap.location}`.gray)
   }
