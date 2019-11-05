@@ -65,7 +65,7 @@ module.exports = async function (settings) {
   ui5Boot.setAttribute('data-sap-ui-async', 'true')
   ui5Boot.setAttribute('data-sap-ui-frameOptions', 'allow')
   ui5Boot.setAttribute('data-sap-ui-resourceroots', JSON.stringify(resourceroots))
-  if (settings.debug) {
+  if (settings.traces.enabled.ui5) {
     ui5Boot.setAttribute('data-sap-ui-logLevel', '6')
     ui5Boot.setAttribute('data-sap-ui-xx-debugModuleLoading', 'true')
     window['sap-ui-config'] = {
