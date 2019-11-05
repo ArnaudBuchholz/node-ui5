@@ -6,9 +6,7 @@ const console = require('./null')
 const assert = require('./assert')
 
 module.exports = ({ title, settings = {} }) => {
-
   describe(title, () => {
-
     describe('jsdom', () => {
       let _sap
       before(async function () {
@@ -30,7 +28,5 @@ module.exports = ({ title, settings = {} }) => {
       })
       it('enables odata testing', () => require('../odata-client')({ sap: _sap, console, assert }))
     })
-
   })
-
 }
