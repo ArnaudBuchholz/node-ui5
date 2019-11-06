@@ -10,7 +10,7 @@ module.exports = ({ title, settings = {} }) => {
     describe('jsdom', () => {
       let _sap
       before(async function () {
-        this.timeout(10000)
+        this.timeout(15000)
         const { sap } = await require('../../factory')(settings)
         _sap = sap
       })
@@ -20,6 +20,7 @@ module.exports = ({ title, settings = {} }) => {
     describe('mindom', () => {
       let _sap
       before(async function () {
+        this.timeout(10000)
         const { sap } = await require('../../factory')({
           fastButIncompleteSimulation: true,
           ...settings
