@@ -1,5 +1,10 @@
+'use strict'
+
+const { assert } = require('./common')
 const { join } = require('path')
-require('./odata-client')(require('../factory')({
-  debug: true,
+
+require('../factory')({
   bootstrapLocation: join(__dirname, '../node_modules/@openui5/sap.ui.core/src/sap-ui-core.js')
-}))
+}).then(({ sap }) => {
+  require('./odata-client')({ sap, assert })
+})
