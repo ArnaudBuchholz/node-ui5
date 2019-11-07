@@ -4,8 +4,10 @@
 require('colors')
 
 let failedCount = 0
+const start = new Date()
 
 process.on('exit', () => {
+  console.log(`Time spent: ${new Date() - start}ms`.gray)
   process.exitCode = failedCount
   if (failedCount) {
     console.error(`${failedCount} assertions failed`.red)
