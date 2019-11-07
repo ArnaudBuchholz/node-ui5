@@ -38,6 +38,7 @@
     "reserve": "^1.1.1"
   },
   "devDependencies": {
+    "@openui5/sap.ui.core": "^1.71.3",
     "eslint-utils": ">=1.4.3",
     "js-yaml": "^3.13.1",
     "jsdom": "^15.1.1",
