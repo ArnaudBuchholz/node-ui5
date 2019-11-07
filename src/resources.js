@@ -29,7 +29,7 @@ function sendFile (settings, url, filePath) {
     })
     .catch(reason => {
       settings.traces.resource(url, reason.toString(), Traces.ERROR)
-      return null
+      return ''
     })
 }
 
