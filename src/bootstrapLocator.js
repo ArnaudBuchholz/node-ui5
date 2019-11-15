@@ -59,7 +59,7 @@ function locate (bootstrapLocation) {
       if (stat.isDirectory()) {
         throw new Error('invalid path')
       }
-      return bootstrapLocation
+      return bootstrapLocation.replace(/\\/g, '/')
     })
 }
 
