@@ -65,10 +65,8 @@ class DOMParser {
     this[$window] = window
   }
 
-  parseFromString (string, type) {
+  _parseHTMLFromString (document, string) {
     parser.lastIndex = 0
-    const document = new Document(this[$window])
-    document._clearChildren()
     let current = document
     let match = parser.exec(string)
     while (match) {
@@ -84,6 +82,12 @@ class DOMParser {
       }
       match = parser.exec(string)
     }
+  }
+
+  parseFromString (string, type) {
+    const document = new Document(this[$window])
+    document._clearChildren()
+    this._parseHTMLFromString(document, string)
     return document
   }
 }
