@@ -50,16 +50,27 @@ module.exports = {
     if (resourceroot.startsWith('http')) {
       return resourceroot
     }
-    return settings.baseURL + RESOURCE_ROOT_PREFIX + resourceroot
+    const resPrefix = settings.baseURL + RESOURCE_ROOT_PREFIX
+    if (resourceroot.startsWith(settings.bootstrap.base)) {
+        return resPrefix + 'resources' + resourceroot.substring(settings.bootstrap.base.length)
+    }
+    return resPrefix + resourceroot.replace(/\\/g, '/')
   },
 
   read: (settings, url) => {
     if (url.startsWith(settings.bootstrap.base)) {
       return sendUrl(settings, url)
     }
-    const sResourceRoot = settings.baseURL + RESOURCE_ROOT_PREFIX
-    if (url.startsWith(sResourceRoot)) {
-      return sendFile(settings, url, decodeURIComponent(url.substring(sResourceRoot.length)))
+    const resPrefix = settings.baseURL + RESOURCE_ROOT_PREFIX
+    if (url.startsWith(resPrefix)) {
+      let filePath = decodeURIComponent(url.substring(resPrefix.length))
+      if (filePath.endsWith('-dbg.js') && filePath.includes('/node-ui5/lib/')) {
+        filePath = filePath.replace(/-dbg\.js$/, '.js')
+      }
+      if (filePath.startsWith('resources/')) {
+          return sendFile(settings, url, settings.bootstrap.base + filePath.substring(9))
+      }
+      return sendFile(settings, url, filePath)
     }
     return null
   }
