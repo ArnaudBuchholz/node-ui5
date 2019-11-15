@@ -10,24 +10,30 @@ module.exports = ({ title, settings = {} }) => {
     describe('jsdom', () => {
       let _sap
       before(async function () {
-        this.timeout(15000)
+        this.timeout(60000)
         const { sap } = await require('../../factory')(settings)
         _sap = sap
       })
-      it('enables odata testing', () => require('../odata-client')({ sap: _sap, console, assert }))
+      it('enables odata testing', function () {
+        this.timeout(20000)
+        return require('../odata-client')({ sap: _sap, console, assert })
+      })
     })
 
     describe('mindom', () => {
       let _sap
       before(async function () {
-        this.timeout(10000)
+        this.timeout(60000)
         const { sap } = await require('../../factory')({
           fastButIncompleteSimulation: true,
           ...settings
         })
         _sap = sap
       })
-      it('enables odata testing', () => require('../odata-client')({ sap: _sap, console, assert }))
+      it('enables odata testing', function () {
+        this.timeout(20000)
+        return require('../odata-client')({ sap: _sap, console, assert })
+      })
     })
   })
 }
