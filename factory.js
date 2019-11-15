@@ -4,6 +4,7 @@ const bootstrapLocator = require('./src/bootstrapLocator')
 const browserFactory = require('./src/browser')
 const deasync = require('deasync')
 const Traces = require('./src/Traces')
+const path = require('path')
 
 module.exports = (userSettings = {}) => {
   const {
@@ -24,7 +25,7 @@ module.exports = (userSettings = {}) => {
       baseURL,
       bootstrap: {
         location: resolvedLocation,
-        base: resolvedLocation.match(/^(.*\/)/)[1],
+        base: path.dirname(resolvedLocation),
         cache: bootstrapCache
       },
       exposeAsGlobals,
