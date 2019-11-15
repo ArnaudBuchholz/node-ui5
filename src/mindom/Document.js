@@ -113,6 +113,16 @@ class Document extends Element {
   get scripts () {
     return []
   }
+
+  write (html) {
+    const document = new Document(this[$window])
+    document._clearChildren()
+    document._onNewChild = () => {}
+    const parser = new this[$window].DOMParser()
+    parser._parseHTMLFromString(document, html)
+    const node = document.childNodes[0]
+    this.appendChild(document.childNodes[0])
+  }
 }
 
 // Shortcuts to elements
