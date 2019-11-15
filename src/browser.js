@@ -76,17 +76,28 @@ module.exports = async function (settings) {
   // Create the custom bootstrap node (& tweak theme loading detection)
   var customBoot = window.document.createElement('script')
   customBoot.textContent = `
-  if (typeof sap !== 'undefined') {
-    sap.ui.getCore().attachInit(function() {
-      var uiCoreTheme = document.getElementById('sap-ui-theme-sap.ui.core')
-      if (uiCoreTheme) {
-        uiCoreTheme.setAttribute('data-sap-ui-ready', 'true')
+(function () {
+  var start = new Date()
+  function waitForSap () {
+    if (typeof sap === 'undefined' || !sap.ui || !sap.ui.getCore) {
+      if (new Date() - start < 5000) {
+        setTimeout(waitForSap, 100)
+      } else {
+        window.__factory__.reject(new Error('Invalid bootstrap'))
       }
-      window.__factory__.resolve(sap)
-    })
-  } else {
-    window.__factory__.reject(new Error('Invalid bootstrap'))
-  }`
+    } else {
+      sap.ui.getCore().attachInit(function() {
+        var uiCoreTheme = document.getElementById('sap-ui-theme-sap.ui.core')
+        if (uiCoreTheme) {
+          uiCoreTheme.setAttribute('data-sap-ui-ready', 'true')
+        }
+        window.__factory__.resolve(sap)
+      })
+    }
+  }
+  waitForSap()
+}())
+`
   window.document.documentElement.appendChild(customBoot)
 
   return promise
