@@ -64,12 +64,20 @@ class Window extends EventTarget {
   eval (code) {
     // Create a secure context
     const params = ['window', 'global', 'require']
-    const securedContext = Function.apply(null, params.concat(`with (window) {\n${code}\n}`))
+    let securedContext
+    try {
+      securedContext = Function.apply(null, params.concat(`with (window) {\n${code}\n}`))
+    } catch (e) {
+      console.error(e)
+      return false
+    }
     try {
       securedContext.call(this, this, this) // global also set to window because of sinon
     } catch (e) {
       console.error(e)
+      return false
     }
+    return true
   }
 
   set location (value) {
