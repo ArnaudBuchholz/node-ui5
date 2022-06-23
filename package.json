@@ -41,7 +41,7 @@
     "@openui5/sap.ui.core": "^1.71.3",
     "eslint-utils": ">=1.4.3",
     "js-yaml": "^3.13.1",
-    "jsdom": "^15.1.1",
+    "jsdom": "^16.5.0",
     "lodash": ">=4.17.13",
     "mocha": "^6.2.2",
     "mock-require": "^3.0.3",
